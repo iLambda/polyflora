@@ -4,7 +4,14 @@
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "skipLibCheck": true,
+    "skipLibCheck": false,
+
+    "paths": { 
+      "@app": ["./src/app/App.tsx"],
+      "@app/*": ["./src/app/*"],
+      "@three/*": ["./src/three/*"],
+      "@utils/*": ["./src/utils/*"],
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -15,10 +22,21 @@
     "jsx": "react-jsx",
 
     /* Linting */
+    "newLine": "lf",
+    "stripInternal": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Type checking */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
   },
   "include": ["src"]
 }
