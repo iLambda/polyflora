@@ -7,8 +7,8 @@ import { getKeys } from '@utils/types';
 import { useLoader } from '@react-three/fiber';
 
 
-export function useVector2(x: number, y: number) : THREE.Vector2
-export function useVector2(data: Vec2) : THREE.Vector2
+export function useVector2(x: number, y: number) : THREE.Vector2;
+export function useVector2(data: Vec2) : THREE.Vector2;
 export function useVector2(dataOrX: number | Vec2, layerOrY?: number) : THREE.Vector2 {
     const vec = useInstance(THREE.Vector2);
     if (typeof dataOrX === 'object') {
@@ -19,8 +19,8 @@ export function useVector2(dataOrX: number | Vec2, layerOrY?: number) : THREE.Ve
     return vec;
 }
 
-export function useVector3(x: number, y: number, z: number) : THREE.Vector3
-export function useVector3(data: Vec2, layer: number) : THREE.Vector3
+export function useVector3(x: number, y: number, z: number) : THREE.Vector3;
+export function useVector3(data: Vec2, layer: number) : THREE.Vector3;
 export function useVector3(dataOrX: number | Vec2, layerOrY: number, z?: number) : THREE.Vector3 {
     const vec = useInstance(THREE.Vector3);
     if (typeof dataOrX === 'object') {
@@ -51,8 +51,8 @@ export function useColor(src: ColorSource, convert?: 'linear-to-srgb' | 'srgb-to
     return color;    
 }
 
-export function useSphere(x: number, y: number, z: number, radius: number) : THREE.Sphere
-export function useSphere(data: Vec3, radius: number) : THREE.Sphere
+export function useSphere(x: number, y: number, z: number, radius: number) : THREE.Sphere;
+export function useSphere(data: Vec3, radius: number) : THREE.Sphere;
 export function useSphere(dataOrX: number | Vec3, radiusOrY: number, z?: number, radius?: number) : THREE.Sphere {
     const sphere = useInstance(THREE.Sphere);
     if (typeof dataOrX === 'object') {
@@ -69,7 +69,7 @@ export type LayerID =
     | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 
     | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19
     | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29
-    | 30 | 31 
+    | 30 | 31; 
      
 export function useLayers(layers: Partial<Record<LayerID, boolean>>) : THREE.Layers {
     const layerMask = useInstance(THREE.Layers);
@@ -97,9 +97,9 @@ type TextureOptions = {
 };
 export function useTexture(url: string, options?: Partial<TextureOptions>) : THREE.Texture {
     const tex = useLoader(THREE.TextureLoader, url);
-    options?.minFilter && (tex.minFilter = options?.minFilter);
-    options?.magFilter && (tex.magFilter = options?.magFilter);
-    options?.colorSpace !== undefined && (tex.colorSpace = options?.colorSpace);
+    if (options?.minFilter) { (tex.minFilter = options?.minFilter); }
+    if (options?.magFilter) { (tex.magFilter = options?.magFilter); }
+    if (options?.colorSpace !== undefined) { tex.colorSpace = options?.colorSpace; }
     return tex;
 }
 

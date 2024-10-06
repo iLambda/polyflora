@@ -1,5 +1,3 @@
-import { AppShell, Burger } from '@mantine/core';
-import { Header } from './Header';
 import { Context2D } from '@three/Context2D';
 import { View } from '@three/View';
 
@@ -13,8 +11,8 @@ export const App = () => {
                     grid: { visibility: 'shown' },
                     lighting: {
                         ambient: { color: 0xffffff, intensity: 0.2 },
-                        sun: { color: 0xffffff, intensity: 1 }
-                    }
+                        sun: { color: 0xffffff, intensity: 1 },
+                    },
                 }} />
             </Context2D>
         </>

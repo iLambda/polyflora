@@ -1,13 +1,8 @@
 import { ReactNode, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useReactiveRef } from '@utils/react/hooks/state';
-import { useControls } from 'leva';
 
 import * as THREE from 'three';
-import { View } from './View';
-import { useInstance } from '@utils/react/hooks/refs';
-import { PerspectiveCamera } from '@react-three/drei';
-import { Environment } from './viewer/Environment';
 
 type Context2DProps = {
     filtering?: 'nearest' | 'linear';
@@ -17,7 +12,7 @@ type Context2DProps = {
 export const Context2D = (props: Context2DProps) => {
 
     /* Make the renderer, and a canvas ref */
-    const [canvasRef, canvas] = useReactiveRef<HTMLCanvasElement>();
+    const [canvasRef, _canvas] = useReactiveRef<HTMLCanvasElement>();
     const gl = useCallback((canvas: HTMLCanvasElement | OffscreenCanvas) => {
         // Create renderer
         const renderer = new THREE.WebGLRenderer({  

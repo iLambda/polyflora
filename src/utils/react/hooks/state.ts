@@ -26,7 +26,7 @@ export function useDebouncedState<T>(defaultValue: T, wait: number, options = { 
 
 export function useIdempotentState<T>(defaultValue: T | (() => T)) : [T, (value: T) => void] {
     const [value, setValue] = useState<T>(defaultValue);
-    const setIdValue = useCallback((v: T) => { value !== v && setValue(v); }, [value, setValue]);
+    const setIdValue = useCallback((v: T) => { if(value !== v) { setValue(v); }}, [value, setValue]);
     return [value, setIdValue];
 }
 

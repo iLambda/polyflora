@@ -29,7 +29,7 @@ export type ExtendedReadonly<T> =
     never;
 
 export type Override<T, TOverriden> = 
-    Omit<TOverriden, keyof T> & T
+    Omit<TOverriden, keyof T> & T;
     
 // Forces type normalization
 export type Expand<T, mode extends 'shallow' | 'deep' = 'shallow'> = T extends unknown

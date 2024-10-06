@@ -1,5 +1,5 @@
-import { Image, Burger, Container, Group, Button, Flex } from '@mantine/core';
-import { styles } from './Header.css'
+import { Group, Button, Flex } from '@mantine/core';
+import { styles } from './Header.css';
 
 const links = [
     { link: '/about', label: 'Features' },

@@ -1,9 +1,20 @@
-import * as THREE from 'three';
-import { CameraControls, OrbitControls, PerspectiveCamera, useCamera } from '@react-three/drei';
-import { useInstance } from '@utils/react/hooks/refs';
+import { OrbitControls } from '@react-three/drei';
 import { deg2rad } from '@utils/math';
-import { Environment, EnvironmentSettings } from './viewer/Environment';
+import { Grid, GridSettings } from './viewer/Grid';
+import { Lighting, LightingSettings } from './viewer/Lighting';
+import { Record, Static } from 'runtypes';
 
+
+/* The environment settings. These are to be serialized */
+export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
+export const EnvironmentSettings = Record({
+    /* The grid settings */
+    grid: GridSettings,
+    /* The lighting settings */
+    lighting: LightingSettings,
+});
+
+/* The properties of the viewer */
 type ViewerProps = {
     environment: EnvironmentSettings,
 };
@@ -14,7 +25,8 @@ export const View = (props: ViewerProps) => {
     return (
         <>
             {/* The environment (grid, shadows, etc) */}
-            <Environment {...props.environment} />
+            <Grid {...props.environment.grid} />
+            <Lighting {...props.environment.lighting} />
 
             <mesh>
                 <boxGeometry args={[10, 10, 10]} />
