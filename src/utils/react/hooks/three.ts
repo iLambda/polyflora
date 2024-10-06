@@ -37,6 +37,13 @@ export function useVector4(x: number, y: number, z: number, w: number) : THREE.V
     return vec;
 }
 
+export function useBox3(sx: number, sy: number, sz: number, ex: number, ey: number, ez: number) : THREE.Box3 {
+    const box = useInstance(THREE.Box3);
+    const boxMin = useVector3(sx, sy, sz);
+    const boxMax = useVector3(ex, ey, ez);
+    box.set(boxMin, boxMax); 
+    return box;
+}
 
 export function useColor(src: ColorSource, convert?: 'linear-to-srgb' | 'srgb-to-linear') : THREE.Color {
     const color = useInstance(THREE.Color, 0, 0, 0);

@@ -1,4 +1,4 @@
-import { OrbitControls } from '@react-three/drei';
+import { CameraControls } from '@react-three/drei';
 import { deg2rad } from '@utils/math';
 import { Grid, GridSettings } from './viewer/Grid';
 import { Lighting, LightingSettings } from './viewer/Lighting';
@@ -6,6 +6,8 @@ import { Record, Static } from 'runtypes';
 import { Trunk } from './flora/tree/Trunk';
 import { Suspense } from 'react';
 
+import { useReactiveRef } from '@utils/react/hooks/state';
+import { useBox3 } from '@utils/react/hooks/three';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -22,6 +24,12 @@ type ViewerProps = {
 };
 
 export const View = (props: ViewerProps) => {
+    /* The camera control */
+    const [controlsRef, controls] = useReactiveRef<CameraControls>();
+    /* Setup its boundaries */
+    const bounds = useBox3(0, 0.01, 0, 0, 45, 0);
+    controls?.setBoundary(bounds);
+
     /* Return the control */
     return (
         <>
@@ -30,13 +38,15 @@ export const View = (props: ViewerProps) => {
             <Lighting {...props.environment.lighting} />
 
             {/* The orbit controls */}
-            <OrbitControls makeDefault
-                enablePan={true}
+            <CameraControls makeDefault
+                ref={controlsRef}
                 minPolarAngle={0} 
                 maxPolarAngle={deg2rad(130)}
-                minDistance={15}
-                maxDistance={250}
+                minDistance={5}
+                maxDistance={250}       
             />
+            
+            {/* Generating the tree */ }
             <Suspense>
                 <Trunk 
                         segmentsLength={4}

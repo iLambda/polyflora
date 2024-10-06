@@ -34,16 +34,16 @@ const BUFFER_OFFSET_UV = BUFFER_OFFSET_NOR + BUFFER_SIZE_NOR;
 /* Return the geometry */
 export const Trunk = (props: TrunkProps) => {
 
-    /* Get the texture */
-    const colorMap = useLoader(THREE.TextureLoader, 'Wood03.png');
-    colorMap.wrapS = THREE.RepeatWrapping;
-    colorMap.wrapT = THREE.RepeatWrapping;
-
     /* Clamp the props */
     const segmentsLength = Math.max(1, props.segmentsLength);
     const segmentsRadius = Math.max(3, props.segmentsRadius);
     const sizeLength = Math.max(0.1, props.sizeLength);
     const sizeRadius = Math.max(0.01, props.sizeRadius);
+
+    /* Get the texture */
+    const colorMap = useLoader(THREE.TextureLoader, 'Wood03.png');
+    colorMap.wrapS = THREE.RepeatWrapping;
+    colorMap.wrapT = THREE.RepeatWrapping;
 
     /* Generate the index list */
     const indices = useMemo(() => {
@@ -141,6 +141,7 @@ export const Trunk = (props: TrunkProps) => {
     interleavedBuffer.set(geometryData, 0);
     interleavedBuffer.count = nVertices;
     interleavedBuffer.needsUpdate ||= bufferDirtyRef.current;
+    bufferDirtyRef.current = false;
 
     /* Make the geometry */
     const geometry = useInstance(THREE.BufferGeometry);
@@ -149,12 +150,8 @@ export const Trunk = (props: TrunkProps) => {
     geometry.setAttribute('uv',       useInstance(THREE.InterleavedBufferAttribute, interleavedBuffer, BUFFER_SIZE_UV,  BUFFER_OFFSET_UV));
     geometry.setIndex(indices);
     
-    /* Clear dirty flag */
-    bufferDirtyRef.current = false;
-
+    /* Return object */
     return (
-        // <boxGeometry args={[10, 10, 10]} />
-        //<sphereGeometry args={[10, 8, 8]} />
         <mesh geometry={geometry}>
             <meshPhongMaterial map={colorMap} color='#ffffff'/>
         </mesh>
