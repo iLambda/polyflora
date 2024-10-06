@@ -15,5 +15,3 @@ export type TypedArray =
 export function useBuffer<T extends TypedArray>(ctor: (new () => T) & { from: ((al: ArrayLike<number>) => T) }, data: ArrayLike<number>) {
     return useRefWithInit(() => ctor.from(data)).current;
 }
-
-/* Create a buffer that is the requested size,  */

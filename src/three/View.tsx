@@ -37,15 +37,12 @@ export const View = (props: ViewerProps) => {
                 maxDistance={250}
             />
 
-            <mesh>
-                <Trunk 
+            <Trunk 
                     segmentsLength={4}
                     segmentsRadius={6}
-                    sizeLength={30}
-                    sizeRadius={2}
+                    sizeLength={45}
+                    sizeRadius={0.5}
                 />
-                <meshPhongMaterial />
-            </mesh>
         </>
     );
 };

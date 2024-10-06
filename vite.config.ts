@@ -1,5 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import glsl from 'vite-plugin-glsl';
+import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 
@@ -8,6 +9,7 @@ import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 export default defineConfig({
   plugins: [
     react(),
+    glsl({ compress: true }), 
     tsconfigPaths(),
     vanillaExtractPlugin({ identifiers: 'debug' }),
   ],
