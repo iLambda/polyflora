@@ -4,6 +4,7 @@ import { Grid, GridSettings } from './viewer/Grid';
 import { Lighting, LightingSettings } from './viewer/Lighting';
 import { Record, Static } from 'runtypes';
 import { Trunk } from './flora/tree/Trunk';
+import { Suspense } from 'react';
 
 
 /* The environment settings. These are to be serialized */
@@ -36,13 +37,16 @@ export const View = (props: ViewerProps) => {
                 minDistance={15}
                 maxDistance={250}
             />
-
-            <Trunk 
-                    segmentsLength={4}
-                    segmentsRadius={6}
-                    sizeLength={45}
-                    sizeRadius={0.5}
-                />
+            <Suspense>
+                <Trunk 
+                        segmentsLength={4}
+                        segmentsRadius={6}
+                        sizeLength={45}
+                        sizeRadius={0.5}
+                        tilingU={1}
+                        tilingV={8.0}
+                    />
+            </Suspense>
         </>
     );
 };
