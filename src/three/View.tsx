@@ -1,33 +1,32 @@
 import * as THREE from 'three';
-import { OrbitControlsExp } from 'three-stdlib';
-import { OrbitControls, PerspectiveCamera, useCamera } from '@react-three/drei';
+import { CameraControls, OrbitControls, PerspectiveCamera, useCamera } from '@react-three/drei';
 import { useInstance } from '@utils/react/hooks/refs';
 import { deg2rad } from '@utils/math';
+import { Environment, EnvironmentSettings } from './viewer/Environment';
 
 type ViewerProps = {
-    reverseOrbit?: boolean
+    environment: EnvironmentSettings,
 };
 
-export const Viewer = (props: ViewerProps) => {
+export const View = (props: ViewerProps) => {
 
     /* Return the control */
     return (
         <>
-            <ambientLight intensity={0.3} />
-            <directionalLight color="red" position={[0, 0, 5]} />
+            {/* The environment (grid, shadows, etc) */}
+            <Environment {...props.environment} />
+
             <mesh>
                 <boxGeometry args={[10, 10, 10]} />
                 <meshPhongMaterial />
             </mesh>
-            {/* The orbit controls  */}
+
             <OrbitControls makeDefault
-                enablePan={false}
-                reverseOrbit={!!props.reverseOrbit}
-                target={[0, 0, 0]}
+                enablePan={true}
                 minPolarAngle={0} 
                 maxPolarAngle={deg2rad(130)}
                 minDistance={15}
-                maxDistance={40}
+                maxDistance={250}
             />
         </>
     );

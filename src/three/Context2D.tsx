@@ -4,9 +4,10 @@ import { useReactiveRef } from '@utils/react/hooks/state';
 import { useControls } from 'leva';
 
 import * as THREE from 'three';
-import { Viewer } from './viewer/Viewer';
+import { View } from './View';
 import { useInstance } from '@utils/react/hooks/refs';
 import { PerspectiveCamera } from '@react-three/drei';
+import { Environment } from './viewer/Environment';
 
 type Context2DProps = {
     filtering?: 'nearest' | 'linear';
@@ -30,7 +31,7 @@ export const Context2D = (props: Context2DProps) => {
             throw new Error('This browser does not support WebGL2.');
         }
         // Set some params
-        renderer.setClearColor(0x000000);
+        renderer.setClearColor(0x252525);
         renderer.shadowMap.enabled = false;
         renderer.toneMapping = THREE.NoToneMapping;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -38,20 +39,15 @@ export const Context2D = (props: Context2DProps) => {
         return renderer;
     }, []);
 
-    const { fov } = useControls({ fov: 20 });
-
     /* Return the body */
     return (
-        <Canvas
+        <Canvas flat 
             onContextMenu={(e) => { e.preventDefault(); return false; }}
             ref={canvasRef}
-            orthographic
-            flat 
             dpr={window.devicePixelRatio}
             gl={gl}
-            camera={{ fov: fov, near: 0, far: 1000 }}
+            camera={{ fov: 75, near: 0.1, far: 1000, position: [0, 0, 5] }}
         >
-            <Viewer />
             { props.children }
         </Canvas>
     );    

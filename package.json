@@ -16,8 +16,10 @@
     "@react-three/drei": "^9.114.0",
     "@react-three/fiber": "^8.17.9",
     "@vanilla-extract/css": "^1.16.0",
+    "colord": "^2.9.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "runtypes": "^6.7.0",
     "three": "^0.169.0",
     "three-stdlib": "^2.33.0"
   },
