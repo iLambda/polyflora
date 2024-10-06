@@ -19,13 +19,10 @@ export const LightingSettings = Record({
 });
 
 /* The props */
-type LightingProps = LightingSettings & {
-    
-};
+type LightingProps = LightingSettings & {};
 
 /* The node */
 export const Lighting = memo((props: LightingProps) => {
-    
     /* Setup the lighting */
     return (
         <>
@@ -37,7 +34,7 @@ export const Lighting = memo((props: LightingProps) => {
             <directionalLight 
                 intensity={props.sun.intensity}
                 color={useColor(props.sun.color)} 
-                position={[10, 10, 10]} 
+                position={[10, 11, 13]} 
             />
         </>
     );

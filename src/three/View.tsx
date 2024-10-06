@@ -3,6 +3,7 @@ import { deg2rad } from '@utils/math';
 import { Grid, GridSettings } from './viewer/Grid';
 import { Lighting, LightingSettings } from './viewer/Lighting';
 import { Record, Static } from 'runtypes';
+import { Trunk } from './flora/tree/Trunk';
 
 
 /* The environment settings. These are to be serialized */
@@ -20,7 +21,6 @@ type ViewerProps = {
 };
 
 export const View = (props: ViewerProps) => {
-
     /* Return the control */
     return (
         <>
@@ -28,11 +28,7 @@ export const View = (props: ViewerProps) => {
             <Grid {...props.environment.grid} />
             <Lighting {...props.environment.lighting} />
 
-            <mesh>
-                <boxGeometry args={[10, 10, 10]} />
-                <meshPhongMaterial />
-            </mesh>
-
+            {/* The orbit controls */}
             <OrbitControls makeDefault
                 enablePan={true}
                 minPolarAngle={0} 
@@ -40,6 +36,16 @@ export const View = (props: ViewerProps) => {
                 minDistance={15}
                 maxDistance={250}
             />
+
+            <mesh>
+                <Trunk 
+                    segmentsLength={4}
+                    segmentsRadius={6}
+                    sizeLength={30}
+                    sizeRadius={2}
+                />
+                <meshPhongMaterial />
+            </mesh>
         </>
     );
 };

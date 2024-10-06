@@ -35,3 +35,5 @@ export type Override<T, TOverriden> =
 export type Expand<T, mode extends 'shallow' | 'deep' = 'shallow'> = T extends unknown
     ? { [K in keyof T]: mode extends 'shallow' ? T[K] : Expand<T[K], 'deep'> }
     : never;
+
+export type Triplet<T, U = T, V = T> = [T, U, V];

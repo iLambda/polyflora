@@ -8,8 +8,11 @@ export const GridSettings = Record({
     visibility: Union(Literal('shown'), Literal('hidden')), 
 });
 
+/* The props */
+type GridProps = GridSettings & {};
+
 /* The node */
-export const Grid = memo((props: GridSettings) => {
+export const Grid = memo((props: GridProps) => {
     /* Return the grid */
     return (
         <GridPlane 

@@ -22,9 +22,9 @@ export const Context2D = (props: Context2DProps) => {
             powerPreference: 'default',
         });
         // Check if WebGL2
-        if (!renderer.capabilities.isWebGL2) {
+        /*if (!renderer.capabilities.isWebGL2) {
             throw new Error('This browser does not support WebGL2.');
-        }
+        }*/
         // Set some params
         renderer.setClearColor(0x252525);
         renderer.shadowMap.enabled = false;
@@ -41,7 +41,7 @@ export const Context2D = (props: Context2DProps) => {
             ref={canvasRef}
             dpr={window.devicePixelRatio}
             gl={gl}
-            camera={{ fov: 75, near: 0.1, far: 1000, position: [0, 0, 5] }}
+            camera={{ fov: 75, near: 0.1, far: 1000, position: [25, 25, 25] }}
         >
             { props.children }
         </Canvas>

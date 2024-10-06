@@ -1,5 +1,5 @@
 import { ColorSource, setColor } from '@utils/datatypes/color';
-import { useInstance, useRefWithInit } from './refs';
+import { useInstance } from './refs';
 import { Vec2, Vec3 } from '@utils/datatypes/vec';
 
 import * as THREE from 'three';
@@ -84,11 +84,6 @@ export function useLayers(layers: Partial<Record<LayerID, boolean>>) : THREE.Lay
     // Return
     return layerMask;
 }
-
-export function useBuffer<T extends THREE.TypedArray>(ctor: (new () => T) & { from: ((al: ArrayLike<number>) => T) }, data: ArrayLike<number>) {
-    return useRefWithInit(() => ctor.from(data)).current;
-}
-
 
 type TextureOptions = {
     minFilter: THREE.MinificationTextureFilter,
