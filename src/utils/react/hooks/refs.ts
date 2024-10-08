@@ -25,3 +25,8 @@ export const useConstant = <T>(value : T) : T => {
 export const useConstantWithInit = <T>(init: () => T) : T => {
     return useRefWithInit(init).current;
 };
+
+export const useRefWithSetter = <T>(value: T) : [MutableRefObject<T>, (v: T) => void] => {
+    const ref = useRef<T>(value);
+    return [ref, (v: T) => ref.current = v];
+};

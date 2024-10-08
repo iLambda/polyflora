@@ -35,11 +35,11 @@ export const Context2D = (props: Context2DProps) => {
     /* Return the body */
     return (
         <Canvas flat 
-            onContextMenu={(e) => { e.preventDefault(); return false; }}
+            //onContextMenu={(e) => { e.preventDefault(); return false; }}
             ref={canvasRef}
             dpr={window.devicePixelRatio}
             gl={gl}
-            camera={{ fov: 75, near: 0.1, far: 1000, position: [25, 25, 25] }}
+            camera={{ fov: 75, near: 0.1, far: 1000, position: [25, 5, 25] }}
             style={props.style}
             className={props.className}
         >

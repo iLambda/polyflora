@@ -4,10 +4,11 @@ import { Grid, GridSettings } from './viewer/Grid';
 import { Lighting, LightingSettings } from './viewer/Lighting';
 import { Record, Static } from 'runtypes';
 import { Trunk } from './flora/tree/Trunk';
-import { Suspense } from 'react';
+import { MutableRefObject, Suspense, useEffect } from 'react';
 
 import { useReactiveRef } from '@utils/react/hooks/state';
-import { useBox3 } from '@utils/react/hooks/three';
+import * as THREE from 'three';
+import { useFlora } from '@app/state/flora';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -20,16 +21,46 @@ export const EnvironmentSettings = Record({
 
 /* The properties of the viewer */
 type ViewerProps = {
+    // The environment
     environment: EnvironmentSettings,
+    
+    // The view controller reference
+    controllerRef?: ((v: ViewController) => void) | MutableRefObject<ViewController | null>;
+};
+
+export type ViewController = {
+    fitToView: () => void;
 };
 
 export const View = (props: ViewerProps) => {
-    /* The camera control */
+    /* Declare references */
     const [controlsRef, controls] = useReactiveRef<CameraControls>();
-    /* Setup its boundaries */
-    const bounds = useBox3(0, 0.01, 0, 0, 45, 0);
-    controls?.setBoundary(bounds);
+    const [mainGroupRef, mainGroup] = useReactiveRef<THREE.Group>();
 
+    /* Get flora state */
+    const [floraSnapshot] = useFlora();
+
+    /* Return the view controller */
+    const controllerRef = props.controllerRef;
+    useEffect(() => {
+        // If not set, return
+        if (!controls) { return; }
+        if (!mainGroup) { return; }
+        if (!controllerRef) { return; }
+
+        // Make view controller
+        const controller : ViewController = {
+            // Fit to view function
+            fitToView: () => {
+                controls.fitToSphere(mainGroup, true);
+            },
+        };
+        
+        // Set the view controller
+        if (typeof controllerRef === 'function') { controllerRef?.(controller); } 
+        else if (typeof controllerRef === 'object') { controllerRef.current = controller; }
+    }, [controls, mainGroup, controllerRef]);
+    
     /* Return the control */
     return (
         <>
@@ -43,20 +74,22 @@ export const View = (props: ViewerProps) => {
                 minPolarAngle={0} 
                 maxPolarAngle={deg2rad(130)}
                 minDistance={5}
-                maxDistance={250}       
+                maxDistance={250}
             />
             
             {/* Generating the tree */ }
-            <Suspense>
-                <Trunk 
-                        segmentsLength={4}
-                        segmentsRadius={6}
-                        sizeLength={45}
-                        sizeRadius={0.5}
-                        tilingU={1}
-                        tilingV={8.0}
+            <group ref={mainGroupRef}>
+                <Suspense>
+                    <Trunk 
+                        segmentsLength={floraSnapshot.trunk.segmentsLength}
+                        segmentsRadius={floraSnapshot.trunk.segmentsRadius}
+                        sizeLength={floraSnapshot.trunk.sizeLength}
+                        sizeRadius={floraSnapshot.trunk.sizeRadius}
+                        tilingU={floraSnapshot.trunk.tilingU}
+                        tilingV={floraSnapshot.trunk.tilingV}
                     />
-            </Suspense>
+                </Suspense>
+            </group>
         </>
     );
 };

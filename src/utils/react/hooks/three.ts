@@ -5,6 +5,7 @@ import { Vec2, Vec3 } from '@utils/datatypes/vec';
 import * as THREE from 'three';
 import { getKeys } from '@utils/types';
 import { useLoader } from '@react-three/fiber';
+import { useMemo } from 'react';
 
 
 export function useVector2(x: number, y: number) : THREE.Vector2;
@@ -109,4 +110,8 @@ export function useUniform<T>(data: T) : THREE.Uniform<T> {
     const uniform = useInstance(THREE.Uniform<T>, data);
     uniform.value = data;
     return uniform;
+}
+
+export function useInterleavedBufferAttribute(buffer: THREE.InterleavedBuffer, size: number, offset: number) {
+    return useMemo(() => new THREE.InterleavedBufferAttribute(buffer, size, offset), [buffer, size, offset]);
 }

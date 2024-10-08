@@ -1,7 +1,8 @@
 import { useLoader } from '@react-three/fiber';
 import { deg2rad } from '@utils/math';
 import { useInstance } from '@utils/react/hooks/refs';
-import { useMemo, useRef } from 'react';
+import { useInterleavedBufferAttribute } from '@utils/react/hooks/three';
+import { memo, useMemo, useRef } from 'react';
 import { Number, Record, Static } from 'runtypes';
 
 import * as THREE from 'three';
@@ -32,18 +33,18 @@ const BUFFER_OFFSET_NOR = BUFFER_OFFSET_XYZ + BUFFER_SIZE_XYZ;
 const BUFFER_OFFSET_UV = BUFFER_OFFSET_NOR + BUFFER_SIZE_NOR;
 
 /* Return the geometry */
-export const Trunk = (props: TrunkProps) => {
-
-    /* Clamp the props */
-    const segmentsLength = Math.max(1, props.segmentsLength);
-    const segmentsRadius = Math.max(3, props.segmentsRadius);
-    const sizeLength = Math.max(0.1, props.sizeLength);
-    const sizeRadius = Math.max(0.01, props.sizeRadius);
+export const Trunk = memo((props: TrunkProps) => {
 
     /* Get the texture */
     const colorMap = useLoader(THREE.TextureLoader, 'Wood03.png');
     colorMap.wrapS = THREE.RepeatWrapping;
     colorMap.wrapT = THREE.RepeatWrapping;
+    
+    /* Clamp the props */
+    const segmentsLength = Math.max(1, props.segmentsLength);
+    const segmentsRadius = Math.max(3, props.segmentsRadius);
+    const sizeLength = Math.max(0.1, props.sizeLength);
+    const sizeRadius = Math.max(0.01, props.sizeRadius);
 
     /* Generate the index list */
     const indices = useMemo(() => {
@@ -73,6 +74,7 @@ export const Trunk = (props: TrunkProps) => {
     /* Reallocate buffer only if size changed */
     const nVertices = (segmentsLength + 1) * (segmentsRadius + 1);
     const buffer = useMemo(() => new Float32Array(nVertices * BUFFER_STRIDE), [nVertices]);
+    
     /* Recompute contents only if needed */
     const bufferDirtyRef = useRef(false);
     const geometryData = useMemo(() => {
@@ -137,18 +139,19 @@ export const Trunk = (props: TrunkProps) => {
     }, [buffer, segmentsLength, segmentsRadius, sizeLength, sizeRadius, props.tilingU, props.tilingV]);
 
     /* Make the interleaved buffer and mark it dirty */
-    const interleavedBuffer = useInstance(THREE.InterleavedBuffer, geometryData, BUFFER_STRIDE);
-    interleavedBuffer.set(geometryData, 0);
+    const interleavedBuffer = useMemo(() => new THREE.InterleavedBuffer(geometryData, BUFFER_STRIDE), [geometryData]);
     interleavedBuffer.count = nVertices;
     interleavedBuffer.needsUpdate ||= bufferDirtyRef.current;
-    bufferDirtyRef.current = false;
 
     /* Make the geometry */
     const geometry = useInstance(THREE.BufferGeometry);
-    geometry.setAttribute('position', useInstance(THREE.InterleavedBufferAttribute, interleavedBuffer, BUFFER_SIZE_XYZ, BUFFER_OFFSET_XYZ));
-    geometry.setAttribute('normal',   useInstance(THREE.InterleavedBufferAttribute, interleavedBuffer, BUFFER_SIZE_NOR, BUFFER_OFFSET_NOR));
-    geometry.setAttribute('uv',       useInstance(THREE.InterleavedBufferAttribute, interleavedBuffer, BUFFER_SIZE_UV,  BUFFER_OFFSET_UV));
+    geometry.setAttribute('position', useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_XYZ, BUFFER_OFFSET_XYZ));
+    geometry.setAttribute('normal',   useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_NOR, BUFFER_OFFSET_NOR));
+    geometry.setAttribute('uv',       useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_UV,  BUFFER_OFFSET_UV));
     geometry.setIndex(indices);
+    
+    /* Clear dirty flag */
+    bufferDirtyRef.current = false;
     
     /* Return object */
     return (
@@ -156,4 +159,4 @@ export const Trunk = (props: TrunkProps) => {
             <meshPhongMaterial map={colorMap} color='#ffffff'/>
         </mesh>
     );
-};
+});

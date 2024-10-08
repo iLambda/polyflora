@@ -1,55 +1,36 @@
-import { AppShell, Button, Flex, Overlay } from '@mantine/core';
-import { Context2D } from '@three/Context2D';
-import { View } from '@three/View';
+import '@mantine/core/styles.css';
+import 'allotment/dist/style.css';
+
+import { Flex, MantineProvider } from '@mantine/core';
+
+import { theme } from './theme';
+import { Header } from './ui/Header';
+import { Allotment } from 'allotment';
+import { Viewer } from './ui/Viewer';
+import { styles } from './App.css';
+import { Editor } from './ui/Editor';
+import { FloraStoreProvider } from './state/flora';
 
 export const App = () => {
 
     /* Return component */
     return (
-        <>
-            {/* The shell */}
-            <AppShell
-                header={{ height: 30 }}
-                aside={{ width: 250, breakpoint: 'sm' }}
-            >
-                {/* The header */}
-                <AppShell.Header>
+        <MantineProvider theme={theme} defaultColorScheme='dark'>
+            <Flex className={styles.root}>
+                <Header />
 
-                </AppShell.Header>
+                <FloraStoreProvider>
+                    <Allotment className={styles.main} defaultSizes={[700, 300]}>
+                        <Allotment.Pane minSize={500}>
+                            <Viewer />
+                        </Allotment.Pane>
+                        <Allotment.Pane minSize={200}>
+                            <Editor />
+                        </Allotment.Pane>
+                    </Allotment>
+                </FloraStoreProvider>
 
-                {/* The aside */}
-                <AppShell.Aside>
-                    
-                </AppShell.Aside>
-
-                {/* The content */}
-                <AppShell.Main style={{ position: 'relative', display: 'flex' }}>
-                    <div style={{ width: '100%', position: 'relative' }}>
-                        {/* The 3D context */}
-                        <Context2D>
-                            <View environment={{ 
-                                    grid: { visibility: 'shown' },
-                                    lighting: {
-                                        ambient: { color: 0xffffff, intensity: 0.2 },
-                                        sun: { color: 0xffffff, intensity: 1 },
-                                    },
-                                }} 
-                            />
-                        </Context2D>
-                        {/* An overlay */}
-                        <Overlay backgroundOpacity={0} style={{ pointerEvents: 'none' }}>
-                            <Flex gap='xs' style={{ position: 'absolute', bottom: 0 }}>
-                                <Button style={{ pointerEvents: 'all' }}> Test </Button>
-                                <Button style={{ pointerEvents: 'all' }}> Test </Button>
-                                <Button style={{ pointerEvents: 'all' }}> Test </Button>
-                            </Flex>
-                        </Overlay>
-                    </div>
-
-                </AppShell.Main>
-
-
-            </AppShell>
-        </>
+            </Flex>
+        </MantineProvider>
     );
 };
