@@ -20,6 +20,7 @@
     "allotment": "^1.20.2",
     "colord": "^2.9.3",
     "immer": "^10.1.1",
+    "rand-seed": "^2.1.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "runtypes": "^6.7.0",

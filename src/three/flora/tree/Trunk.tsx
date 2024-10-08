@@ -4,6 +4,7 @@ import { useInstance } from '@utils/react/hooks/refs';
 import { useInterleavedBufferAttribute } from '@utils/react/hooks/three';
 import { memo, useMemo, useRef } from 'react';
 import { Number, Record, Static } from 'runtypes';
+import Rand from 'rand-seed';
 
 import * as THREE from 'three';
 
@@ -21,7 +22,9 @@ export const TrunkParameters = Record({
     tilingV: Number,
 });
 /* The props */
-type TrunkProps = TrunkParameters & {};
+type TrunkProps = TrunkParameters & {
+    seed: string;
+};
 
 /* Buffer sizes and strides */
 const BUFFER_SIZE_XYZ = 3;
@@ -73,7 +76,9 @@ export const Trunk = memo((props: TrunkProps) => {
 
     /* Reallocate buffer only if size changed */
     const nVertices = (segmentsLength + 1) * (segmentsRadius + 1);
-    const buffer = useMemo(() => new Float32Array(nVertices * BUFFER_STRIDE), [nVertices]);
+    const ALLOC_VERT_INCREMENTS = 32;
+    const allocVertices = Math.ceil(nVertices / ALLOC_VERT_INCREMENTS) * ALLOC_VERT_INCREMENTS; 
+    const buffer = useMemo(() => new Float32Array(allocVertices * BUFFER_STRIDE), [allocVertices]);
     
     /* Recompute contents only if needed */
     const bufferDirtyRef = useRef(false);
@@ -81,6 +86,8 @@ export const Trunk = memo((props: TrunkProps) => {
         /* Compute the angle step */
         const angleStep = (2 * Math.PI) / segmentsRadius;
         const lengthStep = sizeLength / segmentsLength;
+        /* The random number generator */
+        const rng = new Rand(`${props.seed}-trunk-${segmentsLength}:${segmentsRadius}`);
         /* Temporary variables */
         const tmpXYZ = new THREE.Vector3();
         const tmpNOR = new THREE.Vector3();
@@ -125,8 +132,8 @@ export const Trunk = memo((props: TrunkProps) => {
              * TODO : make PARAMETRABLE */ 
             tmpMatrix.identity();
             tmpMatrix.makeRotationFromEuler(new THREE.Euler(
-                (Math.random() * 2 - 1) * deg2rad(8), 0, 
-                (Math.random() * 2 - 1) * deg2rad(8)));
+                (rng.next() * 2 - 1) * deg2rad(8), 0, 
+                (rng.next() * 2 - 1) * deg2rad(8)));
             segmentToWorld.multiply(tmpMatrix);
             /* Apply our translation */
             tmpMatrix.makeTranslation(0, lengthStep, 0);
@@ -136,7 +143,7 @@ export const Trunk = memo((props: TrunkProps) => {
         bufferDirtyRef.current = true;
         /* Return the data */
         return buffer;
-    }, [buffer, segmentsLength, segmentsRadius, sizeLength, sizeRadius, props.tilingU, props.tilingV]);
+    }, [buffer, segmentsLength, segmentsRadius, sizeLength, sizeRadius, props.tilingU, props.tilingV, props.seed]);
 
     /* Make the interleaved buffer and mark it dirty */
     const interleavedBuffer = useMemo(() => new THREE.InterleavedBuffer(geometryData, BUFFER_STRIDE), [geometryData]);

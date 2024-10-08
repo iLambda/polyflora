@@ -6,10 +6,12 @@ import { proxy, Snapshot, useSnapshot } from 'valtio';
 
 /* The data contained in the store */
 type FloraData = {
+    seed: string;
     trunk: TrunkParameters;
 };
 /* The initial value */
 const initialFloraData : FloraData = {
+    seed: '3551376191',
     trunk: {
         segmentsLength: 4,
         segmentsRadius: 6,

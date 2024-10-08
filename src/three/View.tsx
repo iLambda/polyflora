@@ -81,6 +81,7 @@ export const View = (props: ViewerProps) => {
             <group ref={mainGroupRef}>
                 <Suspense>
                     <Trunk 
+                        seed={floraSnapshot.seed}
                         segmentsLength={floraSnapshot.trunk.segmentsLength}
                         segmentsRadius={floraSnapshot.trunk.segmentsRadius}
                         sizeLength={floraSnapshot.trunk.sizeLength}
