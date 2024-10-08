@@ -82,12 +82,14 @@ export const View = (props: ViewerProps) => {
                 <Suspense>
                     <Trunk 
                         seed={floraSnapshot.seed}
+                        shading={floraSnapshot.shading}
                         segmentsLength={floraSnapshot.trunk.segmentsLength}
                         segmentsRadius={floraSnapshot.trunk.segmentsRadius}
                         sizeLength={floraSnapshot.trunk.sizeLength}
                         sizeRadius={floraSnapshot.trunk.sizeRadius}
                         tilingU={floraSnapshot.trunk.tilingU}
                         tilingV={floraSnapshot.trunk.tilingV}
+                        textureURL={floraSnapshot.trunk.textureURL}
                     />
                 </Suspense>
             </group>

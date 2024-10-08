@@ -5,10 +5,13 @@ import { View, ViewController } from '@three/View';
 import { styles } from './Viewer.css';
 import { IconCrosshair } from '@tabler/icons-react';
 import { useRef } from 'react';
+import { ShadingSelect } from './controls/ShadingSelect';
+import { useFlora } from '@app/state/flora';
 
 export const Viewer = () => {
-    /* Reference to the view controller */
+    /* State and references */
     const controllerRef = useRef<ViewController | null>(null);
+    const [floraSnapshot, flora] = useFlora();
 
     return (
         <>
@@ -29,16 +32,24 @@ export const Viewer = () => {
             {/* The editor overlay */}
             <Overlay className={styles.overlay}>
                 <Flex className={styles.overlayRoot}>
+
+                    {/* Shading selector */}
+                    <ShadingSelect 
+                        className={styles.shadingPanel}
+                        shading={floraSnapshot.shading}
+                        onChange={v => flora.shading = v}
+                    />
                 
                     {/* Buttons for modifying the view */}
                     <Flex gap='xs' className={styles.viewPanel}>
                         {/* Fit view to content */}
-                        <ActionIcon className={styles.viewButton} 
-                                    variant='light' size='lg' radius='xl'
-                                    aria-label='Fit view to content'
-                                    children={<IconCrosshair />} 
-                                    onClick={ () => controllerRef.current?.fitToView() }
-                                />
+                        <ActionIcon 
+                            className={styles.viewButton} 
+                            variant='light' size='lg' radius='xl'
+                            aria-label='Fit view to content'
+                            children={<IconCrosshair />} 
+                            onClick={ () => controllerRef.current?.fitToView() }
+                        />
                     </Flex>
 
                 </Flex>

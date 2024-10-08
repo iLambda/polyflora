@@ -1,0 +1,4 @@
+Extract trunkgen/branchgen to another file
+Generate franches as:
+    - meshes
+    - cross geometry

@@ -5,13 +5,15 @@ import { createContext, ReactNode, useContext } from 'react';
 import { proxy, Snapshot, useSnapshot } from 'valtio';
 
 /* The data contained in the store */
-type FloraData = {
+export type FloraData = {
     seed: string;
+    shading: 'shaded' | 'shaded-wireframe' | 'wireframe';
     trunk: TrunkParameters;
 };
 /* The initial value */
 const initialFloraData : FloraData = {
     seed: '3551376191',
+    shading: 'shaded',
     trunk: {
         segmentsLength: 4,
         segmentsRadius: 6,
@@ -19,6 +21,7 @@ const initialFloraData : FloraData = {
         sizeRadius: 0.5,
         tilingU: 1,
         tilingV: 8,
+        textureURL: 'Wood03.png',
     },
 };
 

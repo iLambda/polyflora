@@ -19,6 +19,14 @@ export const styles = {
         position: 'relative',
     }),
 
+    // The panel that contains material rendering
+    shadingPanel: style({
+        position: 'absolute',
+        width: 'fit-content',
+        height: 'fit-content',
+        inset: 'auto auto 0px 0px',
+    }),
+
     // The panel that contains view centering buttons
     viewPanel: style({
         position: 'absolute',

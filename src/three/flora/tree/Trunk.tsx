@@ -3,7 +3,7 @@ import { deg2rad } from '@utils/math';
 import { useInstance } from '@utils/react/hooks/refs';
 import { useInterleavedBufferAttribute } from '@utils/react/hooks/three';
 import { memo, useMemo, useRef } from 'react';
-import { Number, Record, Static } from 'runtypes';
+import { Number, Record, Static, String } from 'runtypes';
 import Rand from 'rand-seed';
 
 import * as THREE from 'three';
@@ -20,10 +20,13 @@ export const TrunkParameters = Record({
     // The UV tiling
     tilingU: Number,
     tilingV: Number,
+    // The material data
+    textureURL: String,
 });
 /* The props */
 type TrunkProps = TrunkParameters & {
     seed: string;
+    shading: 'shaded' | 'shaded-wireframe' | 'wireframe';
 };
 
 /* Buffer sizes and strides */
@@ -39,7 +42,7 @@ const BUFFER_OFFSET_UV = BUFFER_OFFSET_NOR + BUFFER_SIZE_NOR;
 export const Trunk = memo((props: TrunkProps) => {
 
     /* Get the texture */
-    const colorMap = useLoader(THREE.TextureLoader, 'Wood03.png');
+    const colorMap = useLoader(THREE.TextureLoader, props.textureURL);
     colorMap.wrapS = THREE.RepeatWrapping;
     colorMap.wrapT = THREE.RepeatWrapping;
     
@@ -87,7 +90,7 @@ export const Trunk = memo((props: TrunkProps) => {
         const angleStep = (2 * Math.PI) / segmentsRadius;
         const lengthStep = sizeLength / segmentsLength;
         /* The random number generator */
-        const rng = new Rand(`${props.seed}-trunk-${segmentsLength}:${segmentsRadius}`);
+        const rng = new Rand(`${props.seed}-trunk`);
         /* Temporary variables */
         const tmpXYZ = new THREE.Vector3();
         const tmpNOR = new THREE.Vector3();
@@ -162,8 +165,21 @@ export const Trunk = memo((props: TrunkProps) => {
     
     /* Return object */
     return (
-        <mesh geometry={geometry}>
-            <meshPhongMaterial map={colorMap} color='#ffffff'/>
-        </mesh>
+        <>
+        {
+            props.shading !== 'wireframe' && (
+                <mesh geometry={geometry}>
+                    <meshPhongMaterial map={colorMap} />
+                </mesh>
+            )
+        }
+        {
+            props.shading !== 'shaded' &&  (
+                <mesh geometry={geometry}>
+                    <meshPhongMaterial color='white' wireframe />
+                </mesh>
+            )
+        }
+        </>
     );
 });

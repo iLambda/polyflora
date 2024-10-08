@@ -20,11 +20,11 @@ export const App = () => {
                 <Header />
 
                 <FloraStoreProvider>
-                    <Allotment className={styles.main} defaultSizes={[700, 300]}>
+                    <Allotment className={styles.main}>
                         <Allotment.Pane minSize={500}>
                             <Viewer />
                         </Allotment.Pane>
-                        <Allotment.Pane minSize={200}>
+                        <Allotment.Pane minSize={200} preferredSize='300px'>
                             <Editor />
                         </Allotment.Pane>
                     </Allotment>
