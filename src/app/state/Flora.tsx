@@ -16,6 +16,9 @@ const initialFloraData : FloraData = {
     seed: '3551376191',
     shading: 'shaded',
     trunk: {
+        crinklingMin: 0,
+        crinklingMax: 8,
+        curvature: 0.8,
         segmentsLength: 4,
         sizeLength: 45,
         segmentsRadius: 6,

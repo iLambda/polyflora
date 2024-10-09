@@ -85,11 +85,14 @@ export const View = (props: ViewerProps) => {
                     <Skeleton
                         segmentsLength={floraSnapshot.trunk.segmentsLength}
                         sizeLength={floraSnapshot.trunk.sizeLength}
+                        crinklingMin={floraSnapshot.trunk.crinklingMin}
+                        crinklingMax={floraSnapshot.trunk.crinklingMax}
                         seed={floraSnapshot.seed}
                         name='trunk'
                     >
                         {/* The trunk's model */}
                         <Limb 
+                            curvature={floraSnapshot.trunk.curvature}
                             shading={floraSnapshot.shading}
                             segmentsRadius={floraSnapshot.trunk.segmentsRadius}
                             sizeRadius={floraSnapshot.trunk.sizeRadius}

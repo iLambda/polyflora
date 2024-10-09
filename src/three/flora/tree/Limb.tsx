@@ -19,6 +19,8 @@ export const LimbParameters = Record({
     // The UV tiling
     tilingU: Number,
     tilingV: Number,
+    // The curvature of the limb
+    curvature: Number,
     // The material data
     textureURL: String,
 });
@@ -54,6 +56,7 @@ export const Limb = memo((props: LimbProps) => {
     const segmentsLength = SkeletonData.getNSegments(skeleton);
     const segmentsRadius = Math.max(3, props.segmentsRadius);
     const sizeRadius = Math.max(0.01, props.sizeRadius);
+    const curvature = Math.max(0.01, props.curvature);
 
     /* Generate the index list */
     const indices = useMemo(() => {
@@ -110,7 +113,7 @@ export const Limb = memo((props: LimbProps) => {
                     tmpXYZ.set(Math.cos(angleStep*r), 0, Math.sin(angleStep*r));
                     tmpNOR.copy(tmpXYZ);
                     // Scale positition by the falloff-ed radius
-                    tmpXYZ.multiplyScalar(sizeRadius * Math.pow(1.0 - (l / segmentsLength), 0.85)); // TODO : change radius depending on l
+                    tmpXYZ.multiplyScalar(sizeRadius * Math.pow(1.0 - (l / segmentsLength), curvature));
                 }
                 else {
                     // Local position & normal
@@ -139,7 +142,7 @@ export const Limb = memo((props: LimbProps) => {
         bufferDirtyRef.current = true;
         /* Return the data */
         return buffer;
-    }, [buffer, skeleton.joints, segmentsLength, segmentsRadius, sizeRadius, props.tilingU, props.tilingV]);
+    }, [buffer, skeleton.joints, segmentsLength, segmentsRadius, sizeRadius, curvature, props.tilingU, props.tilingV]);
 
     /* Make the interleaved buffer and mark it dirty */
     const interleavedBuffer = useMemo(() => new THREE.InterleavedBuffer(geometryData, BUFFER_STRIDE), [geometryData]);

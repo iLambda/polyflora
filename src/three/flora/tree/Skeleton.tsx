@@ -1,4 +1,3 @@
-import { deg2rad } from '@utils/math';
 import Rand from 'rand-seed';
 import { ReactNode, useMemo } from 'react';
 import { Number, Record, Static } from 'runtypes';
@@ -6,6 +5,7 @@ import * as THREE from 'three';
 import { SkeletonData } from './SkeletonData';
 import { NonEmptyArray } from '@utils/types';
 import { SkeletonProvider } from './SkeletonContext';
+import { deg2rad } from '@utils/math';
 
 /* The parameters of a skeleton */
 export type SkeletonParameters = Static<typeof SkeletonParameters>;
@@ -14,6 +14,11 @@ export const SkeletonParameters = Record({
     segmentsLength: Number,
     /* The full height of the bone in world space */
     sizeLength: Number,
+
+    /* The minimul crinkling angle of a branch */
+    crinklingMin: Number,
+    /* The minimul crinkling angle of a branch */
+    crinklingMax: Number,
 });
 
 /* The props of a skeleton */
@@ -25,6 +30,11 @@ type SkeletonProps = SkeletonParameters & {
 
     /* The children */
     children?: ReactNode | ReactNode[];
+};
+
+const randSymmetrical = (rng: Rand, min: number, max: number) => {
+    const rand = rng.next() * 2 - 1;
+    return (min + (max - min) * Math.abs(rand)) * Math.sign(rand);
 };
 
 export const Skeleton = (props: SkeletonProps) => {
@@ -44,8 +54,8 @@ export const Skeleton = (props: SkeletonProps) => {
         // For each segment
         for (let i = 0; i < lengthSegments; i++) {
             // Apply growth rotation
-            tmpEuler.set((rng.next() * 2 - 1) * deg2rad(8), 0,
-                         (rng.next() * 2 - 1) * deg2rad(8));
+            tmpEuler.set(randSymmetrical(rng, deg2rad(props.crinklingMin), deg2rad(props.crinklingMax)), 0,
+                         randSymmetrical(rng, deg2rad(props.crinklingMin), deg2rad(props.crinklingMax)));
             tmpMatrix.makeRotationFromEuler(tmpEuler);
             segmentToObject.multiply(tmpMatrix);
             // Apply translation
@@ -57,7 +67,7 @@ export const Skeleton = (props: SkeletonProps) => {
         // Return the skeleton
         return { joints, segmentSize: lengthStep };
 
-    }, [lengthSegments, lengthSize, props.name, props.seed]);
+    }, [lengthSegments, lengthSize, props.name, props.seed, props.crinklingMin, props.crinklingMax]);
     
     /* Return */
     return (
