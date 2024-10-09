@@ -39,6 +39,7 @@ export const styles = {
     viewButton: style({
         pointerEvents: 'all',
         padding: '4px',
+        paddingLeft: '5px',
     }),
 
 };

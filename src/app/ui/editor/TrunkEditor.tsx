@@ -36,13 +36,19 @@ export const TrunkEditor = () => {
                 <Flex direction='row' gap='md' >
                     <NumberInput 
                         label='Length' 
+                        size='xs'
+                        allowDecimal={false}
+                        allowNegative={false}
                         value={floraSnapshot.trunk.segmentsLength} 
-                        onChange={setter((v) => flora.trunk.segmentsLength = v)} 
+                        onChange={setter((v) => flora.trunk.segmentsLength = Math.max(1, v))} 
                     />
                     <NumberInput 
-                        label='Radius' 
+                        label='Radius'
+                        size='xs' 
+                        allowDecimal={false}
+                        allowNegative={false}
                         value={floraSnapshot.trunk.segmentsRadius} 
-                        onChange={setter((v) => flora.trunk.segmentsRadius = v)} 
+                        onChange={setter((v) => flora.trunk.segmentsRadius = Math.max(3, v))} 
                     />
                 </Flex>
             </Fieldset>
@@ -50,11 +56,15 @@ export const TrunkEditor = () => {
             <Fieldset legend='Size' className={styles.fieldset}>
                     <NumberInput 
                         label='Trunk length' 
+                        size='xs'
+                        allowNegative={false}
                         value={floraSnapshot.trunk.sizeLength} 
                         onChange={setter((v) => flora.trunk.sizeLength = v)}  
                     />
                     <NumberInput 
                         label='Trunk radius' 
+                        size='xs'
+                        allowNegative={false}
                         value={floraSnapshot.trunk.sizeRadius} 
                         onChange={setter((v) => flora.trunk.sizeRadius = v)}  
                     />
@@ -68,6 +78,7 @@ export const TrunkEditor = () => {
                 <Flex direction='column' gap='md' >
                     {/* The file input */}
                     <FileInput accept={imageMIME.join(',')} 
+                        size='xs'
                         value={textureFile ?? dummyFile}
                         onChange={setTextureFile} 
                     />

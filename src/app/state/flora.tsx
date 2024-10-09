@@ -8,7 +8,7 @@ import { proxy, Snapshot, useSnapshot } from 'valtio';
 /* The data contained in the store */
 export type FloraData = {
     seed: string;
-    shading: 'shaded' | 'shaded-wireframe' | 'wireframe' | 'skeleton';
+    shading: 'shaded' | 'wireframe' | 'skeletal';
     trunk: SkeletonParameters & LimbParameters;
 };
 /* The initial value */

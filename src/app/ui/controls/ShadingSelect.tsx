@@ -5,7 +5,7 @@ import { kebabCaseToFancyCase } from '@utils/string';
 import { FloraData } from '@app/state/Flora';
 
 type ShadingMode = FloraData['shading'];
-const shadingModes = ['shaded', 'shaded-wireframe', 'wireframe', 'skeleton'] as const satisfies ShadingMode[];
+const shadingModes = ['shaded', 'wireframe', 'skeletal'] as const satisfies ShadingMode[];
 
 
 type ShadingSelectProps = {

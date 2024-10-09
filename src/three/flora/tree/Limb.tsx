@@ -24,7 +24,7 @@ export const LimbParameters = Record({
 });
 /* The props */
 type LimbProps = LimbParameters & {
-    shading: 'shaded' | 'shaded-wireframe' | 'wireframe' | 'skeleton';
+    shading: 'shaded' | 'wireframe' | 'skeletal';
 };
 
 /* Buffer sizes and strides */
@@ -166,21 +166,21 @@ export const Limb = memo((props: LimbProps) => {
     return (
         <>
         {
-            (props.shading === 'shaded' || props.shading === 'shaded-wireframe') && (
+            props.shading === 'shaded' && (
                 <mesh geometry={geometry}>
                     <meshPhongMaterial map={colorMap} />
                 </mesh>
             )
         }
         {
-            (props.shading === 'wireframe' || props.shading === 'shaded-wireframe') &&  (
+            props.shading === 'wireframe' && (
                 <mesh geometry={geometry}>
-                    <meshPhongMaterial color='white' wireframe />
+                    <meshBasicMaterial color='white' wireframe />
                 </mesh>
             )
         }
         {
-            props.shading === 'skeleton' && (
+            props.shading === 'skeletal' && (
                 <Line 
                     points={lineData}
                     color='white'
