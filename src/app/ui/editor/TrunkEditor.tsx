@@ -1,4 +1,4 @@
-import { useFlora } from '@app/state/flora';
+import { useFlora } from '@app/state/Flora';
 import { AspectRatio, Center, Fieldset, FileInput, Flex, Image, Loader, NumberInput, Overlay } from '@mantine/core';
 import { styles } from './TrunkEditor.css';
 import { imageMIME } from '@utils/mime';

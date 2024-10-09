@@ -36,4 +36,8 @@ export type Expand<T, mode extends 'shallow' | 'deep' = 'shallow'> = T extends u
     ? { [K in keyof T]: mode extends 'shallow' ? T[K] : Expand<T[K], 'deep'> }
     : never;
 
+export type Pair<T, U = T> = [T, U];
 export type Triplet<T, U = T, V = T> = [T, U, V];
+
+export type NonEmptyArray<T> = [T, ...T[]];
+export type NonEmptyReadonlyArray<T> = readonly [T, ...T[]];

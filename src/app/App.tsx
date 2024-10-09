@@ -9,7 +9,7 @@ import { Allotment } from 'allotment';
 import { Viewer } from './ui/Viewer';
 import { styles } from './App.css';
 import { Editor } from './ui/Editor';
-import { FloraStoreProvider } from './state/flora';
+import { FloraStoreProvider } from './state/Flora';
 
 export const App = () => {
 

@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { TrunkParameters } from '@three/flora/tree/Trunk';
+import { LimbParameters } from '@three/flora/tree/Limb';
+import { SkeletonParameters } from '@three/flora/tree/Skeleton';
 import { useRefWithInit } from '@utils/react/hooks/refs';
 import { createContext, ReactNode, useContext } from 'react';
 import { proxy, Snapshot, useSnapshot } from 'valtio';
@@ -7,8 +8,8 @@ import { proxy, Snapshot, useSnapshot } from 'valtio';
 /* The data contained in the store */
 export type FloraData = {
     seed: string;
-    shading: 'shaded' | 'shaded-wireframe' | 'wireframe';
-    trunk: TrunkParameters;
+    shading: 'shaded' | 'shaded-wireframe' | 'wireframe' | 'skeleton';
+    trunk: SkeletonParameters & LimbParameters;
 };
 /* The initial value */
 const initialFloraData : FloraData = {
@@ -16,8 +17,8 @@ const initialFloraData : FloraData = {
     shading: 'shaded',
     trunk: {
         segmentsLength: 4,
-        segmentsRadius: 6,
         sizeLength: 45,
+        segmentsRadius: 6,
         sizeRadius: 0.5,
         tilingU: 1,
         tilingV: 8,

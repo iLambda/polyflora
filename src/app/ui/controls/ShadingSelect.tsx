@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { FloatingIndicator, UnstyledButton } from '@mantine/core';
 import { styles } from './ShadingSelect.css';
 import { kebabCaseToFancyCase } from '@utils/string';
-import { FloraData } from '@app/state/flora';
+import { FloraData } from '@app/state/Flora';
 
-const shadingModes = ['shaded', 'shaded-wireframe', 'wireframe'] as const;
 type ShadingMode = FloraData['shading'];
+const shadingModes = ['shaded', 'shaded-wireframe', 'wireframe', 'skeleton'] as const satisfies ShadingMode[];
+
 
 type ShadingSelectProps = {
     className?: string;

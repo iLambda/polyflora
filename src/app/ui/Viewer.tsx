@@ -6,7 +6,7 @@ import { styles } from './Viewer.css';
 import { IconCrosshair } from '@tabler/icons-react';
 import { useRef } from 'react';
 import { ShadingSelect } from './controls/ShadingSelect';
-import { useFlora } from '@app/state/flora';
+import { useFlora } from '@app/state/Flora';
 
 export const Viewer = () => {
     /* State and references */

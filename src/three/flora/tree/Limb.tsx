@@ -1,21 +1,20 @@
 import { useLoader } from '@react-three/fiber';
-import { deg2rad } from '@utils/math';
 import { useInstance } from '@utils/react/hooks/refs';
 import { useInterleavedBufferAttribute } from '@utils/react/hooks/three';
 import { memo, useMemo, useRef } from 'react';
 import { Number, Record, Static, String } from 'runtypes';
-import Rand from 'rand-seed';
 
 import * as THREE from 'three';
+import { useParentSkeleton } from './SkeletonContext';
+import { SkeletonData } from './SkeletonData';
+import { Line } from '@react-three/drei';
 
-/* The parameters for generating a specific trunk */
-export type TrunkParameters = Static<typeof TrunkParameters>;
-export const TrunkParameters = Record({
+/* The parameters for generating a specific limb */
+export type LimbParameters = Static<typeof LimbParameters>;
+export const LimbParameters = Record({
     // The number of segments
-    segmentsLength: Number,
     segmentsRadius: Number,
-    // The size of the trunk
-    sizeLength: Number,
+    // The size of the limb
     sizeRadius: Number,
     // The UV tiling
     tilingU: Number,
@@ -24,9 +23,8 @@ export const TrunkParameters = Record({
     textureURL: String,
 });
 /* The props */
-type TrunkProps = TrunkParameters & {
-    seed: string;
-    shading: 'shaded' | 'shaded-wireframe' | 'wireframe';
+type LimbProps = LimbParameters & {
+    shading: 'shaded' | 'shaded-wireframe' | 'wireframe' | 'skeleton';
 };
 
 /* Buffer sizes and strides */
@@ -39,17 +37,22 @@ const BUFFER_OFFSET_NOR = BUFFER_OFFSET_XYZ + BUFFER_SIZE_XYZ;
 const BUFFER_OFFSET_UV = BUFFER_OFFSET_NOR + BUFFER_SIZE_NOR;
 
 /* Return the geometry */
-export const Trunk = memo((props: TrunkProps) => {
+export const Limb = memo((props: LimbProps) => {
 
+    /* Get the skeleton */
+    const skeleton = useParentSkeleton();
+    if (!skeleton) { 
+        throw new Error('No parent skeleton was found. Try adding a <Skeleton/> or a <SkeletonProvider />'); 
+    }
+    
     /* Get the texture */
     const colorMap = useLoader(THREE.TextureLoader, props.textureURL);
     colorMap.wrapS = THREE.RepeatWrapping;
     colorMap.wrapT = THREE.RepeatWrapping;
     
     /* Clamp the props */
-    const segmentsLength = Math.max(1, props.segmentsLength);
+    const segmentsLength = SkeletonData.getNSegments(skeleton);
     const segmentsRadius = Math.max(3, props.segmentsRadius);
-    const sizeLength = Math.max(0.1, props.sizeLength);
     const sizeRadius = Math.max(0.01, props.sizeRadius);
 
     /* Generate the index list */
@@ -88,19 +91,15 @@ export const Trunk = memo((props: TrunkProps) => {
     const geometryData = useMemo(() => {
         /* Compute the angle step */
         const angleStep = (2 * Math.PI) / segmentsRadius;
-        const lengthStep = sizeLength / segmentsLength;
-        /* The random number generator */
-        const rng = new Rand(`${props.seed}-trunk`);
         /* Temporary variables */
         const tmpXYZ = new THREE.Vector3();
         const tmpNOR = new THREE.Vector3();
         const tmpUV = new THREE.Vector2();
-        const tmpMatrix = new THREE.Matrix4();
         const tmpMatrixRot = new THREE.Matrix3();
         /* The current reference frame 
             - translation = ring center 
             - rotation = growth rotation */
-        const segmentToWorld = new THREE.Matrix4();
+        const segmentToObject = new THREE.Matrix4();
         /* For each segment*/
         for (let l = 0; l < segmentsLength + 1; l++) {
             /* For each point along the radius */
@@ -119,9 +118,9 @@ export const Trunk = memo((props: TrunkProps) => {
                     tmpNOR.set(0, 1, 0);
                 }
                 /* Convert local position to world space */
-                tmpXYZ.applyMatrix4(segmentToWorld);
+                tmpXYZ.applyMatrix4(segmentToObject);
                 /* Convert local vertex to object space */
-                tmpMatrixRot.setFromMatrix4(segmentToWorld);
+                tmpMatrixRot.setFromMatrix4(segmentToObject);
                 tmpNOR.applyNormalMatrix(tmpMatrixRot);
                 /* Fill UVs */
                 tmpUV.set(props.tilingV * (l / segmentsLength), props.tilingU * (r / segmentsRadius));
@@ -131,22 +130,16 @@ export const Trunk = memo((props: TrunkProps) => {
                 tmpNOR.toArray(buffer, (BUFFER_STRIDE * vertIdx) + BUFFER_OFFSET_NOR);
                 tmpUV.toArray(buffer, (BUFFER_STRIDE * vertIdx) + BUFFER_OFFSET_UV);
             }
-            /* Apply a small growth rotation. 
-             * TODO : make PARAMETRABLE */ 
-            tmpMatrix.identity();
-            tmpMatrix.makeRotationFromEuler(new THREE.Euler(
-                (rng.next() * 2 - 1) * deg2rad(8), 0, 
-                (rng.next() * 2 - 1) * deg2rad(8)));
-            segmentToWorld.multiply(tmpMatrix);
-            /* Apply our translation */
-            tmpMatrix.makeTranslation(0, lengthStep, 0);
-            segmentToWorld.multiply(tmpMatrix);
+            /* Get next rotation (break if we are on tip of skeleton) */
+            if (l < segmentsLength) { 
+                segmentToObject.fromArray(skeleton.joints[l]!);
+            }
         }
         /* Recomputed ; we are dirty */
         bufferDirtyRef.current = true;
         /* Return the data */
         return buffer;
-    }, [buffer, segmentsLength, segmentsRadius, sizeLength, sizeRadius, props.tilingU, props.tilingV, props.seed]);
+    }, [buffer, skeleton.joints, segmentsLength, segmentsRadius, sizeRadius, props.tilingU, props.tilingV]);
 
     /* Make the interleaved buffer and mark it dirty */
     const interleavedBuffer = useMemo(() => new THREE.InterleavedBuffer(geometryData, BUFFER_STRIDE), [geometryData]);
@@ -163,21 +156,36 @@ export const Trunk = memo((props: TrunkProps) => {
     /* Clear dirty flag */
     bufferDirtyRef.current = false;
     
+    /* Make the list of points to draw the skeleton */
+    const jointCenters = useMemo(() => SkeletonData.centers(skeleton), [skeleton]);
+    const lineData = useMemo(() => 
+        jointCenters.flatMap((center, i) => i === 0 ? [] : [jointCenters[i - 1]!, center]  )
+    , [jointCenters]);
+    
     /* Return object */
     return (
         <>
         {
-            props.shading !== 'wireframe' && (
+            (props.shading === 'shaded' || props.shading === 'shaded-wireframe') && (
                 <mesh geometry={geometry}>
                     <meshPhongMaterial map={colorMap} />
                 </mesh>
             )
         }
         {
-            props.shading !== 'shaded' &&  (
+            (props.shading === 'wireframe' || props.shading === 'shaded-wireframe') &&  (
                 <mesh geometry={geometry}>
                     <meshPhongMaterial color='white' wireframe />
                 </mesh>
+            )
+        }
+        {
+            props.shading === 'skeleton' && (
+                <Line 
+                    points={lineData}
+                    color='white'
+                    lineWidth={2}
+                />
             )
         }
         </>

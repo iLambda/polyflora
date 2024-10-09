@@ -3,12 +3,13 @@ import { deg2rad } from '@utils/math';
 import { Grid, GridSettings } from './viewer/Grid';
 import { Lighting, LightingSettings } from './viewer/Lighting';
 import { Record, Static } from 'runtypes';
-import { Trunk } from './flora/tree/Trunk';
 import { MutableRefObject, Suspense, useEffect } from 'react';
 
 import { useReactiveRef } from '@utils/react/hooks/state';
 import * as THREE from 'three';
-import { useFlora } from '@app/state/flora';
+import { useFlora } from '@app/state/Flora';
+import { Skeleton } from './flora/tree/Skeleton';
+import { Limb } from './flora/tree/Limb';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -80,17 +81,24 @@ export const View = (props: ViewerProps) => {
             {/* Generating the tree */ }
             <group ref={mainGroupRef}>
                 <Suspense>
-                    <Trunk 
-                        seed={floraSnapshot.seed}
-                        shading={floraSnapshot.shading}
+                    {/* The trunk skeleton */}
+                    <Skeleton
                         segmentsLength={floraSnapshot.trunk.segmentsLength}
-                        segmentsRadius={floraSnapshot.trunk.segmentsRadius}
                         sizeLength={floraSnapshot.trunk.sizeLength}
-                        sizeRadius={floraSnapshot.trunk.sizeRadius}
-                        tilingU={floraSnapshot.trunk.tilingU}
-                        tilingV={floraSnapshot.trunk.tilingV}
-                        textureURL={floraSnapshot.trunk.textureURL}
-                    />
+                        seed={floraSnapshot.seed}
+                        name='trunk'
+                    >
+                        {/* The trunk's model */}
+                        <Limb 
+                            shading={floraSnapshot.shading}
+                            segmentsRadius={floraSnapshot.trunk.segmentsRadius}
+                            sizeRadius={floraSnapshot.trunk.sizeRadius}
+                            tilingU={floraSnapshot.trunk.tilingU}
+                            tilingV={floraSnapshot.trunk.tilingV}
+                            textureURL={floraSnapshot.trunk.textureURL}
+                        />
+
+                    </Skeleton>
                 </Suspense>
             </group>
         </>
