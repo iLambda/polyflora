@@ -1,6 +1,6 @@
 import { useLoader } from '@react-three/fiber';
 import { useInterleavedBufferAttribute } from '@utils/react/hooks/three';
-import { memo, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo, useRef } from 'react';
 import { Number, Record, Static, String } from 'runtypes';
 
 import * as THREE from 'three';
@@ -183,12 +183,36 @@ export const Cross = memo((props: CrossProps) => {
     const lineData = useMemo(() => 
         jointCenters.flatMap((center, i) => i === 0 ? [] : [jointCenters[i - 1]!, center]  )
     , [jointCenters]);
+
+    /* Modify the shader to use the absolute value of the */
+    const onBeforeCompile = useCallback((parameters: THREE.WebGLProgramParametersWithUniforms) => {
+        parameters.fragmentShader = parameters.fragmentShader.replace(
+            // Inject ourself in the lambert lighting calculation
+            `#include <lights_lambert_pars_fragment>`, 
+            // ... and take the absolute value during irradience calc, so normal orientation is ignored
+            `#include <lights_lambert_pars_fragment>
+
+            void RE_Direct_Lambert_Foliage( const in IncidentLight directLight, const in vec3 geometryPosition, const in vec3 geometryNormal, const in vec3 geometryViewDir, const in vec3 geometryClearcoatNormal, const in LambertMaterial material, inout ReflectedLight reflectedLight ) {
+
+                float dotNL = saturate( abs(dot( geometryNormal, directLight.direction )) );
+                vec3 irradiance = dotNL * directLight.color;
+
+                reflectedLight.directDiffuse += irradiance * BRDF_Lambert( material.diffuseColor );
+
+            }
+            #undef  RE_Direct
+            #define RE_Direct				RE_Direct_Lambert_Foliage
+            `,
+        );
+    }, []);
+
     
     /* Return object */
     return (
         <>
             <mesh geometry={geometry} visible={props.shading === 'shaded'}>
-                <meshLambertMaterial map={colorMap} alphaTest={0.5} side={THREE.DoubleSide} />
+                <meshLambertMaterial map={colorMap} alphaTest={0.5} side={THREE.DoubleSide} 
+                    onBeforeCompile={onBeforeCompile}/>
             </mesh>
             <mesh geometry={geometry} visible={props.shading === 'wireframe'}>
                 <meshBasicMaterial color='white' wireframe />
