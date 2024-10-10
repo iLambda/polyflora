@@ -1,9 +1,9 @@
 import Rand from 'rand-seed';
-import { ReactNode, useMemo } from 'react';
-import { Number, Record, Static } from 'runtypes';
+import { memo, ReactNode, useMemo } from 'react';
+import { Literal, Number, Record, Static, Union } from 'runtypes';
 import * as THREE from 'three';
 import { SkeletonData } from './SkeletonData';
-import { NonEmptyArray } from '@utils/types';
+import { assertExhaustive, NonEmptyArray } from '@utils/types';
 import { SkeletonProvider } from './SkeletonContext';
 import { deg2rad } from '@utils/math';
 
@@ -19,6 +19,11 @@ export const SkeletonParameters = Record({
     crinklingMin: Number,
     /* The minimul crinkling angle of a branch */
     crinklingMax: Number,
+
+    /* The bend direction */
+    bendDirection: Union(Literal('up'), Literal('down'), Literal('normal')),
+    /* The bend amount */
+    bendAmount: Number,
 });
 
 /* The props of a skeleton */
@@ -37,7 +42,7 @@ const randSymmetrical = (rng: Rand, min: number, max: number) => {
     return (min + (max - min) * Math.abs(rand)) * Math.sign(rand);
 };
 
-export const Skeleton = (props: SkeletonProps) => {
+export const Skeleton = memo((props: SkeletonProps) => {
     /* Clamp parameters */
     const lengthSegments = Math.max(1, props.segmentsLength);
     const lengthSize = Math.max(0.1, props.sizeLength);
@@ -53,6 +58,29 @@ export const Skeleton = (props: SkeletonProps) => {
         const segmentToObject = new THREE.Matrix4();
         // For each segment
         for (let i = 0; i < lengthSegments; i++) {
+            // Apply bending
+            switch(props.bendDirection) {
+                // normal
+                case 'normal': {
+                    tmpEuler.set(0, 0, deg2rad(props.bendAmount / lengthSegments));
+                    tmpMatrix.makeRotationFromEuler(tmpEuler);
+                    segmentToObject.multiply(tmpMatrix);
+                    break;
+                }
+
+                // up
+                case 'up': {
+                    break;
+                }
+                // down
+                case 'down': {
+                    break;
+                }
+
+                // exhaustive
+                default: assertExhaustive(props.bendDirection);
+
+            }
             // Apply growth rotation
             tmpEuler.set(randSymmetrical(rng, deg2rad(props.crinklingMin), deg2rad(props.crinklingMax)), 0,
                          randSymmetrical(rng, deg2rad(props.crinklingMin), deg2rad(props.crinklingMax)));
@@ -67,7 +95,7 @@ export const Skeleton = (props: SkeletonProps) => {
         // Return the skeleton
         return { joints, segmentSize: lengthStep };
 
-    }, [lengthSegments, lengthSize, props.name, props.seed, props.crinklingMin, props.crinklingMax]);
+    }, [lengthSegments, lengthSize, props.name, props.seed, props.crinklingMin, props.crinklingMax, props.bendAmount, props.bendDirection]);
     
     /* Return */
     return (
@@ -75,4 +103,4 @@ export const Skeleton = (props: SkeletonProps) => {
             { props.children }
         </SkeletonProvider>
     );
-};
+});

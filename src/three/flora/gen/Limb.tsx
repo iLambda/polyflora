@@ -1,5 +1,4 @@
 import { useLoader } from '@react-three/fiber';
-import { useInstance } from '@utils/react/hooks/refs';
 import { useInterleavedBufferAttribute } from '@utils/react/hooks/three';
 import { memo, useMemo, useRef } from 'react';
 import { Number, Record, Static, String } from 'runtypes';
@@ -25,7 +24,7 @@ export const LimbParameters = Record({
     textureURL: String,
 });
 /* The props */
-type LimbProps = LimbParameters & {
+export type LimbProps = LimbParameters & {
     shading: 'shaded' | 'wireframe' | 'skeletal';
 };
 
@@ -37,6 +36,10 @@ const BUFFER_STRIDE = BUFFER_SIZE_XYZ + BUFFER_SIZE_NOR + BUFFER_SIZE_UV;
 const BUFFER_OFFSET_XYZ = 0;
 const BUFFER_OFFSET_NOR = BUFFER_OFFSET_XYZ + BUFFER_SIZE_XYZ;
 const BUFFER_OFFSET_UV = BUFFER_OFFSET_NOR + BUFFER_SIZE_NOR;
+
+/* Helper */
+export const calculateRadiusForJoint = (segment: number, nSegments: number, curvature: number) =>
+    Math.pow(1.0 - (segment / nSegments), curvature);
 
 /* Return the geometry */
 export const Limb = memo((props: LimbProps) => {
@@ -113,7 +116,7 @@ export const Limb = memo((props: LimbProps) => {
                     tmpXYZ.set(Math.cos(angleStep*r), 0, Math.sin(angleStep*r));
                     tmpNOR.copy(tmpXYZ);
                     // Scale positition by the falloff-ed radius
-                    tmpXYZ.multiplyScalar(sizeRadius * Math.pow(1.0 - (l / segmentsLength), curvature));
+                    tmpXYZ.multiplyScalar(sizeRadius * calculateRadiusForJoint(l, segmentsLength, curvature));
                 }
                 else {
                     // Local position & normal
@@ -149,12 +152,19 @@ export const Limb = memo((props: LimbProps) => {
     interleavedBuffer.count = nVertices;
     interleavedBuffer.needsUpdate ||= bufferDirtyRef.current;
 
-    /* Make the geometry */
-    const geometry = useInstance(THREE.BufferGeometry);
+    /* Make the geometry 
+        NOTE : (cf https://github.com/mrdoob/three.js/issues/20933)
+        ThreeJS is weird if the indices buffer gets changed, especially wrt wireframes.
+        Technically it works all ok, but wireframe data breaks. We would wish to not have to reallocate 
+        a whole geometry, but since the official solution is preallocate an array large enough (lol), we
+        deal with it by preallocating large enough arrays in chunks, and recreating if needed.
+    */
+    const geometry = useMemo(() => (new THREE.BufferGeometry()).setIndex(indices), [indices]);
     geometry.setAttribute('position', useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_XYZ, BUFFER_OFFSET_XYZ));
     geometry.setAttribute('normal',   useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_NOR, BUFFER_OFFSET_NOR));
     geometry.setAttribute('uv',       useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_UV,  BUFFER_OFFSET_UV));
     geometry.setIndex(indices);
+    geometry.setDrawRange(0, indices.count);
     
     /* Clear dirty flag */
     bufferDirtyRef.current = false;

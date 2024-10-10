@@ -25,6 +25,7 @@ export const styles = {
         width: 'fit-content',
         height: 'fit-content',
         inset: 'auto auto 0px 0px',
+        pointerEvents: 'all',
     }),
 
     // The panel that contains view centering buttons

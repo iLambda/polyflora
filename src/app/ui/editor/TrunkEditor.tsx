@@ -1,42 +1,26 @@
 import { useFlora } from '@app/state/Flora';
-import { AspectRatio, Center, Fieldset, FileInput, Flex, Image, Loader, NumberInput, Overlay, Select } from '@mantine/core';
+import { Fieldset, Flex, NumberInput, Select } from '@mantine/core';
 import { styles } from './TrunkEditor.css';
-import { imageMIME } from '@utils/mime';
-import { useEffect, useState } from 'react';
-import { useConstantWithInit } from '@utils/react/hooks/refs';
+import { TexturePicker } from '../controls/TexturePicker';
+import { MathUtils } from 'three';
+import { SkeletonParameters } from '@three/flora/gen/Skeleton';
 
 const setter = (set: (v: number) => void) => ((v: unknown) => {if (typeof v === 'number') { set(v); }});
 
+type BendingMode = SkeletonParameters['bendDirection'];
 export const TrunkEditor = () => {
     /* Setup state */
     const [floraSnapshot, flora] = useFlora();
-    const [textureFile, setTextureFile] = useState<File | null>(null);
-    const [isLoading, setLoading] = useState<boolean>(false);
-    /* Create the dummy file w/ default texture */
-    const dummyFile = useConstantWithInit(() => new File([], 'Wood03.png'));
     
-    /* Generate texture URL */
-    useEffect(() => {
-        /* Check if texture is real */
-        if (!textureFile) { return; }
-        /* Generate URL and set it */
-        const blobURL = URL.createObjectURL(textureFile);
-        flora.trunk.textureURL = blobURL;
-        /* Cleanup function */
-        return () => URL.revokeObjectURL(blobURL);
-        
-    }, [textureFile, flora]);
-    
-
     /* Return the editor */
     return (
         <Flex direction='column' gap='sm'>
             {/* Control segments */}
-            <Fieldset legend='Segments' className={styles.fieldset}>
+            <Fieldset legend='Geometry' className={styles.fieldset}>
                 <Flex direction='row' gap='md'>
                     <NumberInput 
                         style={{ flex: 1 }}
-                        label='Length' 
+                        label='Segments (length)' 
                         size='xs'
                         allowDecimal={false}
                         allowNegative={false}
@@ -45,7 +29,7 @@ export const TrunkEditor = () => {
                     />
                     <NumberInput 
                         style={{ flex: 1 }}
-                        label='Radius'
+                        label='Segments (radius)'
                         size='xs' 
                         step={0.5}
                         allowDecimal={false}
@@ -89,81 +73,83 @@ export const TrunkEditor = () => {
                     onChange={setter((v) => flora.trunk.curvature = Math.max(0.01, v))}  
                 />
                 {/* Crinlking */}
-                <Fieldset legend='Crinkling' className={`${styles.fieldset} ${styles.fieldsetInline}`}>
-                    <Flex direction='row' gap='md' >
-                        <NumberInput 
-                            style={{ flex: 1 }}
-                            label='Min' 
-                            size='xs'
-                            allowNegative={false}
-                            step={0.25}
-                            suffix='°'
-                            value={floraSnapshot.trunk.crinklingMin} 
-                            onChange={setter((v) => flora.trunk.crinklingMin = Math.max(0, Math.min(v, flora.trunk.crinklingMax)))}  
-                        />
-                        <NumberInput 
-                            style={{ flex: 1 }}
-                            label='Max' 
-                            size='xs'
-                            allowNegative={false}
-                            step={0.25}
-                            suffix='°'
-                            value={floraSnapshot.trunk.crinklingMax} 
-                            onChange={setter((v) => flora.trunk.crinklingMax = Math.max(0, Math.max(v, flora.trunk.crinklingMin)))}  
-                        />
-                    </Flex>
-                </Fieldset>
+                <Flex direction='row' gap='md' >
+                    <NumberInput 
+                        style={{ flex: 1 }}
+                        label='Crinkling (min)' 
+                        size='xs'
+                        allowNegative={false}
+                        step={0.25}
+                        suffix='°'
+                        value={floraSnapshot.trunk.crinklingMin} 
+                        onChange={setter((v) => flora.trunk.crinklingMin = Math.max(0, Math.min(v, flora.trunk.crinklingMax)))}  
+                    />
+                    <NumberInput 
+                        style={{ flex: 1 }}
+                        label='Crinkling (max)' 
+                        size='xs'
+                        allowNegative={false}
+                        step={0.25}
+                        suffix='°'
+                        value={floraSnapshot.trunk.crinklingMax} 
+                        onChange={setter((v) => flora.trunk.crinklingMax = Math.max(0, Math.max(v, flora.trunk.crinklingMin)))}  
+                    />
+                </Flex>
                 {/* Bending control */}
-                <Fieldset legend='Bending' className={`${styles.fieldset} ${styles.fieldsetInline}`}>
                   <Flex direction='row' gap='md' >
                     <Select
                         style={{ flex: 5 }}
                         size='xs'
-                        label='Direction'
-                        defaultValue='normal'
+                        label='Bend (direction)'
                         data={[
-                            { value: 'up', label: 'Up' },
-                            { value: 'down', label: 'Down' },
-                            { value: 'normal', label: 'Normal' },
+                            { value: 'up' satisfies BendingMode, label: 'Up' },
+                            { value: 'down' satisfies BendingMode, label: 'Down' },
+                            { value: 'normal' satisfies BendingMode, label: 'Normal' },
                         ]}
+                        value={floraSnapshot.trunk.bendDirection}
+                        onChange={v => flora.trunk.bendDirection = (v as BendingMode)}
                     />                                        
                     <NumberInput 
                         style={{ flex: 4 }}
-                        label='Amount' 
+                        label='Bend (amount)' 
                         size='xs'
                         suffix='°'
-                        step={0.1}
-                        value={-65}
+                        allowNegative
+                        step={1}
+                        value={floraSnapshot.trunk.bendAmount} 
+                        onChange={setter((v) => flora.trunk.bendAmount = MathUtils.clamp(v, -360, 360))}  
                     />
-                    </Flex>
-                </Fieldset>
+                </Flex>
             </Fieldset>
             {/* Texture zone */}
-            <Fieldset legend='Texture'>
-                <Flex direction='column' gap='md' >
-                    {/* The file input */}
-                    <FileInput accept={imageMIME.join(',')} 
+            <Fieldset legend='Material' className={styles.fieldset}>
+                <Flex direction='row' gap='md'>
+                    <NumberInput 
+                        style={{ flex: 1 }}
+                        label='Tiling (U)' 
                         size='xs'
-                        value={textureFile ?? dummyFile}
-                        onChange={setTextureFile} 
+                        step={0.1}
+                        allowDecimal={true}
+                        allowNegative={false}
+                        value={floraSnapshot.trunk.tilingU} 
+                        onChange={setter((v) => flora.trunk.tilingU = v)} 
                     />
-                    {/* The texture display */}
-                    <Center style={{ width: '100%' }}>
-                        <AspectRatio ratio={1} maw={'325px'} style={{ width: '100%' }} pos='relative'>
-                            <Image 
-                                src={floraSnapshot.trunk.textureURL} 
-                                onLoadStart={() => setLoading(true)}
-                                onLoad={() => setLoading(false)}
-                            />
-                            {
-                                isLoading &&
-                                    (<Overlay blur={5} component={Center}>
-                                        <Loader />
-                                    </Overlay>)
-                            }
-                        </AspectRatio>
-                    </Center>
+                    <NumberInput 
+                        style={{ flex: 1 }}
+                        label='Tiling (V)'
+                        size='xs' 
+                        step={0.1}
+                        allowDecimal={true}
+                        allowNegative={false}
+                        value={floraSnapshot.trunk.tilingV} 
+                        onChange={setter((v) => flora.trunk.tilingV = v)} 
+                    />
                 </Flex>
+                <TexturePicker 
+                    label='Texture'
+                    url={floraSnapshot.trunk.textureURL}
+                    onURLChanged={v => flora.trunk.textureURL = v}
+                />
             </Fieldset>
         </Flex>
     );

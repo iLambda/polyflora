@@ -8,8 +8,8 @@ import { MutableRefObject, Suspense, useEffect } from 'react';
 import { useReactiveRef } from '@utils/react/hooks/state';
 import * as THREE from 'three';
 import { useFlora } from '@app/state/Flora';
-import { Skeleton } from './flora/tree/Skeleton';
-import { Limb } from './flora/tree/Limb';
+import { Trunk } from './flora/tree/Trunk';
+import { Branches } from './flora/tree/Branches';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -82,26 +82,60 @@ export const View = (props: ViewerProps) => {
             <group ref={mainGroupRef}>
                 <Suspense>
                     {/* The trunk skeleton */}
-                    <Skeleton
+                    <Trunk
+                        bendAmount={floraSnapshot.trunk.bendAmount}
+                        bendDirection={floraSnapshot.trunk.bendDirection}
                         segmentsLength={floraSnapshot.trunk.segmentsLength}
                         sizeLength={floraSnapshot.trunk.sizeLength}
                         crinklingMin={floraSnapshot.trunk.crinklingMin}
                         crinklingMax={floraSnapshot.trunk.crinklingMax}
+                        curvature={floraSnapshot.trunk.curvature}
+                        segmentsRadius={floraSnapshot.trunk.segmentsRadius}
+                        sizeRadius={floraSnapshot.trunk.sizeRadius}
+                        tilingU={floraSnapshot.trunk.tilingU}
+                        tilingV={floraSnapshot.trunk.tilingV}
+                        textureURL={floraSnapshot.trunk.textureURL}
                         seed={floraSnapshot.seed}
-                        name='trunk'
-                    >
-                        {/* The trunk's model */}
-                        <Limb 
-                            curvature={floraSnapshot.trunk.curvature}
-                            shading={floraSnapshot.shading}
-                            segmentsRadius={floraSnapshot.trunk.segmentsRadius}
-                            sizeRadius={floraSnapshot.trunk.sizeRadius}
-                            tilingU={floraSnapshot.trunk.tilingU}
-                            tilingV={floraSnapshot.trunk.tilingV}
-                            textureURL={floraSnapshot.trunk.textureURL}
-                        />
+                        shading={floraSnapshot.shading}
+                        name='trunk'>
 
-                    </Skeleton>
+                        <Branches 
+                            distribution='random'
+                            bendAmount={floraSnapshot.branch.bendAmount}
+                            bendDirection={floraSnapshot.branch.bendDirection}
+                            minCrossWidth={floraSnapshot.branch.minCrossWidth}
+                            maxCrossWidth={floraSnapshot.branch.maxCrossWidth}
+                            crinklingMin={floraSnapshot.branch.crinklingMin}
+                            crinklingMax={floraSnapshot.branch.crinklingMax}
+                            curvature={floraSnapshot.branch.curvature}
+                            segmentsRadius={floraSnapshot.branch.segmentsRadius}
+                            segmentsLength={floraSnapshot.branch.segmentsLength}
+                            geometryMode={floraSnapshot.branch.geometryMode}
+                            minAngle={floraSnapshot.branch.minAngle}
+                            minLength={floraSnapshot.branch.minLength}
+                            minRadius={floraSnapshot.branch.minRadius}
+                            maxAngle={floraSnapshot.branch.maxAngle}
+                            minPosition={floraSnapshot.branch.minPosition}
+                            maxPosition={floraSnapshot.branch.maxPosition}
+                            maxLength={floraSnapshot.branch.maxLength}
+                            maxRadius={floraSnapshot.branch.maxRadius}
+                            nArticulations={floraSnapshot.branch.nArticulations}
+                            parentLimbCurvature={floraSnapshot.trunk.curvature}
+                            parentLimbBaseRadius={floraSnapshot.trunk.sizeRadius}
+                            referenceLength={floraSnapshot.trunk.sizeLength}
+                            textureBarkURL={floraSnapshot.trunk.textureURL}
+                            textureBranchURL={floraSnapshot.branch.textureURL}
+                            tilingBarkU={floraSnapshot.trunk.tilingU}
+                            tilingBarkV={floraSnapshot.trunk.tilingV}
+                            tilingCrossU={1}
+                            tilingCrossV={1}
+                            shading={floraSnapshot.shading}
+                            seed={floraSnapshot.seed}
+                            name='branches'
+                        >
+                        </Branches>
+
+                    </Trunk>
                 </Suspense>
             </group>
         </>

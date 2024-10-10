@@ -24,7 +24,7 @@ export const Context2D = (props: Context2DProps) => {
             powerPreference: 'default',
         });
         // Set some params
-        renderer.setClearColor(0x252525);
+        renderer.setClearColor(0x2B2B2B);
         renderer.shadowMap.enabled = false;
         renderer.toneMapping = THREE.NoToneMapping;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -39,7 +39,7 @@ export const Context2D = (props: Context2DProps) => {
             ref={canvasRef}
             dpr={window.devicePixelRatio}
             gl={gl}
-            camera={{ fov: 75, near: 0.1, far: 1000, position: [25, 5, 25] }}
+            camera={{ fov: 60, near: 0.1, far: 1000, position: [25, 50, 25] }}
             style={props.style}
             className={props.className}
         >

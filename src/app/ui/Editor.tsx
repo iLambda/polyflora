@@ -2,6 +2,7 @@ import { styles } from './Editor.css';
 
 import { Container, Tabs } from '@mantine/core';
 import { TrunkEditor } from './editor/TrunkEditor';
+import { BranchEditor } from './editor/BranchEditor';
 
 export const Editor = () => {
 
@@ -20,7 +21,9 @@ export const Editor = () => {
                     </Container>
                 </Tabs.Panel>
                 <Tabs.Panel value='branches'>
-                    bb
+                    <Container className={styles.panelRoot}>
+                        <BranchEditor />
+                    </Container>
                 </Tabs.Panel>
 
             </Tabs>

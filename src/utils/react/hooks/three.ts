@@ -112,6 +112,10 @@ export function useUniform<T>(data: T) : THREE.Uniform<T> {
     return uniform;
 }
 
-export function useInterleavedBufferAttribute(buffer: THREE.InterleavedBuffer, size: number, offset: number) {
-    return useMemo(() => new THREE.InterleavedBufferAttribute(buffer, size, offset), [buffer, size, offset]);
+export function useInterleavedBufferAttribute(buffer: THREE.InterleavedBuffer, size: number, offset: number, needsUpdate?: boolean) {
+    const attr = useMemo(() => new THREE.InterleavedBufferAttribute(buffer, size, offset), [buffer, size, offset]);
+    if (needsUpdate) {
+        attr.needsUpdate = true;
+    }
+    return attr;
 }

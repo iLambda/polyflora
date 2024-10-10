@@ -1,5 +1,5 @@
 export function assertExhaustive(value: never): never {
-    return value;
+    throw new Error(`ERROR! Reached forbidden guard function with unexpected value: ${JSON.stringify(value)}`);
 }
 
 export function error(message: string): never {
