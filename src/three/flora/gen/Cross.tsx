@@ -201,8 +201,7 @@ export const Cross = memo((props: CrossProps) => {
 
             }
             #undef  RE_Direct
-            #define RE_Direct				RE_Direct_Lambert_Foliage
-            `,
+            #define RE_Direct				RE_Direct_Lambert_Foliage`,
         );
     }, []);
 
