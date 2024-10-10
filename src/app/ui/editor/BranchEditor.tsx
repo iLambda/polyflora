@@ -31,7 +31,6 @@ export const BranchEditor = () => {
                         style={{ flex: 1 }}
                         label='# Sub-branches'
                         size='xs' 
-                        step={0.5}
                         allowDecimal={false}
                         allowNegative={false}
                     />
@@ -62,7 +61,6 @@ export const BranchEditor = () => {
                         style={{ flex: 1 }}
                         label='Segments (radius)'
                         size='xs' 
-                        step={0.5}
                         allowDecimal={false}
                         allowNegative={false}
                         disabled={floraSnapshot.branch.geometryMode !== 'detailed'}

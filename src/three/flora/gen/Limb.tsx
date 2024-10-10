@@ -38,6 +38,7 @@ const BUFFER_OFFSET_NOR = BUFFER_OFFSET_XYZ + BUFFER_SIZE_XYZ;
 const BUFFER_OFFSET_UV = BUFFER_OFFSET_NOR + BUFFER_SIZE_NOR;
 
 /* Helper */
+// eslint-disable-next-line react-refresh/only-export-components
 export const calculateRadiusForJoint = (segment: number, nSegments: number, curvature: number) =>
     Math.pow(1.0 - (segment / nSegments), curvature);
 
@@ -61,30 +62,35 @@ export const Limb = memo((props: LimbProps) => {
     const sizeRadius = Math.max(0.01, props.sizeRadius);
     const curvature = Math.max(0.01, props.curvature);
 
+    /* Reallocate indices only if size changed */
+    const nTris = segmentsLength * segmentsRadius * 2;
+    const ALLOC_TRIS_INCREMENTS = 32;
+    const allocTris = Math.ceil(nTris / ALLOC_TRIS_INCREMENTS) * ALLOC_TRIS_INCREMENTS; 
+    const indexBuffer = useMemo(() => new Uint16Array(allocTris * 3), [allocTris]);
+    const indexBufferDirtyRef = useRef(false);
+    
     /* Generate the index list */
     const indices = useMemo(() => {
-        /* Compute number of triangles */
-        const nTris = segmentsLength * segmentsRadius * 2;
-        /* Preallocate indices array */
-        const indices = new Array<number>(3 * nTris).fill(0);
         /* First, fill all the full segments */
         for (let l = 0; l < segmentsLength; l++) {
             for (let r = 0; r < segmentsRadius; r++) {
                 /* Compute current tri number */
                 const quadIdx = (l * segmentsRadius) + r;
                 /* Setup first triangle */
-                indices[6 * quadIdx + 0] = (l * (segmentsRadius + 1))       + r;
-                indices[6 * quadIdx + 1] = ((l + 1) * (segmentsRadius + 1)) + r;
-                indices[6 * quadIdx + 2] = (l * (segmentsRadius + 1))       + ((r + 1) % (segmentsRadius + 1));
+                indexBuffer[6 * quadIdx + 0] = (l * (segmentsRadius + 1))       + r;
+                indexBuffer[6 * quadIdx + 1] = ((l + 1) * (segmentsRadius + 1)) + r;
+                indexBuffer[6 * quadIdx + 2] = (l * (segmentsRadius + 1))       + ((r + 1) % (segmentsRadius + 1));
                 /* Setup second triangle */
-                indices[6 * quadIdx + 3] = (l * (segmentsRadius + 1))       + ((r + 1) % (segmentsRadius + 1));
-                indices[6 * quadIdx + 4] = ((l + 1) * (segmentsRadius + 1)) + r;
-                indices[6 * quadIdx + 5] = ((l + 1) * (segmentsRadius + 1)) + ((r + 1) % (segmentsRadius + 1));
+                indexBuffer[6 * quadIdx + 3] = (l * (segmentsRadius + 1))       + ((r + 1) % (segmentsRadius + 1));
+                indexBuffer[6 * quadIdx + 4] = ((l + 1) * (segmentsRadius + 1)) + r;
+                indexBuffer[6 * quadIdx + 5] = ((l + 1) * (segmentsRadius + 1)) + ((r + 1) % (segmentsRadius + 1));
             }
         }
+        /* Mark dirty */
+        indexBufferDirtyRef.current = true;
         /* Done */
-        return new THREE.Uint16BufferAttribute(indices, 1);
-    }, [segmentsLength, segmentsRadius]);
+        return indexBuffer;
+    }, [segmentsLength, segmentsRadius, indexBuffer]);
 
     /* Reallocate buffer only if size changed */
     const nVertices = (segmentsLength + 1) * (segmentsRadius + 1);
@@ -158,16 +164,21 @@ export const Limb = memo((props: LimbProps) => {
         Technically it works all ok, but wireframe data breaks. We would wish to not have to reallocate 
         a whole geometry, but since the official solution is preallocate an array large enough (lol), we
         deal with it by preallocating large enough arrays in chunks, and recreating if needed.
+    
     */
-    const geometry = useMemo(() => (new THREE.BufferGeometry()).setIndex(indices), [indices]);
-    geometry.setAttribute('position', useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_XYZ, BUFFER_OFFSET_XYZ));
-    geometry.setAttribute('normal',   useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_NOR, BUFFER_OFFSET_NOR));
-    geometry.setAttribute('uv',       useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_UV,  BUFFER_OFFSET_UV));
-    geometry.setIndex(indices);
-    geometry.setDrawRange(0, indices.count);
+    // Try update index buffer attribute
+    const indexBufferAttribute = useMemo(() => new THREE.BufferAttribute(indices, 1), [indices]);
+    indexBufferAttribute.needsUpdate ||= indexBufferDirtyRef.current;
+    // Make actual geom
+    const geometry = useMemo(() => (new THREE.BufferGeometry()).setIndex(indexBufferAttribute), [indexBufferAttribute]);
+    geometry.setAttribute('position', useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_XYZ, BUFFER_OFFSET_XYZ, bufferDirtyRef.current));
+    geometry.setAttribute('normal',   useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_NOR, BUFFER_OFFSET_NOR, bufferDirtyRef.current));
+    geometry.setAttribute('uv',       useInterleavedBufferAttribute(interleavedBuffer, BUFFER_SIZE_UV,  BUFFER_OFFSET_UV, bufferDirtyRef.current));
+    geometry.setDrawRange(0, 3 * nTris);
     
     /* Clear dirty flag */
     bufferDirtyRef.current = false;
+    indexBufferDirtyRef.current = false;
     
     /* Make the list of points to draw the skeleton */
     const jointCenters = useMemo(() => SkeletonData.centers(skeleton), [skeleton]);
@@ -178,29 +189,18 @@ export const Limb = memo((props: LimbProps) => {
     /* Return object */
     return (
         <>
-        {
-            props.shading === 'shaded' && (
-                <mesh geometry={geometry}>
-                    <meshPhongMaterial map={colorMap} />
-                </mesh>
-            )
-        }
-        {
-            props.shading === 'wireframe' && (
-                <mesh geometry={geometry}>
-                    <meshBasicMaterial color='white' wireframe />
-                </mesh>
-            )
-        }
-        {
-            props.shading === 'skeletal' && (
-                <Line 
-                    points={lineData}
-                    color='white'
-                    lineWidth={2}
-                />
-            )
-        }
+            <mesh geometry={geometry} visible={props.shading === 'shaded'}>
+                <meshLambertMaterial map={colorMap} />
+            </mesh>
+            <mesh geometry={geometry} visible={props.shading === 'wireframe'}>
+                <meshBasicMaterial color='white' wireframe />
+            </mesh>
+            <Line 
+                visible={props.shading === 'skeletal'}
+                points={lineData}
+                color='white'
+                lineWidth={2}
+            />
         </>
     );
 });

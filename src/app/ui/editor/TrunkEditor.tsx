@@ -30,8 +30,7 @@ export const TrunkEditor = () => {
                     <NumberInput 
                         style={{ flex: 1 }}
                         label='Segments (radius)'
-                        size='xs' 
-                        step={0.5}
+                        size='xs'
                         allowDecimal={false}
                         allowNegative={false}
                         value={floraSnapshot.trunk.segmentsRadius} 

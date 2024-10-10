@@ -55,8 +55,8 @@ export const Cross = memo((props: CrossProps) => {
     
     /* Get the texture */
     const colorMap = useLoader(THREE.TextureLoader, props.textureURL);
-    colorMap.wrapS = THREE.RepeatWrapping;
-    colorMap.wrapT = THREE.RepeatWrapping;
+    colorMap.wrapS = THREE.ClampToEdgeWrapping;
+    colorMap.wrapT = THREE.ClampToEdgeWrapping;
     
     /* Clamp the props */
     const segmentsLength = SkeletonData.getNSegments(skeleton);
