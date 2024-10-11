@@ -27,7 +27,7 @@ const initialFloraData : FloraData = {
         segmentsRadius: 6,
         segmentsLength: 4,
         sizeLength: 45,
-        sizeRadius: 0.5,
+        sizeRadius: 1,
         tilingU: 1,
         tilingV: 8,
         textureURL: 'Wood03.png',
