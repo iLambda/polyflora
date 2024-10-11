@@ -9,5 +9,17 @@ export const styles = {
         paddingInline: vars.spacing.md,
         paddingTop: vars.spacing.sm,
         paddingBottom: vars.spacing.sm,
+        overflow: 'scroll',
+    }),
+
+    // The tab root
+    tabRoot: style({
+        height: '100%',
+    }),
+
+    // The tab panel
+    tabPanel: style({
+        height: '100%', 
+        overflow: 'scroll !important',
     }),
 };

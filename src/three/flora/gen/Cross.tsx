@@ -1,12 +1,13 @@
 import { useLoader } from '@react-three/fiber';
 import { useInterleavedBufferAttribute } from '@utils/react/hooks/three';
 import { memo, useCallback, useMemo, useRef } from 'react';
-import { Number, Record, Static, String } from 'runtypes';
+import { Boolean, Literal, Number, Optional, Record, Static, String, Union } from 'runtypes';
 
 import * as THREE from 'three';
 import { useParentSkeleton } from './SkeletonContext';
 import { SkeletonData } from './SkeletonData';
 import { Line } from '@react-three/drei';
+import { assertExhaustive } from '@utils/types';
 
 
 /* The direction a cross is going */
@@ -27,8 +28,12 @@ export const CrossParameters = Record({
     tilingV: Number,
     // The material data
     textureURL: String,
-    // Cross mode
-    crossMode: Number,
+    // Cross planes (X, Y, XY)
+    crossPlanes: Number,
+    // Cross generation mode
+    crossMode: Union(Literal('strip'), Literal('quad')),
+    // Do we generate the middle edge ?
+    middleEdge: Optional(Boolean),
 });
 /* The props */
 export type CrossProps = CrossParameters & {
@@ -61,15 +66,20 @@ export const Cross = memo((props: CrossProps) => {
     /* Clamp the props */
     const segmentsLength = SkeletonData.getNSegments(skeleton);
     const crossWidth = Math.max(0.1, props.width);
+    const crossMode = props.crossMode;
     
     /* Compute the number of planes */
-    const enableVert = (props.crossMode & CrossDirection.CROSS_VERTICAL) !== 0;
-    const enableHoriz = (props.crossMode & CrossDirection.CROSS_HORIZONTAL) !== 0;
+    const enableVert = (props.crossPlanes & CrossDirection.CROSS_VERTICAL) !== 0;
+    const enableHoriz = (props.crossPlanes & CrossDirection.CROSS_HORIZONTAL) !== 0;
     const crossPlanes = useMemo(() => [enableVert ? [0] : [], enableHoriz ? [1] : []].flat(), [enableVert, enableHoriz]);
     const nCrossPlanes = crossPlanes.length;
+    /* Compute the number of verts & triangles per line */
+    const hasMiddleEdge = props.middleEdge ?? false;
+    const verticesPerLine = hasMiddleEdge ? 3 : 2;
+    const trianglesPerLine = hasMiddleEdge ? 4 : 2;
     
     /* Reallocate indices only if size changed */
-    const nTris = nCrossPlanes * segmentsLength * 2;
+    const nTris = nCrossPlanes * segmentsLength * trianglesPerLine;
     const ALLOC_TRIS_INCREMENTS = 32;
     const allocTris = Math.ceil(nTris / ALLOC_TRIS_INCREMENTS) * ALLOC_TRIS_INCREMENTS; 
     const indexBuffer = useMemo(() => new Uint16Array(allocTris * 3), [allocTris]);
@@ -79,25 +89,33 @@ export const Cross = memo((props: CrossProps) => {
         /* First, fill all the full segments */
         for (let d = 0 ; d < nCrossPlanes; d++) {
             for (let l = 0; l < segmentsLength; l++) {
-                const vertIdx = (d * 2 * (segmentsLength + 1)) + (2 * l);
-                /* Setup first triangle */
-                indexBuffer[6 * ((d * segmentsLength) + l) + 0] = vertIdx;
-                indexBuffer[6 * ((d * segmentsLength) + l) + 1] = vertIdx + 1;
-                indexBuffer[6 * ((d * segmentsLength) + l) + 2] = vertIdx + 2;
-                /* Setup second triangle */
-                indexBuffer[6 * ((d * segmentsLength) + l) + 3] = vertIdx + 1;
-                indexBuffer[6 * ((d * segmentsLength) + l) + 4] = vertIdx + 3;
-                indexBuffer[6 * ((d * segmentsLength) + l) + 5] = vertIdx + 2;
+                /* Compute the root vertex id */
+                const vertIdx = (d * verticesPerLine * (segmentsLength + 1)) + (verticesPerLine * l);
+                const lineOffset = 6 * ((d * segmentsLength) + l) * (verticesPerLine - 1);
+                /* Loop through available vertices in the line */
+                for (let s = 0; s < verticesPerLine - 1; s++) {
+                    /* Compute the triangle offset */
+                    const triOffset = lineOffset + (6 * s);
+                    const vertOrigin = vertIdx + s;
+                    /* Setup first triangle */
+                    indexBuffer[triOffset + 0] = vertOrigin;
+                    indexBuffer[triOffset + 1] = vertOrigin + 1;
+                    indexBuffer[triOffset + 2] = vertOrigin + verticesPerLine;
+                    /* Setup second triangle */
+                    indexBuffer[triOffset + 3] = vertOrigin + 1;
+                    indexBuffer[triOffset + 4] = vertOrigin + verticesPerLine + 1;
+                    indexBuffer[triOffset + 5] = vertOrigin + verticesPerLine;
+                }
             }
         }
         /* Mark dirty */
         indexBufferDirtyRef.current = true;
         /* Done */
         return indexBuffer;
-    }, [segmentsLength, nCrossPlanes, indexBuffer]);
+    }, [segmentsLength, nCrossPlanes, indexBuffer, verticesPerLine]);
 
     /* Reallocate buffer only if size changed */
-    const nVertices = nCrossPlanes * (segmentsLength + 1) * 2;
+    const nVertices = nCrossPlanes * (segmentsLength + 1) * verticesPerLine;
     const ALLOC_VERT_INCREMENTS = 16;
     const allocVertices = Math.ceil(nVertices / ALLOC_VERT_INCREMENTS) * ALLOC_VERT_INCREMENTS; 
     const buffer = useMemo(() => new Float32Array(allocVertices * BUFFER_STRIDE), [allocVertices]);
@@ -109,6 +127,7 @@ export const Cross = memo((props: CrossProps) => {
         const tmpNOR = new THREE.Vector3();
         const tmpUV = new THREE.Vector2();
         const tmpMatrixRot = new THREE.Matrix3();
+        const tmpMatrix = new THREE.Matrix4();
         /* The current reference frame 
             - translation = ring center 
             - rotation = growth rotation */
@@ -120,20 +139,37 @@ export const Cross = memo((props: CrossProps) => {
             // Now generate the actual geometry 
             for (let l = 0; l < segmentsLength + 1; l++) {
                 // Generate vertices 2 by 2
-                for (let s = 0; s < 2; s ++) {
-                    /* Compute the left side vertex */
+                for (let s = -1; s < 2; s ++) {
+                    /* Skip middle edge if not necessary */
+                    if (!hasMiddleEdge && s == 0) { continue; }
+                    /* Prepare vertex in local space */
                     tmpXYZ.set(crossPlanes[d]!, 0, (1 - crossPlanes[d]!));
-                    tmpXYZ.multiplyScalar((crossWidth/2) * ((2*s) - 1));
+                    tmpXYZ.multiplyScalar((crossWidth/2) * s);   
+                    /* Compute the vertex */
+                    if (crossMode === 'strip') {
+                        // Simply convert to world space
+                        tmpXYZ.applyMatrix4(segmentToObject); 
+                    } 
+                    else if (crossMode === 'quad') {
+                        // Rotate using the first joint's rotation
+                        tmpMatrix.fromArray(skeleton.joints[0]!);
+                        tmpMatrixRot.setFromMatrix4(tmpMatrix);
+                        tmpXYZ.applyMatrix3(tmpMatrixRot);
+                        // Translate using the segment to object matrix
+                        tmpMatrix.identity();
+                        tmpMatrix.copyPosition(segmentToObject);
+                        tmpXYZ.applyMatrix4(tmpMatrix);
+                    }
+                    else { assertExhaustive(crossMode); }
+                    /* Compute the normal */
                     tmpNOR.set((1-crossPlanes[d]!), 0, crossPlanes[d]!);
-                    /* Convert local position to world space */
-                    tmpXYZ.applyMatrix4(segmentToObject);
-                    /* Convert local vertex to object space */
                     tmpMatrixRot.setFromMatrix4(segmentToObject);
                     tmpNOR.applyNormalMatrix(tmpMatrixRot);
                     /* Fill UVs */
-                    tmpUV.set(props.tilingV * s, props.tilingU * (l / segmentsLength));
+                    tmpUV.set(props.tilingV * ((s + 1) / 2), props.tilingU * (l / segmentsLength));
                     /* Fill buffer */
-                    const vertIdx = (d * 2 * (segmentsLength + 1)) + (2 * l) + s;
+                    const vertLineOffset = hasMiddleEdge ? (s + 1) : ((s + 1) / 2);
+                    const vertIdx = (d * verticesPerLine * (segmentsLength + 1)) + (verticesPerLine * l) + vertLineOffset;
                     tmpXYZ.toArray(buffer, (BUFFER_STRIDE * vertIdx) + BUFFER_OFFSET_XYZ);
                     tmpNOR.toArray(buffer, (BUFFER_STRIDE * vertIdx) + BUFFER_OFFSET_NOR);
                     tmpUV.toArray(buffer, (BUFFER_STRIDE * vertIdx) + BUFFER_OFFSET_UV);   
@@ -148,7 +184,8 @@ export const Cross = memo((props: CrossProps) => {
         bufferDirtyRef.current = true;
         /* Return the data */
         return buffer;
-    }, [buffer, skeleton.joints, crossPlanes, nCrossPlanes, segmentsLength, crossWidth, props.tilingU, props.tilingV]);
+    }, [buffer, skeleton.joints, crossPlanes, hasMiddleEdge, verticesPerLine, crossMode, 
+        nCrossPlanes, segmentsLength, crossWidth, props.tilingU, props.tilingV]);
 
 
     /* Make the interleaved buffer and mark it dirty */

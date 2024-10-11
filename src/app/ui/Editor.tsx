@@ -9,18 +9,18 @@ export const Editor = () => {
     /* Return component */
     return (
         <>
-            <Tabs defaultValue='trunk'>
+            <Tabs defaultValue='trunk' className={styles.tabRoot}>
                 <Tabs.List>
                     <Tabs.Tab value='trunk'> Trunk </Tabs.Tab>
                     <Tabs.Tab value='branches'> Branches </Tabs.Tab>
                 </Tabs.List>
 
-                <Tabs.Panel value='trunk'>
+                <Tabs.Panel value='trunk' className={styles.tabPanel}>
                     <Container className={styles.panelRoot}>
                         <TrunkEditor />
                     </Container>
                 </Tabs.Panel>
-                <Tabs.Panel value='branches'>
+                <Tabs.Panel value='branches' className={styles.tabPanel}>
                     <Container className={styles.panelRoot}>
                         <BranchEditor />
                     </Container>

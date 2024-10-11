@@ -1,4 +1,4 @@
-Extract trunkgen/branchgen to another file
-Generate franches as:
-    - meshes
-    - cross geometry
+- Alternative cross geometry (parallel / free)
+- Leaves shape control
+    - Add angle 
+- Save/load from JSON

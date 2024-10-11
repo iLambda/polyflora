@@ -129,7 +129,8 @@ export const Branches = (props: BranchesProps) => {
                                 : (<Cross 
                                         shading={props.shading}
                                         textureURL={props.textureBranchURL}
-                                        crossMode={
+                                        crossMode='quad'
+                                        crossPlanes={
                                             props.geometryMode === 'cross-x' ? CrossDirection.CROSS_HORIZONTAL :
                                             props.geometryMode === 'cross-y' ? CrossDirection.CROSS_VERTICAL :
                                             CrossDirection.CROSS_BOTH
