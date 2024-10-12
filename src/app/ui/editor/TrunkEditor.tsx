@@ -1,9 +1,12 @@
 import { useFlora } from '@app/state/Flora';
-import { Fieldset, Flex, NumberInput, Select } from '@mantine/core';
+import { Fieldset, Flex, rem, Text } from '@mantine/core';
 import { styles } from './TrunkEditor.css';
 import { TexturePicker } from '../controls/TexturePicker';
-import { MathUtils } from 'three';
 import { SkeletonParameters } from '@three/flora/gen/Skeleton';
+import { DataControl } from '../controls/DataControl';
+import { NumberPicker } from '../controls/NumberPicker';
+import { Separator } from '../controls/Separator';
+import { SelectorPicker } from '../controls/SelectorPicker';
 
 const setter = (set: (v: number) => void) => ((v: unknown) => {if (typeof v === 'number') { set(v); }});
 
@@ -17,89 +20,98 @@ export const TrunkEditor = () => {
         <Flex direction='column' gap='sm'>
             {/* Control segments */}
             <Fieldset legend='Geometry' className={styles.fieldset}>
-                <Flex direction='row' gap='md'>
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Segments (length)' 
-                        size='xs'
+                {/* Length segments */}
+                <DataControl label='Segments (length)' width={rem(64)}>
+                    <NumberPicker
                         allowDecimal={false}
                         allowNegative={false}
                         value={floraSnapshot.trunk.segmentsLength} 
-                        onChange={setter((v) => flora.trunk.segmentsLength = Math.max(1, v))} 
+                        onChange={v => flora.trunk.segmentsLength = v} 
+                        min={1}
+                        step={1}
                     />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Segments (radius)'
-                        size='xs'
+                </DataControl>
+                {/* Radius segments */}
+                <DataControl label='Segments (radius)' width={rem(64)}>
+                    <NumberPicker
                         allowDecimal={false}
                         allowNegative={false}
                         value={floraSnapshot.trunk.segmentsRadius} 
-                        onChange={setter((v) => flora.trunk.segmentsRadius = Math.max(3, v))} 
+                        onChange={v => flora.trunk.segmentsRadius = v} 
+                        min={3}
+                        step={1}
                     />
-                </Flex>
-            </Fieldset>
-            {/* Control size */}
-            <Fieldset legend='Size' className={styles.fieldset}>
-                <Flex direction='row' gap='md' >
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Trunk length' 
-                        size='xs'
+                </DataControl>
+                
+                <Separator />
+                {/* Length segments */}
+                <DataControl label='Size (length)' width={rem(64)}>
+                    <NumberPicker
+                        allowDecimal={true}
                         allowNegative={false}
                         value={floraSnapshot.trunk.sizeLength} 
-                        onChange={setter((v) => flora.trunk.sizeLength = v)}  
+                        onChange={v => flora.trunk.sizeLength = v} 
+                        min={0.01}
                     />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Trunk radius' 
-                        size='xs'
+                </DataControl>
+                {/* Radius segments */}
+                <DataControl label='Size (radius)' width={rem(64)}>
+                    <NumberPicker
+                        allowDecimal={true}
                         allowNegative={false}
-                        step={0.1}
                         value={floraSnapshot.trunk.sizeRadius} 
-                        onChange={setter((v) => flora.trunk.sizeRadius = v)}  
+                        onChange={v => flora.trunk.sizeRadius = v} 
+                        min={0.01}
+                        step={0.1}
                     />
-                </Flex>
+                </DataControl>
             </Fieldset>
+
             {/* Shape control */}
             <Fieldset legend='Shape' className={styles.fieldset}>
                 {/* Curvature */}
-                <NumberInput 
-                    label='Curvature' 
-                    size='xs'
-                    allowNegative={false}
-                    step={0.1}
-                    value={floraSnapshot.trunk.curvature} 
-                    onChange={setter((v) => flora.trunk.curvature = Math.max(0.01, v))}  
-                />
+                <DataControl label='Curvature' width={rem(55)}>
+                    <NumberPicker
+                        allowDecimal={true}
+                        allowNegative={false}
+                        value={floraSnapshot.trunk.curvature} 
+                        onChange={v => flora.trunk.curvature = v}  
+                        min={0.01}
+                        max={50}
+                        step={0.1}
+                    />
+                </DataControl>
                 {/* Crinlking */}
-                <Flex direction='row' gap='md' >
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Crinkling (min)' 
-                        size='xs'
+                <DataControl label='Crinkling'>
+                    <>
+                        <NumberPicker
+                            allowDecimal={true}
+                            allowNegative={false}
+                            value={floraSnapshot.trunk.crinklingMin} 
+                            onChange={v => flora.trunk.crinklingMin = v}  
+                            min={0}
+                            max={flora.trunk.crinklingMax}
+                            step={0.25}
+                            suffix='°'
+                        />
+                        <Text size='xs'>to</Text>
+                    </>
+                    <NumberPicker
+                        allowDecimal={true}
                         allowNegative={false}
-                        step={0.25}
-                        suffix='°'
-                        value={floraSnapshot.trunk.crinklingMin} 
-                        onChange={setter((v) => flora.trunk.crinklingMin = Math.max(0, Math.min(v, flora.trunk.crinklingMax)))}  
-                    />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Crinkling (max)' 
-                        size='xs'
-                        allowNegative={false}
-                        step={0.25}
-                        suffix='°'
                         value={floraSnapshot.trunk.crinklingMax} 
-                        onChange={setter((v) => flora.trunk.crinklingMax = Math.max(0, Math.max(v, flora.trunk.crinklingMin)))}  
+                        onChange={v => flora.trunk.crinklingMax = v}  
+                        min={flora.trunk.crinklingMin}
+                        max={360}
+                        step={0.25}
+                        suffix='°'
                     />
-                </Flex>
+                </DataControl>
+                <Separator />
                 {/* Bending control */}
-                  <Flex direction='row' gap='md' >
-                    <Select
+                <DataControl label='Bend (direction)'>
+                    <SelectorPicker
                         style={{ flex: 5 }}
-                        size='xs'
-                        label='Bend (direction)'
                         data={[
                             { value: 'up' satisfies BendingMode, label: 'Up' },
                             { value: 'down' satisfies BendingMode, label: 'Down' },
@@ -107,43 +119,42 @@ export const TrunkEditor = () => {
                         ]}
                         value={floraSnapshot.trunk.bendDirection}
                         onChange={v => flora.trunk.bendDirection = (v as BendingMode)}
-                    />                                        
-                    <NumberInput 
-                        style={{ flex: 4 }}
-                        label='Bend (amount)' 
-                        size='xs'
-                        suffix='°'
-                        allowNegative
-                        step={1}
+                    />               
+                </DataControl>
+                <DataControl label='Bend (amount)' width={rem(55)}>
+                    <NumberPicker
+                        allowDecimal={true}
+                        allowNegative={true}
                         value={floraSnapshot.trunk.bendAmount} 
-                        onChange={setter((v) => flora.trunk.bendAmount = MathUtils.clamp(v, -360, 360))}  
+                        onChange={v => flora.trunk.bendAmount = v}  
+                        min={-360}
+                        max={360}
+                        step={1}
+                        suffix='°'
                     />
-                </Flex>
+                </DataControl>
             </Fieldset>
             {/* Texture zone */}
             <Fieldset legend='Material' className={styles.fieldset}>
-                <Flex direction='row' gap='md'>
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Tiling (U)' 
-                        size='xs'
-                        step={0.1}
+                <DataControl label='Tiling (U)'>
+                    <NumberPicker
                         allowDecimal={true}
-                        allowNegative={false}
+                        allowNegative={true}
                         value={floraSnapshot.trunk.tilingU} 
-                        onChange={setter((v) => flora.trunk.tilingU = v)} 
-                    />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Tiling (V)'
-                        size='xs' 
+                        onChange={v => flora.trunk.tilingU = v}
                         step={0.1}
-                        allowDecimal={true}
-                        allowNegative={false}
-                        value={floraSnapshot.trunk.tilingV} 
-                        onChange={setter((v) => flora.trunk.tilingV = v)} 
                     />
-                </Flex>
+                </DataControl>
+                <DataControl label='Tiling (V)'>
+                    <NumberPicker
+                        allowDecimal={true}
+                        allowNegative={true}
+                        value={floraSnapshot.trunk.tilingV} 
+                        onChange={v => flora.trunk.tilingV = v}
+                        step={0.1}
+                    />
+                </DataControl>
+                <Separator />
                 <TexturePicker 
                     label='Texture'
                     url={floraSnapshot.trunk.textureURL}

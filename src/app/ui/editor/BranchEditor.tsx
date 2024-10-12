@@ -63,7 +63,8 @@ export const BranchEditor = () => {
                         allowNegative={false}
                         value={floraSnapshot.branch.segmentsLength} 
                         onChange={v => flora.branch.segmentsLength = v} 
-                        min={0}
+                        min={1}
+                        step={1}
                     />
                 </DataControl>
                 {/* Radius segments */}
@@ -74,7 +75,8 @@ export const BranchEditor = () => {
                         allowNegative={false}
                         value={floraSnapshot.branch.segmentsRadius} 
                         onChange={v => flora.branch.segmentsRadius = v} 
-                        min={0}
+                        min={3}
+                        step={1}
                     />
                 </DataControl>
             </Fieldset>
@@ -313,9 +315,10 @@ export const BranchEditor = () => {
                 </DataControl>
             </Fieldset>
             {/* Texture zone */}
-            <Fieldset legend='Texture'>
+            <Fieldset legend='Material' className={styles.fieldset}>
                 <TexturePicker
-                    disabled={floraSnapshot.branch.geometryMode.includes('detailed')}
+                    label='Texture'
+                    disabled={!(floraSnapshot.branch.geometryMode.includes('cross-x') || floraSnapshot.branch.geometryMode.includes('cross-y'))}
                     url={floraSnapshot.branch.textureURL}
                     onURLChanged={v => flora.branch.textureURL = v}
                 />

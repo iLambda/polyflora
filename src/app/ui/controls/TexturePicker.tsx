@@ -1,12 +1,14 @@
-import { AspectRatio, Center, FileInput, Flex, Image, Loader, Overlay } from '@mantine/core';
+import { AspectRatio, Center, Flex, Image, Loader, Overlay, rem } from '@mantine/core';
 import { imageMIME } from '@utils/mime';
 import { useEffect, useState } from 'react';
+import { DataControl } from './DataControl';
+import { FilePicker } from './FilePicker';
 
 export type TexturePickerProps = {
     url: string;
     onURLChanged: (url: string) => void;
     disabled?: boolean;
-    label?: string;
+    label: string;
 };
 
 export const TexturePicker = (props: TexturePickerProps) => {
@@ -37,15 +39,15 @@ export const TexturePicker = (props: TexturePickerProps) => {
     useEffect(() => setLoading(true), [url]);
 
     return (
-        <Flex direction='column' gap='md' >
+        <Flex direction='column' gap={rem(6)} >
             {/* The file input */}
-            <FileInput accept={imageMIME.join(',')} 
-                size='xs'
-                disabled={props.disabled}
-                value={textureFile}
-                onChange={setTextureFile} 
-                label={props.label}
-            />
+            <DataControl label={props.label}>
+                <FilePicker accept={imageMIME.join(',')} 
+                    disabled={props.disabled}
+                    value={textureFile}
+                    onChange={setTextureFile}
+                />
+            </DataControl>
             {/* The texture display */}
             <Center style={{ width: '100%' }}>
                 <AspectRatio ratio={1} maw={'325px'} style={{ width: '100%' }} pos='relative'>
@@ -61,6 +63,7 @@ export const TexturePicker = (props: TexturePickerProps) => {
                         }}      */ 
                         src={props.url}
                         onLoad={() => setLoading(false)}
+                        style={{ filter: `grayscale(${props.disabled ? 1 : 0})` }}
                     />
                     {
                         isLoading &&
