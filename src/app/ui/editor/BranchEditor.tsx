@@ -1,13 +1,16 @@
 import { FloraData, useFlora } from '@app/state/Flora';
-import { Fieldset, Flex, NumberInput, rem, Select } from '@mantine/core';
+import { Fieldset, Flex, MultiSelect, rem, Text } from '@mantine/core';
 import { styles } from './BranchEditor.css';
 import { TexturePicker } from '../controls/TexturePicker';
-import { MathUtils } from 'three';
-
-const setter = (set: (v: number) => void) => ((v: unknown) => {if (typeof v === 'number') { set(v); }});
+import { NumberPicker } from '../controls/NumberPicker';
+import { DataControl } from '../controls/DataControl';
+import { useMemo } from 'react';
+import { Separator } from '../controls/Separator';
+import { SelectorPicker } from '../controls/SelectorPicker';
 
 type BendingMode = FloraData['branch']['bendDirection'];
-type BranchGeometryMode = FloraData['branch']['geometryMode'];
+type BranchGeometryModes = FloraData['branch']['geometryMode'];
+type BranchGeometryMode = BranchGeometryModes[0];
 export const BranchEditor = () => {
     /* Setup state */
     const [floraSnapshot, flora] = useFlora();
@@ -16,114 +19,128 @@ export const BranchEditor = () => {
     return (
         <Flex direction='column' gap='sm'>
             {/* Control segments */}
-            <Fieldset legend='Geometry' className={styles.fieldset} style={{ marginTop: rem(2) }}>
-                <Flex direction='row' gap='md'>
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='# Branches' 
+            <Fieldset legend='Geometry' className={styles.fieldset}>
+                {/* The geometry selection */}
+                <MultiSelect
                         size='xs'
+                        data={[
+                            { label: 'Detail', value: 'detailed' satisfies BranchGeometryMode },
+                            { label: 'Cross X', value: 'cross-x' satisfies BranchGeometryMode},
+                            { label: 'Cross Y', value: 'cross-y' satisfies BranchGeometryMode },
+                        ]}
+                        styles={{
+                            pillsList: {
+                                paddingTop: rem(2),
+                            },
+                        }}
+                        value={useMemo(() => [...floraSnapshot.branch.geometryMode], [floraSnapshot.branch.geometryMode])}
+                        onChange={v => flora.branch.geometryMode = (v as BranchGeometryModes)}
+                    />
+                <Separator />
+                {/* # branches */}
+                <DataControl label='# branches' width={rem(64)}>
+                    <NumberPicker
                         allowDecimal={false}
                         allowNegative={false}
                         value={floraSnapshot.branch.nArticulations} 
-                        onChange={setter((v) => flora.branch.nArticulations = Math.max(0, v))} 
+                        min={0}
+                        onChange={v => flora.branch.nArticulations = v} 
                     />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='# Sub-branches'
-                        size='xs' 
+                </DataControl>
+                {/* # sub-brances */}
+                <DataControl label='# sub-branches' width={rem(64)}>
+                    <NumberPicker
                         allowDecimal={false}
                         allowNegative={false}
+                        min={0}
                     />
-                </Flex>
-                <Select
-                    size='xs'
-                    label='Mode'
-                    data={[
-                        { value: 'detailed' satisfies BranchGeometryMode, label: 'Detailed' },
-                        { value: 'cross-xy' satisfies BranchGeometryMode, label: 'Cross (XY)' },
-                        { value: 'cross-x' satisfies BranchGeometryMode, label: 'Cross (X)' },
-                        { value: 'cross-y' satisfies BranchGeometryMode, label: 'Cross (Y)' },
-                    ]}
-                    value={floraSnapshot.branch.geometryMode}
-                    onChange={v => flora.branch.geometryMode = (v as BranchGeometryMode)}
-                />  
-                <Flex direction='row' gap='md'>
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Segments (length)' 
-                        size='xs'
+                </DataControl>
+                <Separator />
+                {/* Length segments */}
+                <DataControl label='Segments (length)' width={rem(64)}>
+                    <NumberPicker
                         allowDecimal={false}
                         allowNegative={false}
                         value={floraSnapshot.branch.segmentsLength} 
-                        onChange={setter((v) => flora.branch.segmentsLength = Math.max(0, v))} 
+                        onChange={v => flora.branch.segmentsLength = v} 
+                        min={0}
                     />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Segments (radius)'
-                        size='xs' 
+                </DataControl>
+                {/* Radius segments */}
+                <DataControl label='Segments (radius)' width={rem(64)}>
+                    <NumberPicker
+                        disabled={!floraSnapshot.branch.geometryMode.includes('detailed')}
                         allowDecimal={false}
                         allowNegative={false}
-                        disabled={floraSnapshot.branch.geometryMode !== 'detailed'}
                         value={floraSnapshot.branch.segmentsRadius} 
-                        onChange={setter((v) => flora.branch.segmentsRadius = Math.max(0, v))} 
+                        onChange={v => flora.branch.segmentsRadius = v} 
+                        min={0}
                     />
-                </Flex>
+                </DataControl>
             </Fieldset>
             {/* Position control */}
             <Fieldset legend='Position distribution' className={styles.fieldset}>
                 {/* Method */}
-                <Select
-                    size='xs'
-                    label='Method'
-                    defaultValue='random'
-                    data={[
-                        { value: 'random', label: 'Random' },
-                    ]}
-                />  
-                {/* Angle */}
-                <Flex direction='row' gap='md' >
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Angle (min)' 
-                        size='xs'
-                        allowNegative={false}
-                        step={0.25}
-                        suffix='°'
-                        value={floraSnapshot.branch.minAngle} 
-                        onChange={setter((v) => flora.branch.minAngle = MathUtils.clamp(v, -360, 360))} 
-                    />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Angle (max)' 
-                        size='xs'
-                        allowNegative={false}
-                        step={0.25}
-                        suffix='°'
+                <DataControl label='Method'>
+                    <SelectorPicker
+                        defaultValue='random'
+                        data={[
+                            { value: 'random', label: 'Random' },
+                        ]}
+                    />  
+                </DataControl>
+                {/* Angle min */}
+                <DataControl label='Angle'>
+                    <>
+                        <NumberPicker
+                            allowDecimal={false}
+                            allowNegative={true}
+                            value={floraSnapshot.branch.minAngle} 
+                            onChange={v => flora.branch.minAngle = v} 
+                            min={-360}
+                            max={360}
+                            step={0.25}
+                            suffix='°'
+                            />    
+                        <Text size='xs'>to</Text>
+                    </>
+                    <NumberPicker
+                        allowDecimal={false}
+                        allowNegative={true}
                         value={floraSnapshot.branch.maxAngle} 
-                        onChange={setter((v) => flora.branch.maxAngle = MathUtils.clamp(v, -360, 360))} 
+                        onChange={v => flora.branch.maxAngle = v} 
+                        min={-360}
+                        max={360}
+                        step={0.25}
+                        suffix='°'
                     />
-                </Flex>
-                {/* Position control */}
-                  <Flex direction='row' gap='md' >
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Position (min)' 
-                        size='xs'
+                </DataControl>
+                {/* Position min */}
+                <DataControl label='Position'>
+                    <>
+                        <NumberPicker
+                            allowDecimal={true}
+                            allowNegative={false}
+                            value={Math.round(floraSnapshot.branch.minPosition * 100 * 100) / 100} 
+                            onChange={v => flora.branch.minPosition = (v / 100)}
+                            min={0}
+                            max={100}
+                            step={1}
+                            suffix='%'
+                        />
+                        <Text size='xs'>to</Text>
+                    </>
+                    <NumberPicker
+                        allowDecimal={true}
                         allowNegative={false}
-                        suffix='%'
-                        value={Math.round(floraSnapshot.branch.minPosition * 100 * 100) / 100} 
-                        onChange={setter((v) => flora.branch.minPosition = MathUtils.clamp(v/100, 0, 1))} 
-                    />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Position (max)' 
-                        size='xs'
-                        allowNegative={false}
-                        suffix='%'
                         value={Math.round(floraSnapshot.branch.maxPosition * 100 * 100) / 100} 
-                        onChange={setter((v) => flora.branch.maxPosition = MathUtils.clamp(v/100, 0, 1))} 
+                        onChange={v => flora.branch.maxPosition = (v / 100)}
+                        min={0}
+                        max={100}
+                        step={1}
+                        suffix='%'
                     />
-                </Flex>
+                </DataControl>
             </Fieldset>
 
 
@@ -139,117 +156,140 @@ export const BranchEditor = () => {
                         { value: 'random', label: 'Random' },
                     ]}
                 />   */}
-                {/* Angle */}
-                <Flex direction='row' gap='md' >
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Length (min)' 
-                        size='xs'
+                {/* Length (min) */}
+                <DataControl label='Length'>
+                    <>
+                        <NumberPicker
+                            allowDecimal={true}
+                            allowNegative={false}
+                            value={Math.round(floraSnapshot.branch.minLength * 100 * 100) / 100} 
+                            onChange={v => flora.branch.minLength = (v / 100)}
+                            min={0}
+                            max={100}
+                            step={1}
+                            suffix='%'
+                        />
+                        <Text size='xs'>to</Text>
+                    </>
+                    <NumberPicker
+                        allowDecimal={true}
                         allowNegative={false}
-                        suffix='%'
-                        value={Math.round(floraSnapshot.branch.minLength * 100 * 100) / 100} 
-                        onChange={setter((v) => flora.branch.minLength = MathUtils.clamp(v/100, 0, 1))} 
-                    />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Length (max)' 
-                        size='xs'
-                        allowNegative={false}
-                        suffix='%'
                         value={Math.round(floraSnapshot.branch.maxLength * 100 * 100) / 100} 
-                        onChange={setter((v) => flora.branch.maxLength = MathUtils.clamp(v/100, 0, 1))} 
+                        onChange={v => flora.branch.maxLength = (v / 100)}
+                        min={0}
+                        max={100}
+                        step={1}
+                        suffix='%'
                     />
-                </Flex>
-                {/* Radius / Crossplane width */}
-                {
-                    floraSnapshot.branch.geometryMode === 'detailed' 
-                        // Radius 
-                        ? (<Flex direction='row' gap='md' >
-                            <NumberInput 
-                                style={{ flex: 1 }}
-                                label='Radius (min)' 
-                                size='xs'
-                                allowNegative={false}
-                                suffix='%'
-                                value={Math.round(floraSnapshot.branch.minRadius * 100 * 100) / 100} 
-                                onChange={setter((v) => flora.branch.minRadius = MathUtils.clamp(v/100, 0, 1))} 
-                            />
-                            <NumberInput 
-                                style={{ flex: 1 }}
-                                label='Radius (max)' 
-                                size='xs'
-                                allowNegative={false}
-                                suffix='%'
-                                value={Math.round(floraSnapshot.branch.maxRadius * 100 * 100) / 100} 
-                                onChange={setter((v) => flora.branch.maxRadius = MathUtils.clamp(v/100, 0, 1))} 
-                            />
-                        </Flex>)
-                        // Cross
-                        : (<Flex direction='row' gap='md' >
-                            <NumberInput 
-                                style={{ flex: 1 }}
-                                label='Cross width (min)' 
-                                size='xs'
-                                allowNegative={false}
-                                suffix='%'
-                                value={Math.round(floraSnapshot.branch.minCrossWidth * 100 * 100) / 100} 
-                                onChange={setter((v) => flora.branch.minCrossWidth = MathUtils.clamp(v/100, 0, 1))} 
-                            />
-                            <NumberInput 
-                                style={{ flex: 1 }}
-                                label='Cross width (max)' 
-                                size='xs'
-                                allowNegative={false}
-                                suffix='%'
-                                value={Math.round(floraSnapshot.branch.maxCrossWidth * 100 * 100) / 100} 
-                                onChange={setter((v) => flora.branch.maxCrossWidth = MathUtils.clamp(v/100, 0, 1))} 
-                            />
-                        </Flex>)
-                }
+                </DataControl>
+
+                {/* Radius (min) */}
+                <DataControl label='Radius'>
+                    <>
+                        <NumberPicker
+                            disabled={!floraSnapshot.branch.geometryMode.includes('detailed')}
+                            allowDecimal={true}
+                            allowNegative={false}
+                            value={Math.round(floraSnapshot.branch.minRadius * 100 * 100) / 100} 
+                            onChange={v => flora.branch.minRadius = (v / 100)}
+                            min={0}
+                            max={100}
+                            step={1}
+                            suffix='%'
+                        />
+                        <Text size='xs'>to</Text>
+                    </>
+                    <NumberPicker
+                        disabled={!floraSnapshot.branch.geometryMode.includes('detailed')}
+                        allowDecimal={true}
+                        allowNegative={false}
+                        value={Math.round(floraSnapshot.branch.maxRadius * 100 * 100) / 100} 
+                        onChange={v => flora.branch.maxRadius = (v / 100)}
+                        min={0}
+                        max={100}
+                        step={1}
+                        suffix='%'
+                    />
+                </DataControl>
+                
+                {/* Cross width (min) */}
+                <DataControl label='Cross width'>
+                    <>
+                        <NumberPicker
+                            disabled={!(floraSnapshot.branch.geometryMode.includes('cross-x') 
+                                    || floraSnapshot.branch.geometryMode.includes('cross-y'))}
+                            allowDecimal={true}
+                            allowNegative={false}
+                            value={Math.round(floraSnapshot.branch.minCrossWidth * 100 * 100) / 100} 
+                            onChange={v => flora.branch.minCrossWidth = (v / 100)}
+                            min={0}
+                            max={100}
+                            step={1}
+                            suffix='%'
+                        />
+                        <Text size='xs'>to</Text>
+                    </>
+                    <NumberPicker
+                        disabled={!(floraSnapshot.branch.geometryMode.includes('cross-x') 
+                                 || floraSnapshot.branch.geometryMode.includes('cross-y'))}
+                        allowDecimal={true}
+                        allowNegative={false}
+                        value={Math.round(floraSnapshot.branch.maxCrossWidth * 100 * 100) / 100} 
+                        onChange={v => flora.branch.maxCrossWidth = (v / 100)}
+                        min={0}
+                        max={100}
+                        step={1}
+                        suffix='%'
+                    />
+                </DataControl>
             </Fieldset>
 
-
-            
             {/* Shape control */}
             <Fieldset legend='Shape' className={styles.fieldset}>
                 {/* Curvature */}
-                <NumberInput 
-                    label='Curvature' 
-                    size='xs'
-                    allowNegative={false}
-                    step={0.1}
-                    value={floraSnapshot.branch.curvature} 
-                    onChange={setter((v) => flora.branch.curvature = Math.max(0.01, v))}  
-                />
+                <DataControl label='Curvature' width={rem(55)}>
+                    <NumberPicker
+                        disabled={!floraSnapshot.branch.geometryMode.includes('detailed')}
+                        allowDecimal={true}
+                        allowNegative={false}
+                        value={floraSnapshot.branch.curvature} 
+                        onChange={v => flora.branch.curvature = v}  
+                        min={0.01}
+                        max={50}
+                        step={0.1}
+                    />
+                </DataControl>
                 {/* Crinlking */}
-                <Flex direction='row' gap='md' >
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Crinkling (min)' 
-                        size='xs'
+                <DataControl label='Crinkling'>
+                    <>
+                        <NumberPicker
+                            allowDecimal={true}
+                            allowNegative={false}
+                            value={floraSnapshot.branch.crinklingMin} 
+                            onChange={v => flora.branch.crinklingMin = v}  
+                            min={0}
+                            max={flora.branch.crinklingMax}
+                            step={0.25}
+                            suffix='°'
+                        />
+                        <Text size='xs'>to</Text>
+                    </>
+                    <NumberPicker
+                        allowDecimal={true}
                         allowNegative={false}
-                        step={0.25}
-                        suffix='°'
-                        value={floraSnapshot.branch.crinklingMin} 
-                        onChange={setter((v) => flora.branch.crinklingMin = Math.max(0, Math.min(v, flora.branch.crinklingMax)))}  
-                    />
-                    <NumberInput 
-                        style={{ flex: 1 }}
-                        label='Crinkling (max)' 
-                        size='xs'
-                        allowNegative={false}
-                        step={0.25}
-                        suffix='°'
                         value={floraSnapshot.branch.crinklingMax} 
-                        onChange={setter((v) => flora.branch.crinklingMax = Math.max(0, Math.max(v, flora.branch.crinklingMin)))}  
+                        onChange={v => flora.branch.crinklingMax = v}  
+                        min={flora.branch.crinklingMin}
+                        max={360}
+                        step={0.25}
+                        suffix='°'
                     />
-                </Flex>
+                </DataControl>
+                <Separator />
                 {/* Bending control */}
-                <Flex direction='row' gap='md' >
-                    <Select
+                <DataControl label='Bend (direction)'>
+                    <SelectorPicker
                         style={{ flex: 5 }}
-                        size='xs'
-                        label='Bend (direction)'
                         data={[
                             { value: 'up' satisfies BendingMode, label: 'Up' },
                             { value: 'down' satisfies BendingMode, label: 'Down' },
@@ -257,23 +297,25 @@ export const BranchEditor = () => {
                         ]}
                         value={floraSnapshot.branch.bendDirection}
                         onChange={v => flora.branch.bendDirection = (v as BendingMode)}
-                    />                                        
-                    <NumberInput 
-                        style={{ flex: 4 }}
-                        label='Bend (amount)' 
-                        size='xs'
-                        suffix='°'
-                        allowNegative
-                        step={1}
+                    />               
+                </DataControl>
+                <DataControl label='Bend (amount)' width={rem(55)}>
+                    <NumberPicker
+                        allowDecimal={true}
+                        allowNegative={true}
                         value={floraSnapshot.branch.bendAmount} 
-                        onChange={setter((v) => flora.branch.bendAmount = MathUtils.clamp(v, -360, 360))}  
+                        onChange={v => flora.branch.bendAmount = v}  
+                        min={-360}
+                        max={360}
+                        step={1}
+                        suffix='°'
                     />
-                </Flex>
+                </DataControl>
             </Fieldset>
             {/* Texture zone */}
             <Fieldset legend='Texture'>
                 <TexturePicker
-                    disabled={floraSnapshot.branch.geometryMode === 'detailed'}
+                    disabled={floraSnapshot.branch.geometryMode.includes('detailed')}
                     url={floraSnapshot.branch.textureURL}
                     onURLChanged={v => flora.branch.textureURL = v}
                 />

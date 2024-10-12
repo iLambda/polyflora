@@ -50,6 +50,15 @@ export const TexturePicker = (props: TexturePickerProps) => {
             <Center style={{ width: '100%' }}>
                 <AspectRatio ratio={1} maw={'325px'} style={{ width: '100%' }} pos='relative'>
                     <Image
+                        /* style={{
+                            backgroundColor: '#444',
+                            backgroundImage: `linear-gradient(45deg, #777 27%, transparent 27%),
+                                              linear-gradient(135deg, #777 27%, transparent 27%),
+                                              linear-gradient(45deg, transparent 75%, #777 75%),
+                                              linear-gradient(135deg, transparent 75%, #777 75%)`,
+                            backgroundSize: '20px 20px',
+                            backgroundPosition: '0 0, 10px 0, 10px -10px, 0px 10px',
+                        }}      */ 
                         src={props.url}
                         onLoad={() => setLoading(false)}
                     />

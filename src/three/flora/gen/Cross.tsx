@@ -8,6 +8,7 @@ import { useParentSkeleton } from './SkeletonContext';
 import { SkeletonData } from './SkeletonData';
 import { Line } from '@react-three/drei';
 import { assertExhaustive } from '@utils/types';
+import { useRegisterPolygonCount } from '@app/state/PolygonCount';
 
 
 /* The direction a cross is going */
@@ -187,6 +188,8 @@ export const Cross = memo((props: CrossProps) => {
     }, [buffer, skeleton.joints, crossPlanes, hasMiddleEdge, verticesPerLine, crossMode, 
         nCrossPlanes, segmentsLength, crossWidth, props.tilingU, props.tilingV]);
 
+    /* Register polycount */
+    useRegisterPolygonCount(nVertices, nTris);
 
     /* Make the interleaved buffer and mark it dirty */
     const interleavedBuffer = useMemo(() => new THREE.InterleavedBuffer(geometryData, BUFFER_STRIDE), [geometryData]);
@@ -221,7 +224,7 @@ export const Cross = memo((props: CrossProps) => {
         jointCenters.flatMap((center, i) => i === 0 ? [] : [jointCenters[i - 1]!, center]  )
     , [jointCenters]);
 
-    /* Modify the shader to use the absolute value of the */
+    /* Modify the shader to use the absolute value of the normal */
     const onBeforeCompile = useCallback((parameters: THREE.WebGLProgramParametersWithUniforms) => {
         parameters.fragmentShader = parameters.fragmentShader.replace(
             // Inject ourself in the lambert lighting calculation
@@ -241,13 +244,12 @@ export const Cross = memo((props: CrossProps) => {
             #define RE_Direct				RE_Direct_Lambert_Foliage`,
         );
     }, []);
-
     
     /* Return object */
     return (
         <>
-            <mesh geometry={geometry} visible={props.shading === 'shaded'}>
-                <meshLambertMaterial map={colorMap} alphaTest={0.5} side={THREE.DoubleSide} 
+            <mesh geometry={geometry} visible={props.shading === 'shaded'} castShadow receiveShadow >
+                <meshLambertMaterial map={colorMap} alphaTest={0.5} side={THREE.DoubleSide}
                     onBeforeCompile={onBeforeCompile}/>
             </mesh>
             <mesh geometry={geometry} visible={props.shading === 'wireframe'}>

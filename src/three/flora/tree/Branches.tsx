@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Literal, Number, Static, Union } from 'runtypes';
+import { Array, Literal, Number, Static, Union } from 'runtypes';
 import { Articulations, ArticulationsParameters } from '../gen/Articulations';
 import { Skeleton } from '../gen/Skeleton';
 import { Limb, LimbProps } from '../gen/Limb';
@@ -39,7 +39,7 @@ export const BranchesParameters = ArticulationsParameters.extend({
     bendAmount: Number,
     
     /* The mode of geometry rendering */
-    geometryMode: Union(Literal('detailed'), Literal('cross-x'), Literal('cross-y'), Literal('cross-xy')),
+    geometryMode: Array(Union(Literal('detailed'), Literal('cross-x'), Literal('cross-y'))),
 });
 
 export type BranchesProps = BranchesParameters & {
@@ -116,8 +116,8 @@ export const Branches = (props: BranchesProps) => {
                         >
                             {/* Check if limb or cross */}
                             {
-                                props.geometryMode === 'detailed' 
-                                ? (<Limb 
+                                props.geometryMode.includes('detailed') 
+                                && (<Limb 
                                         curvature={props.curvature}
                                         shading={props.shading}
                                         segmentsRadius={props.segmentsRadius}
@@ -126,14 +126,16 @@ export const Branches = (props: BranchesProps) => {
                                         tilingV={props.tilingBarkV}
                                         textureURL={props.textureBarkURL}
                                     />)
-                                : (<Cross 
+                            }
+                            {
+                                (props.geometryMode.includes('cross-x') || props.geometryMode.includes('cross-y'))
+                                && (<Cross 
                                         shading={props.shading}
                                         textureURL={props.textureBranchURL}
                                         crossMode='quad'
                                         crossPlanes={
-                                            props.geometryMode === 'cross-x' ? CrossDirection.CROSS_HORIZONTAL :
-                                            props.geometryMode === 'cross-y' ? CrossDirection.CROSS_VERTICAL :
-                                            CrossDirection.CROSS_BOTH
+                                              (props.geometryMode.includes('cross-x') ? CrossDirection.CROSS_HORIZONTAL : 0)
+                                            | (props.geometryMode.includes('cross-y') ? CrossDirection.CROSS_VERTICAL : 0)
                                         }
                                         tilingU={props.tilingCrossU}
                                         tilingV={props.tilingCrossV}

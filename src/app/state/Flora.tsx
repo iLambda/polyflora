@@ -39,7 +39,7 @@ const initialFloraData : FloraData = {
         crinklingMax: 10,
         curvature: 0.8,
         distribution: 'random',
-        geometryMode: 'cross-xy',
+        geometryMode: ['cross-x', 'cross-y'],
         minAngle: 60,
         minLength: 0.5,
         minPosition: 0.35,

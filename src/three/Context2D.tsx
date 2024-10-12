@@ -26,6 +26,7 @@ export const Context2D = (props: Context2DProps) => {
         // Set some params
         renderer.setClearColor(0x2B2B2B);
         renderer.shadowMap.enabled = false;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.toneMapping = THREE.NoToneMapping;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         // Return it
@@ -38,6 +39,7 @@ export const Context2D = (props: Context2DProps) => {
             //onContextMenu={(e) => { e.preventDefault(); return false; }}
             ref={canvasRef}
             dpr={window.devicePixelRatio}
+            shadows
             gl={gl}
             camera={{ fov: 60, near: 0.1, far: 1000, position: [25, 50, 25] }}
             style={props.style}

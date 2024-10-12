@@ -1,4 +1,4 @@
-import { ActionIcon, Flex, Overlay, SegmentedControl } from '@mantine/core';
+import { ActionIcon, Flex, Overlay, SegmentedControl, Text } from '@mantine/core';
 import { Context2D } from '@three/Context2D';
 import { View, ViewController } from '@three/View';
 
@@ -6,11 +6,14 @@ import { styles } from './Viewer.css';
 import { IconCrosshair } from '@tabler/icons-react';
 import { useRef } from 'react';
 import { FloraData, useFlora } from '@app/state/Flora';
+import { usePolygonCount } from '@app/state/PolygonCount';
 
 export const Viewer = () => {
     /* State and references */
     const controllerRef = useRef<ViewController | null>(null);
     const [floraSnapshot, flora] = useFlora();
+    
+    const { verts, tris } = usePolygonCount();
 
     return (
         <>
@@ -31,6 +34,11 @@ export const Viewer = () => {
             {/* The editor overlay */}
             <Overlay className={styles.overlay}>
                 <Flex className={styles.overlayRoot}>
+
+                    <Flex direction='column'>
+                        <Text>{`Vertices: ${verts}`}</Text>
+                        <Text>{`Triangles: ${tris}`}</Text>
+                    </Flex>
 
                     {/* Shading selector */}
                     <SegmentedControl

@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { useParentSkeleton } from './SkeletonContext';
 import { SkeletonData } from './SkeletonData';
 import { Line } from '@react-three/drei';
+import { useRegisterPolygonCount } from '@app/state/PolygonCount';
 
 /* The parameters for generating a specific limb */
 export type LimbParameters = Static<typeof LimbParameters>;
@@ -186,10 +187,13 @@ export const Limb = memo((props: LimbProps) => {
         jointCenters.flatMap((center, i) => i === 0 ? [] : [jointCenters[i - 1]!, center]  )
     , [jointCenters]);
     
+    /* Register polycount */
+    useRegisterPolygonCount(nVertices, nTris);
+    
     /* Return object */
     return (
         <>
-            <mesh geometry={geometry} visible={props.shading === 'shaded'}>
+            <mesh geometry={geometry} visible={props.shading === 'shaded'} castShadow receiveShadow>
                 <meshLambertMaterial map={colorMap} />
             </mesh>
             <mesh geometry={geometry} visible={props.shading === 'wireframe'}>

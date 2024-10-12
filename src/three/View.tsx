@@ -3,7 +3,7 @@ import { deg2rad } from '@utils/math';
 import { Grid, GridSettings } from './viewer/Grid';
 import { Lighting, LightingSettings } from './viewer/Lighting';
 import { Record, Static } from 'runtypes';
-import { MutableRefObject, Suspense, useEffect } from 'react';
+import { MutableRefObject, Suspense, useEffect, useMemo } from 'react';
 
 import { useReactiveRef } from '@utils/react/hooks/state';
 import * as THREE from 'three';
@@ -110,7 +110,7 @@ export const View = (props: ViewerProps) => {
                             curvature={floraSnapshot.branch.curvature}
                             segmentsRadius={floraSnapshot.branch.segmentsRadius}
                             segmentsLength={floraSnapshot.branch.segmentsLength}
-                            geometryMode={floraSnapshot.branch.geometryMode}
+                            geometryMode={useMemo(() => [...floraSnapshot.branch.geometryMode], [floraSnapshot.branch.geometryMode])}
                             minAngle={floraSnapshot.branch.minAngle}
                             minLength={floraSnapshot.branch.minLength}
                             minRadius={floraSnapshot.branch.minRadius}

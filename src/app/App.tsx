@@ -24,7 +24,7 @@ export const App = () => {
                         <Allotment.Pane minSize={500}>
                             <Viewer />
                         </Allotment.Pane>
-                        <Allotment.Pane minSize={250} preferredSize='300px'>
+                        <Allotment.Pane minSize={300} preferredSize='300px'>
                             <Editor />
                         </Allotment.Pane>
                     </Allotment>
