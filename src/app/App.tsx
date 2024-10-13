@@ -18,18 +18,16 @@ export const App = () => {
         <MantineProvider theme={theme} defaultColorScheme='dark'>
             <Flex className={styles.root}>
                 <Header />
-
                 <FloraStoreProvider>
                     <Allotment className={styles.main}>
                         <Allotment.Pane minSize={500}>
                             <Viewer />
                         </Allotment.Pane>
-                        <Allotment.Pane minSize={300} preferredSize='300px'>
+                        <Allotment.Pane minSize={300} maxSize={900} preferredSize='300px'>
                             <Editor />
                         </Allotment.Pane>
                     </Allotment>
                 </FloraStoreProvider>
-
             </Flex>
         </MantineProvider>
     );

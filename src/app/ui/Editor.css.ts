@@ -22,6 +22,7 @@ export const styles = {
         paddingTop: vars.spacing.sm,
         paddingBottom: vars.spacing.sm,
         overflow: 'scroll',
+        maxWidth: 'none',
     }),
 
     // The tab root
