@@ -1,12 +1,12 @@
 import { FloraData, useFlora } from '@app/state/Flora';
 import { Fieldset, Flex, MultiSelect, rem, Text } from '@mantine/core';
-import { styles } from './BranchEditor.css';
-import { TexturePicker } from '../controls/TexturePicker';
-import { NumberPicker } from '../controls/NumberPicker';
-import { DataControl } from '../controls/DataControl';
 import { useMemo } from 'react';
-import { Separator } from '../controls/Separator';
-import { SelectorPicker } from '../controls/SelectorPicker';
+import { styles } from './BranchEditor.css';
+import { DataControl } from './controls/DataControl';
+import { NumberPicker } from './controls/NumberPicker';
+import { SelectorPicker } from './controls/SelectorPicker';
+import { Separator } from './controls/Separator';
+import { TexturePicker } from './controls/TexturePicker';
 
 type BendingMode = FloraData['branch']['bendDirection'];
 type BranchGeometryModes = FloraData['branch']['geometryMode'];
@@ -45,14 +45,6 @@ export const BranchEditor = () => {
                         value={floraSnapshot.branch.nArticulations} 
                         min={0}
                         onChange={v => flora.branch.nArticulations = v} 
-                    />
-                </DataControl>
-                {/* # sub-brances */}
-                <DataControl label='# sub-branches' width={rem(64)}>
-                    <NumberPicker
-                        allowDecimal={false}
-                        allowNegative={false}
-                        min={0}
                     />
                 </DataControl>
                 <Separator />

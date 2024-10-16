@@ -1,3 +1,4 @@
+import { rem } from '@mantine/core';
 import { style } from '@vanilla-extract/css';
 
 /* The CSS variables exported by the stylesheet */
@@ -5,8 +6,12 @@ export const vars = {};
 
 /* The styles exported by the stylesheet */
 export const styles = {
-    root: style({
-        width: '100%',
-        height: '100%',
+
+    icon: style({
+        width: rem(14), 
+        height: rem(14),  
+        margin: 0,
+        strokeWidth: `${rem(1)}`,
     }),
+
 };

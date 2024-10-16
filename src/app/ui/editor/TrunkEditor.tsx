@@ -1,12 +1,12 @@
 import { useFlora } from '@app/state/Flora';
 import { Fieldset, Flex, rem, Text } from '@mantine/core';
-import { styles } from './TrunkEditor.css';
-import { TexturePicker } from '../controls/TexturePicker';
 import { SkeletonParameters } from '@three/flora/gen/Skeleton';
-import { DataControl } from '../controls/DataControl';
-import { NumberPicker } from '../controls/NumberPicker';
-import { Separator } from '../controls/Separator';
-import { SelectorPicker } from '../controls/SelectorPicker';
+import { styles } from './TrunkEditor.css';
+import { DataControl } from './controls/DataControl';
+import { NumberPicker } from './controls/NumberPicker';
+import { SelectorPicker } from './controls/SelectorPicker';
+import { Separator } from './controls/Separator';
+import { TexturePicker } from './controls/TexturePicker';
 
 const setter = (set: (v: number) => void) => ((v: unknown) => {if (typeof v === 'number') { set(v); }});
 
