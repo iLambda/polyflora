@@ -13,6 +13,11 @@
       "@utils/*": ["./src/utils/*"],
     },
 
+    /* Types */
+    "types": [
+      "vite-plugin-glsl/ext"
+    ],
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
