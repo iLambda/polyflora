@@ -1,9 +1,14 @@
 import { Tabs } from '@mantine/core';
 import { IconTree } from '@tabler/icons-react';
-import { styles } from './Tab.css';
+import { styles } from './FileTab.css';
 import { MouseEventHandler, useCallback } from 'react';
 
-export const Tab = () => {
+
+type FileTabProps = {
+    id: string;
+};
+
+export const FileTab = (props: FileTabProps) => {
 
     /* Handle context menu */
     const handleContextMenu : MouseEventHandler<HTMLButtonElement> = useCallback((e) => {
@@ -14,11 +19,11 @@ export const Tab = () => {
 
     return (
         <Tabs.Tab 
-            value='untitled' 
+            value={props.id}
             leftSection={<IconTree className={styles.icon} />}
             onContextMenu={handleContextMenu}
         >
-            untitled
+            untitled untitled untitled
         </Tabs.Tab>
     );
 };

@@ -3,10 +3,10 @@ import 'allotment/dist/style.css';
 
 import { Flex, MantineProvider } from '@mantine/core';
 
-import { theme } from './theme';
-import { Header } from './ui/Header';
-import { styles } from './App.css';
-import { Workspace } from './ui/workspace/Workspace';
+import { styles } from '@app/App.css';
+import { theme } from '@app/theme';
+import { Header } from '@app/ui/Header';
+import { Workspace } from '@app/ui/workspace/Workspace';
 
 export const App = () => {
 
