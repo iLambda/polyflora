@@ -1,8 +1,9 @@
-import { Flex, ScrollArea, Tabs } from '@mantine/core';
+import { Flex, ScrollArea, Tabs, Transition } from '@mantine/core';
 import { styles } from './FileTabs.css';
 import { FileTab } from './FileTab';
 import { useCallback, useRef } from 'react';
 import { useIdempotentState } from '@utils/react/hooks/state';
+import { IconChevronsLeft, IconChevronsRight } from '@tabler/icons-react';
 
 type FileTabsProps = {
     value: string | null;
@@ -20,7 +21,7 @@ export const FileTabs = (props: FileTabsProps) => {
     /* Callback to listen to scroll position changes */
     const handleScrollPositionChange = useCallback((pos: {x: number, y: number}) => {
         setAtStart(pos.x === 0);
-        setAtEnd(pos.x === ((viewportRef.current?.scrollWidth ?? Infinity) - (viewportRef.current?.clientWidth ?? 0)));
+        setAtEnd(pos.x >= ((viewportRef.current?.scrollWidth ?? Infinity) - (viewportRef.current?.clientWidth ?? 0)));
     }, [setAtStart, setAtEnd]);
 
     return (
@@ -44,13 +45,41 @@ export const FileTabs = (props: FileTabsProps) => {
                 </ScrollArea>
             }
         >
-            {!isAtStart && <span className={styles.stickyLeft}>L</span>}
+            {/* The scroll left indicator */}
+            <Transition mounted={!isAtStart} transition="fade" duration={100} timingFunction="ease"> 
+                {(style) => 
+                    <div style={style} className={styles.stickyLeft}>
+                        <div className={styles.stickyLeftPane}>
+                            <IconChevronsLeft
+                                size={20}
+                                strokeWidth={1}
+                                color='#9b9b9b'
+                            />
+                        </div>
+                    </div>
+                }
+            </Transition>
+            
             {
                 new Array(10).fill(0).map((_, idx) => (
                     <FileTab key={`untitled${idx}`} id={`untitled${idx}`} />
                 ))
             }
-            {!isAtEnd && <span className={styles.stickyRight}>R</span>}
+
+            {/* The scroll right indicator */}
+            <Transition mounted={!isAtEnd} transition="fade" duration={100} timingFunction="ease"> 
+                {(style) => 
+                    <div style={style} className={styles.stickyRight}>
+                        <div className={styles.stickyRightPane}>
+                            <IconChevronsRight
+                                size={20}
+                                strokeWidth={1}
+                                color='#9b9b9b'
+                            />
+                        </div>
+                    </div>
+                }
+            </Transition>
         </Tabs>
     );
 };

@@ -28,6 +28,7 @@
     "three-custom-shader-material": "^6.0.13",
     "three-stdlib": "^2.33.0",
     "ts-pattern": "^5.4.0",
+    "tunnel-rat": "^0.1.2",
     "valtio": "^2.0.0",
     "valtio-history": "^1.0.0",
     "zustand": "5.0.0-rc.2"

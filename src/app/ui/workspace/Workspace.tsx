@@ -6,13 +6,15 @@ import { PolygonCounter } from '@app/state/PolygonCount';
 import { useState } from 'react';
 import { useConstant } from '@utils/react/hooks/refs';
 import { proxyMap } from 'valtio/utils';
-import { FileTabs } from './FileTabs';
+import { FileTabs } from '@app/ui/workspace/FileTabs';
 
 export const Workspace = () => {
 
     /* The component state */
     const [currentDocument, setCurrentDocument] = useState<string | null>(null);
     const documents = useConstant(() => proxyMap<string, { txt: string }>());
+
+    /* The tunnels */
     
     return (
         <Flex direction='column' className={styles.root}>

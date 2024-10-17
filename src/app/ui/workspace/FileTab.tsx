@@ -21,7 +21,7 @@ export const FileTab = (props: FileTabProps) => {
         <Tabs.Tab 
             value={props.id}
             leftSection={<IconTree className={styles.icon} />}
-            onContextMenu={handleContextMenu}
+            // onContextMenu={handleContextMenu}
         >
             untitled untitled untitled
         </Tabs.Tab>
