@@ -6,7 +6,7 @@ import { Flex, MantineProvider } from '@mantine/core';
 import { styles } from '@app/App.css';
 import { theme } from '@app/theme';
 import { Header } from '@app/ui/Header';
-import { Workspace } from '@app/ui/workspace/Workspace';
+import { Workspace } from '@app/workspace/Workspace';
 
 export const App = () => {
 

@@ -7,7 +7,6 @@ import { proxyMap } from 'valtio/utils';
 
 /* The state */
 const polygonCountContext = createContext<ReturnType<typeof proxyMap<symbol, PolygonCount>> | null>(null);
-
 export const PolygonCounter = ({ children } : { children?: ReactNode | ReactNode[] }) => {
     /* The store ref */
     const storeRef = useRefWithInit(() => proxyMap<symbol, PolygonCount>());

@@ -1,0 +1,1 @@
+export const interleave = <T, U>(arr: T[], thing: U) => arr.flatMap(n => [n, thing]).slice(0, -1);

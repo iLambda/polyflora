@@ -41,3 +41,10 @@ export type Triplet<T, U = T, V = T> = [T, U, V];
 
 export type NonEmptyArray<T> = [T, ...T[]];
 export type NonEmptyReadonlyArray<T> = readonly [T, ...T[]];
+
+export type DeepReadonly<T> =
+    T extends object ? { readonly [P in keyof T]: DeepReadonly<T[P]> } :
+    T extends (infer TArray)[] ? readonly (DeepReadonly<TArray>)[] :
+    T extends readonly (infer TArray)[] ? (DeepReadonly<TArray>)[] :
+    T extends number | string | boolean | null | undefined ? T :
+    never;
