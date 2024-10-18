@@ -5,12 +5,13 @@ import { Flex } from '@mantine/core';
 import { Allotment } from 'allotment';
 import { styles } from './Workspace.css';
 import { Editor } from '@app/ui/workspace/Editor';
+import { useDocuments } from '@app/state/Documents';
 
-export type WorkspaceProps = {
-    document: string | null;
-};
+export type WorkspaceProps = {};
 
 export const Workspace = (props: WorkspaceProps) => {
+    /* Check current document */
+    const [documentsSnapshot] = useDocuments();
 
     /* The tunnels */    
     return (
@@ -22,12 +23,12 @@ export const Workspace = (props: WorkspaceProps) => {
                 <Allotment.Pane minSize={500}>
                     {/* The view content */}
                     <PolygonCounter>
-                        <View enabled={props.document !== null} />
+                        <View enabled={documentsSnapshot.current !== null} />
                     </PolygonCounter>
                 </Allotment.Pane>
                 <Allotment.Pane minSize={300} maxSize={900} preferredSize='300px'>
                     {/* The editor content */}
-                    <Editor enabled={props.document !== null} />
+                    <Editor enabled={documentsSnapshot.current !== null} />
                 </Allotment.Pane>
             </Allotment>
         </Flex>

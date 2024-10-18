@@ -25,9 +25,7 @@ export const Root = () => {
         <Flex className={styles.root} direction='column'>
             {/* The workspace */}
             <TreeBlueprint>
-                <Workspace 
-                    document={documentsSnapshot.current}
-                />
+                <Workspace />
             </TreeBlueprint>
             {/* The tabs */}
             <FileTabs 
