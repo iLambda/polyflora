@@ -3,13 +3,14 @@ import { styles } from './TreeBlueprintEditor.css';
 
 import { Container, Tabs } from '@mantine/core';
 import { BranchEditor } from '@app/blueprint/editors/BranchEditor';
-import { useFloraStore } from '@app/state/Flora';
 import { SeedEditor } from '@app/blueprint/editors/SeedEditor';
+import { useMolecule } from 'bunshi/react';
+import { TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
 
 export const TreeBlueprintEditor = () => {
 
     /* Get store */
-    const flora = useFloraStore();
+    const flora = useMolecule(TreeBlueprintMolecule);
 
     /* Return component */
     return (

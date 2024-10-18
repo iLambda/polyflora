@@ -1,4 +1,3 @@
-import { FloraData } from '@app/state/Flora';
 import { Flex, MultiSelect, rem, Text } from '@mantine/core';
 import { useMemo } from 'react';
 import { DataControl } from '@app/blueprint/editors/controls/DataControl';
@@ -9,13 +8,14 @@ import { TexturePicker } from '@app/blueprint/editors/controls/TexturePicker';
 import { Fieldgroup } from '@app/blueprint/editors/controls/Fieldgroup';
 import { BranchesParameters } from '@three/flora/tree/Branches';
 import { useSnapshot } from 'valtio';
+import { TreeBlueprintState } from '@app/blueprint/TreeBlueprintState';
 
 type BranchEditorProps = {
     store: BranchesParameters & { textureURL: string; };
 };
 
-type BendingMode = FloraData['branch']['bendDirection'];
-type BranchGeometryModes = FloraData['branch']['geometryMode'];
+type BendingMode = TreeBlueprintState['branch']['bendDirection'];
+type BranchGeometryModes = TreeBlueprintState['branch']['geometryMode'];
 type BranchGeometryMode = BranchGeometryModes[0];
 export const BranchEditor = (props: BranchEditorProps) => {
     /* Setup state */

@@ -1,8 +1,10 @@
-import { FloraData, useFlora } from '@app/state/Flora';
 import { ActionIcon, Flex, SegmentedControl } from '@mantine/core';
 import { IconCrosshair } from '@tabler/icons-react';
 import { styles } from './TreeBlueprintOverlay.css';
 import { TreeBlueprint3DViewController } from '@app/blueprint/TreeBlueprint3DView';
+import { TreeBlueprintState, TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
+import { useMolecule } from 'bunshi/react';
+import { useSnapshot } from 'valtio';
 
 type TreeBlueprintOverlayProps = {
     viewController: TreeBlueprint3DViewController | null;
@@ -11,7 +13,8 @@ type TreeBlueprintOverlayProps = {
 export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
 
     /* Get store */
-    const [floraSnapshot, flora] = useFlora();
+    const flora = useMolecule(TreeBlueprintMolecule);
+    const floraSnapshot = useSnapshot(flora);
 
     return [
         /* Shading selector */
@@ -23,12 +26,12 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
             color='green'
             withItemsBorders={false}
             data={[
-                { value: 'shaded' satisfies FloraData['shading'], label: 'Shaded' },
-                { value: 'wireframe' satisfies FloraData['shading'], label: 'Wireframe' },
-                { value: 'skeletal' satisfies FloraData['shading'], label: 'Skeletal' },
+                { value: 'shaded' satisfies TreeBlueprintState['shading'], label: 'Shaded' },
+                { value: 'wireframe' satisfies TreeBlueprintState['shading'], label: 'Wireframe' },
+                { value: 'skeletal' satisfies TreeBlueprintState['shading'], label: 'Skeletal' },
             ]}
             value={floraSnapshot.shading}
-            onChange={v => flora.shading = v as FloraData['shading']}
+            onChange={v => flora.shading = v as TreeBlueprintState['shading']}
         />,
 
         /* Buttons for modifying the view */

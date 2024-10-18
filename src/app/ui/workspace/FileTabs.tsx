@@ -45,7 +45,7 @@ export const FileTabs = (props: FileTabsProps) => {
     
     /* Prepare a context menu */
     const { showContextMenu } = useContextMenu();
-    const showTabContextMenu = useCallback((key: string) => showContextMenu([
+    const showTabContextMenu = useCallback((_key: string) => showContextMenu([
         {
             key: 'close',
             title: 'Close',

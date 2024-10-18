@@ -3,7 +3,6 @@ import { TreeBlueprint3DView, TreeBlueprint3DViewController } from '@app/bluepri
 import { ReactNode } from 'react';
 import { TreeBlueprintOverlay } from './TreeBlueprintOverlay';
 import { TreeBlueprintEditor } from './TreeBlueprintEditor';
-import { FloraStoreProvider } from '@app/state/Flora';
 import { useReactiveRef } from '@utils/react/hooks/state';
 
 export type TreeBlueprintProps = {
@@ -11,19 +10,17 @@ export type TreeBlueprintProps = {
 };
 
 export const TreeBlueprint = (props: TreeBlueprintProps) => {
-    /* State and references */
+    /* Create a reactive ref for the view controller */
     const [controllerRef, controller] = useReactiveRef<TreeBlueprint3DViewController>();
     
     return (
         <>
             {/* The state itself */}
-            <FloraStoreProvider>
-                { props.children }
-            </FloraStoreProvider>
+            { props.children }
 
             {/* The 3D context */}
             <Tunnel3D.In>
-                <TreeBlueprint3DView key='3d'
+                <TreeBlueprint3DView
                     controllerRef={controllerRef}
                     environment={{ 
                         grid: { visibility: 'shown' },
@@ -37,14 +34,14 @@ export const TreeBlueprint = (props: TreeBlueprintProps) => {
 
             {/* The view overlay */}
             <Tunnel3DOverlay.In>
-                <TreeBlueprintOverlay key='overlay'
+                <TreeBlueprintOverlay
                     viewController={controller}
                 />
             </Tunnel3DOverlay.In>
 
             {/* The editor */}
             <TunnelEditor.In>
-                <TreeBlueprintEditor key='editor' />
+                <TreeBlueprintEditor />
             </TunnelEditor.In>
         </>
     );

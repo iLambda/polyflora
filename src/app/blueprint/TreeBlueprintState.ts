@@ -1,3 +1,4 @@
+import { createBlueprintMolecule } from '@app/state/Blueprint';
 import { BranchesParameters } from '@three/flora/tree/Branches';
 import { TrunkParameters } from '@three/flora/tree/Trunk';
 import { Literal, Record, Static, String, Union } from 'runtypes';
@@ -12,7 +13,7 @@ export const TreeBlueprintState = Record({
 });
 
 /* The initial value of the state of this blueprint */
-export const initialState = () => ({
+export const initialState = () : TreeBlueprintState => ({
     seed: '3551376191',
     shading: 'shaded',
     trunk: {
@@ -53,3 +54,6 @@ export const initialState = () => ({
         textureURL: 'Cross09.png',
     },
 });
+
+/* The molecule storing the state */
+export const TreeBlueprintMolecule = createBlueprintMolecule(TreeBlueprintState, initialState);

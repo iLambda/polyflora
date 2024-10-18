@@ -3,12 +3,13 @@ import { styles } from './Header.css';
 import { MenuBar } from '@app/ui/header/menu/MenuBar';
 import { rem } from '@mantine/core';
 import { IconCubePlus } from '@tabler/icons-react';
-import { useDocumentsStore } from '@app/state/Documents';
+import { DocumentStoreMolecule } from '@app/state/Documents';
+import { useMolecule } from 'bunshi/react';
 
 export const Header = () => {
 
     const iconStyle = useMemo(() => ({width: rem(14), height: rem(14) }), []);
-    const documentStore = useDocumentsStore();
+    const documentStore = useMolecule(DocumentStoreMolecule);
 
     return (
         <header className={styles.header}>
@@ -19,7 +20,7 @@ export const Header = () => {
                         text: 'New file',
                         icon: <IconCubePlus style={iconStyle} />,
                         shortcut: ['Ctrl', 'N'],
-                        onClick: documentStore.newDocument,
+                        onClick: documentStore.new,
                     },
                     // {
                     //     type: 'item',

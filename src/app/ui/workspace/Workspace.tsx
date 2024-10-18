@@ -5,13 +5,16 @@ import { Flex } from '@mantine/core';
 import { Allotment } from 'allotment';
 import { styles } from './Workspace.css';
 import { Editor } from '@app/ui/workspace/Editor';
-import { useDocuments } from '@app/state/Documents';
+import { DocumentStoreMolecule } from '@app/state/Documents';
+import { useSnapshot } from 'valtio';
+import { useMolecule } from 'bunshi/react';
 
 export type WorkspaceProps = {};
 
 export const Workspace = (props: WorkspaceProps) => {
     /* Check current document */
-    const [documentsSnapshot] = useDocuments();
+    const documents = useMolecule(DocumentStoreMolecule);
+    const documentsSnapshot = useSnapshot(documents);
 
     /* The tunnels */    
     return (

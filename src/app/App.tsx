@@ -5,7 +5,6 @@ import 'allotment/dist/style.css';
 import { theme } from '@app/theme';
 import { MantineProvider } from '@mantine/core';
 import { ContextMenuProvider } from 'mantine-contextmenu';
-import { DocumentStoreProvider } from '@app/state/Documents';
 import { Root } from '@app/Root';
 
 export const App = () => {
@@ -14,9 +13,7 @@ export const App = () => {
     return (
         <MantineProvider theme={theme} defaultColorScheme='dark'>
             <ContextMenuProvider>
-                <DocumentStoreProvider>
-                    <Root />
-                </DocumentStoreProvider>
+                <Root />
             </ContextMenuProvider>
         </MantineProvider>
     );

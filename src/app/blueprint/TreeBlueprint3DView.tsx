@@ -7,9 +7,11 @@ import { MutableRefObject, Suspense, useEffect, useMemo } from 'react';
 
 import { useReactiveRef } from '@utils/react/hooks/state';
 import * as THREE from 'three';
-import { useFlora } from '@app/state/Flora';
 import { Trunk } from '../../three/flora/tree/Trunk';
 import { Branches } from '../../three/flora/tree/Branches';
+import { useMolecule } from 'bunshi/react';
+import { TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
+import { useSnapshot } from 'valtio';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -38,7 +40,8 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
     const [mainGroupRef, mainGroup] = useReactiveRef<THREE.Group>();
 
     /* Get flora state */
-    const [floraSnapshot] = useFlora();
+    const floraStore = useMolecule(TreeBlueprintMolecule);
+    const floraSnapshot = useSnapshot(floraStore);
 
     /* Return the view controller */
     const controllerRef = props.controllerRef;
