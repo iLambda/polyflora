@@ -1,5 +1,4 @@
-import { FloraStoreProvider } from '@app/state/Flora';
-import { PolygonCounter } from '@app/state/PolygonCount';
+import { PolygonCounter } from '@three/utils/PolygonCount';
 import { Header } from '@app/ui/header/Header';
 import { View } from '@app/ui/workspace/View';
 import { Flex } from '@mantine/core';
@@ -19,20 +18,18 @@ export const Workspace = (props: WorkspaceProps) => {
             {/* The header */}
             <Header />
             {/* The panels */}
-            <FloraStoreProvider>
-                <Allotment className={styles.workPanel}>
-                    <Allotment.Pane minSize={500}>
-                        {/* The view content */}
-                        <PolygonCounter>
-                            <View enabled={props.document !== null} />
-                        </PolygonCounter>
-                    </Allotment.Pane>
-                    <Allotment.Pane minSize={300} maxSize={900} preferredSize='300px'>
-                        {/* The editor content */}
-                        <Editor enabled={props.document !== null} />
-                    </Allotment.Pane>
-                </Allotment>
-            </FloraStoreProvider>
+            <Allotment className={styles.workPanel}>
+                <Allotment.Pane minSize={500}>
+                    {/* The view content */}
+                    <PolygonCounter>
+                        <View enabled={props.document !== null} />
+                    </PolygonCounter>
+                </Allotment.Pane>
+                <Allotment.Pane minSize={300} maxSize={900} preferredSize='300px'>
+                    {/* The editor content */}
+                    <Editor enabled={props.document !== null} />
+                </Allotment.Pane>
+            </Allotment>
         </Flex>
     );
 };

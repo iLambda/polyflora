@@ -38,6 +38,9 @@ importers:
       allotment:
         specifier: ^1.20.2
         version: 1.20.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      bunshi:
+        specifier: ^2.1.5
+        version: 2.1.5(react@18.3.1)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1296,6 +1299,18 @@ packages:
 
   buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
+
+  bunshi@2.1.5:
+    resolution: {integrity: sha512-zO+qxwd2aBV+XUIf7LjL1G3lx5CtvbtXZD+WMkM9KD+RN0iFtitDVX2QDu/wzdQIj8hyXJlGDfVEfeoqhAVEfA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      vue: '>=3'
+    peerDependenciesMeta:
+      react:
+        optional: true
+      vue:
+        optional: true
 
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
@@ -3651,6 +3666,10 @@ snapshots:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
+
+  bunshi@2.1.5(react@18.3.1):
+    optionalDependencies:
+      react: 18.3.1
 
   cac@6.7.14: {}
 

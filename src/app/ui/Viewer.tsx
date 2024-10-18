@@ -6,7 +6,7 @@ import { styles } from './Viewer.css';
 import { IconCrosshair } from '@tabler/icons-react';
 import { useRef } from 'react';
 import { FloraData, useFlora } from '@app/state/Flora';
-import { usePolygonCount } from '@app/state/PolygonCount';
+import { usePolygonCount } from '@three/utils/PolygonCount';
 
 export const Viewer = () => {
     /* State and references */

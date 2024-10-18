@@ -4,6 +4,7 @@ import { TrunkParameters } from '@three/flora/tree/Trunk';
 import { useRefWithInit } from '@utils/react/hooks/refs';
 import { createContext, ReactNode, useContext } from 'react';
 import { proxy, Snapshot, useSnapshot } from 'valtio';
+import { deepClone } from 'valtio/utils';
 
 /* The data contained in the store */
 export type FloraData = {
@@ -61,7 +62,7 @@ const initialFloraData : FloraData = {
 const FloraStoreContext = createContext<FloraData | null>(null);
 export const FloraStoreProvider = ({ children } : { children?: ReactNode | ReactNode[] }) => {
     // Create a ref to hold the store
-    const storeRef = useRefWithInit(() => proxy(initialFloraData));
+    const storeRef = useRefWithInit(() => proxy(deepClone(initialFloraData)));
     // Create the provider
     return (
         <FloraStoreContext.Provider value={storeRef.current}>
@@ -73,10 +74,18 @@ export const FloraStoreProvider = ({ children } : { children?: ReactNode | React
 /* Get some data in the store */
 export const useFlora = () : [Snapshot<FloraData>, FloraData] => {
     // Get store for context
+    const store = useFloraStore();
+    // Return data
+    return [useSnapshot(store), store];
+};
+
+/* Get the store itself */
+export const useFloraStore = () => {
+    // Get store for context
     const store = useContext(FloraStoreContext);
     if (store === null) {
         throw new Error('useFlora called outside of <FloraStoreProvider>.');
     }
-    // Return data
-    return [useSnapshot(store), store];
+    // Return
+    return store;
 };

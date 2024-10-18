@@ -1,4 +1,4 @@
-import { usePolygonCount } from '@app/state/PolygonCount';
+import { usePolygonCount } from '@three/utils/PolygonCount';
 import { styles } from '@app/ui/workspace/View.css';
 import { Tunnel3D, Tunnel3DOverlay } from '@app/ui/workspace/WorkspaceTunnel';
 import { Flex, Overlay, Text } from '@mantine/core';

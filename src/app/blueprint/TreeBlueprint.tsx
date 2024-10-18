@@ -3,6 +3,7 @@ import { View, ViewController } from '@three/View';
 import { ReactNode, useRef } from 'react';
 import { TreeBlueprintOverlay } from './TreeBlueprintOverlay';
 import { TreeBlueprintEditor } from './TreeBlueprintEditor';
+import { FloraStoreProvider } from '@app/state/Flora';
 
 export type TreeBlueprintProps = {
     children?: ReactNode | ReactNode[];
@@ -15,7 +16,9 @@ export const TreeBlueprint = (props: TreeBlueprintProps) => {
     return (
         <>
             {/* The state itself */}
-            { props.children }
+            <FloraStoreProvider>
+                { props.children }
+            </FloraStoreProvider>
 
             {/* The 3D context */}
             <Tunnel3D.In>

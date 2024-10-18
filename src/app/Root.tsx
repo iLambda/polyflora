@@ -2,7 +2,7 @@ import '@mantine/core/styles.css';
 import 'mantine-contextmenu/styles.layer.css';
 import 'allotment/dist/style.css';
 
-import { styles } from '@app/App.css';
+import { styles } from '@app/Root.css';
 import { Workspace } from '@app/ui/workspace/Workspace';
 import { Flex } from '@mantine/core';
 import { useMemo } from 'react';
