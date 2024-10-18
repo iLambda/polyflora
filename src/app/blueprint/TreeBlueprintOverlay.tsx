@@ -1,9 +1,17 @@
-import { FloraData } from '@app/state/Flora';
+import { FloraData, useFlora } from '@app/state/Flora';
 import { ActionIcon, Flex, SegmentedControl } from '@mantine/core';
 import { IconCrosshair } from '@tabler/icons-react';
 import { styles } from './TreeBlueprintOverlay.css';
+import { TreeBlueprint3DViewController } from '@app/blueprint/TreeBlueprint3DView';
 
-export const TreeBlueprintOverlay = () => {
+type TreeBlueprintOverlayProps = {
+    viewController: TreeBlueprint3DViewController | null;
+};
+
+export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
+
+    /* Get store */
+    const [floraSnapshot, flora] = useFlora();
 
     return [
         /* Shading selector */
@@ -19,6 +27,8 @@ export const TreeBlueprintOverlay = () => {
                 { value: 'wireframe' satisfies FloraData['shading'], label: 'Wireframe' },
                 { value: 'skeletal' satisfies FloraData['shading'], label: 'Skeletal' },
             ]}
+            value={floraSnapshot.shading}
+            onChange={v => flora.shading = v as FloraData['shading']}
         />,
 
         /* Buttons for modifying the view */
@@ -29,11 +39,11 @@ export const TreeBlueprintOverlay = () => {
         >
             {/* Fit view to content */}
             <ActionIcon 
-                //className={styles.viewButton} 
                 style={{ pointerEvents: 'all' }}
                 variant='filled' size='lg' radius='xl'
                 aria-label='Fit view to content'
                 children={<IconCrosshair />} 
+                onClick={() => props.viewController?.fitToView?.() }
             />
         </Flex>,
     ];

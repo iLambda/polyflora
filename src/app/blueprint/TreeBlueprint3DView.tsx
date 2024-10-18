@@ -1,15 +1,15 @@
 import { CameraControls } from '@react-three/drei';
 import { deg2rad } from '@utils/math';
-import { Grid, GridSettings } from './viewer/Grid';
-import { Lighting, LightingSettings } from './viewer/Lighting';
+import { Grid, GridSettings } from '../../three/viewer/Grid';
+import { Lighting, LightingSettings } from '../../three/viewer/Lighting';
 import { Record, Static } from 'runtypes';
 import { MutableRefObject, Suspense, useEffect, useMemo } from 'react';
 
 import { useReactiveRef } from '@utils/react/hooks/state';
 import * as THREE from 'three';
 import { useFlora } from '@app/state/Flora';
-import { Trunk } from './flora/tree/Trunk';
-import { Branches } from './flora/tree/Branches';
+import { Trunk } from '../../three/flora/tree/Trunk';
+import { Branches } from '../../three/flora/tree/Branches';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -21,19 +21,18 @@ export const EnvironmentSettings = Record({
 });
 
 /* The properties of the viewer */
-type ViewerProps = {
+type TreeBlueprint3DViewProps = {
     // The environment
     environment: EnvironmentSettings,
-    
     // The view controller reference
-    controllerRef?: ((v: ViewController) => void) | MutableRefObject<ViewController | null>;
+    controllerRef?: ((v: TreeBlueprint3DViewController) => void) | MutableRefObject<TreeBlueprint3DViewController | null>;
 };
 
-export type ViewController = {
+export type TreeBlueprint3DViewController = {
     fitToView: () => void;
 };
 
-export const View = (props: ViewerProps) => {
+export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
     /* Declare references */
     const [controlsRef, controls] = useReactiveRef<CameraControls>();
     const [mainGroupRef, mainGroup] = useReactiveRef<THREE.Group>();
@@ -50,7 +49,7 @@ export const View = (props: ViewerProps) => {
         if (!controllerRef) { return; }
 
         // Make view controller
-        const controller : ViewController = {
+        const controller : TreeBlueprint3DViewController = {
             // Fit to view function
             fitToView: () => {
                 controls.fitToSphere(mainGroup, true);
