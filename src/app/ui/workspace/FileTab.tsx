@@ -1,29 +1,24 @@
 import { Tabs } from '@mantine/core';
 import { IconTree } from '@tabler/icons-react';
 import { styles } from './FileTab.css';
-import { MouseEventHandler, useCallback } from 'react';
+import { MouseEventHandler } from 'react';
 
 
 type FileTabProps = {
     id: string;
+    text: string;
+
+    onContextMenu?: MouseEventHandler<HTMLButtonElement>;
 };
 
 export const FileTab = (props: FileTabProps) => {
-
-    /* Handle context menu */
-    const handleContextMenu : MouseEventHandler<HTMLButtonElement> = useCallback((e) => {
-        /* Stop default event */
-        e.preventDefault();
-        // TODO !!!
-    }, []);
-
     return (
         <Tabs.Tab 
             value={props.id}
             leftSection={<IconTree className={styles.icon} />}
-            // onContextMenu={handleContextMenu}
+            onContextMenu={props.onContextMenu}
         >
-            untitled untitled untitled
+            { props.text }
         </Tabs.Tab>
     );
 };

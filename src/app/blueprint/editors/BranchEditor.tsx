@@ -1,12 +1,12 @@
 import { FloraData, useFlora } from '@app/state/Flora';
-import { Fieldset, Flex, MultiSelect, rem, Text } from '@mantine/core';
+import { Flex, MultiSelect, rem, Text } from '@mantine/core';
 import { useMemo } from 'react';
-import { styles } from './BranchEditor.css';
-import { DataControl } from './controls/DataControl';
-import { NumberPicker } from './controls/NumberPicker';
-import { SelectorPicker } from './controls/SelectorPicker';
-import { Separator } from './controls/Separator';
-import { TexturePicker } from './controls/TexturePicker';
+import { DataControl } from '@app/blueprint/editors/controls/DataControl';
+import { NumberPicker } from '@app/blueprint/editors/controls/NumberPicker';
+import { SelectorPicker } from '@app/blueprint/editors/controls/SelectorPicker';
+import { Separator } from '@app/blueprint/editors/controls/Separator';
+import { TexturePicker } from '@app/blueprint/editors/controls/TexturePicker';
+import { Fieldgroup } from '@app/blueprint/editors/controls/Fieldgroup';
 
 type BendingMode = FloraData['branch']['bendDirection'];
 type BranchGeometryModes = FloraData['branch']['geometryMode'];
@@ -19,7 +19,7 @@ export const BranchEditor = () => {
     return (
         <Flex direction='column' gap='sm'>
             {/* Control segments */}
-            <Fieldset legend='Geometry' className={styles.fieldset}>
+            <Fieldgroup legend='Geometry'>
                 {/* The geometry selection */}
                 <MultiSelect
                         size='xs'
@@ -43,8 +43,8 @@ export const BranchEditor = () => {
                         allowDecimal={false}
                         allowNegative={false}
                         value={floraSnapshot.branch.nArticulations} 
-                        min={0}
                         onChange={v => flora.branch.nArticulations = v} 
+                        min={0}
                     />
                 </DataControl>
                 <Separator />
@@ -71,9 +71,9 @@ export const BranchEditor = () => {
                         step={1}
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
             {/* Position control */}
-            <Fieldset legend='Position distribution' className={styles.fieldset}>
+            <Fieldgroup legend='Position distribution'>
                 {/* Method */}
                 <DataControl label='Method'>
                     <SelectorPicker
@@ -135,12 +135,12 @@ export const BranchEditor = () => {
                         suffix='%'
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
 
 
 
             {/* Size control */}
-            <Fieldset legend='Size distribution' className={styles.fieldset}>
+            <Fieldgroup legend='Size distribution'>
                 {/* Method */}
                 {/* <Select
                     size='xs'
@@ -236,10 +236,10 @@ export const BranchEditor = () => {
                         suffix='%'
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
 
             {/* Shape control */}
-            <Fieldset legend='Shape' className={styles.fieldset}>
+            <Fieldgroup legend='Shape'>
                 {/* Curvature */}
                 <DataControl label='Curvature' width={rem(55)}>
                     <NumberPicker
@@ -305,16 +305,16 @@ export const BranchEditor = () => {
                         suffix='°'
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
             {/* Texture zone */}
-            <Fieldset legend='Material' className={styles.fieldset}>
+            <Fieldgroup legend='Material'>
                 <TexturePicker
                     label='Texture'
                     disabled={!(floraSnapshot.branch.geometryMode.includes('cross-x') || floraSnapshot.branch.geometryMode.includes('cross-y'))}
                     url={floraSnapshot.branch.textureURL}
                     onURLChanged={v => flora.branch.textureURL = v}
                 />
-            </Fieldset>
+            </Fieldgroup>
         </Flex>
     );
 };

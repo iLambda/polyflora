@@ -1,23 +1,23 @@
 import '@mantine/core/styles.css';
+import 'mantine-contextmenu/styles.layer.css';
 import 'allotment/dist/style.css';
 
-import { Flex, MantineProvider } from '@mantine/core';
-
-import { styles } from '@app/App.css';
 import { theme } from '@app/theme';
-import { Header } from '@app/ui/Header';
-import { Workspace } from '@app/workspace/Workspace';
+import { MantineProvider } from '@mantine/core';
+import { ContextMenuProvider } from 'mantine-contextmenu';
+import { DocumentStoreProvider } from '@app/state/Documents';
+import { Root } from '@app/Root';
 
 export const App = () => {
-
 
     /* Return component */
     return (
         <MantineProvider theme={theme} defaultColorScheme='dark'>
-            <Flex className={styles.root} direction='column'>
-                <Header />
-                <Workspace />
-            </Flex>
+            <ContextMenuProvider>
+                <DocumentStoreProvider>
+                    <Root />
+                </DocumentStoreProvider>
+            </ContextMenuProvider>
         </MantineProvider>
     );
 };

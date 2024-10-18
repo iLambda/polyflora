@@ -11,6 +11,15 @@ export const styles = {
        borderColor: 'transparent',
     }),
 
+    kbd: style({
+        borderColor: 'color-mix(in srgb, var(--mantine-color-dark-3) 50%, var(--mantine-color-dark-4) 50%)',
+        backgroundColor: 'var(--mantine-color-dark-6)',
+        paddingBlock: rem(-3),
+        '&+&': {
+            marginInlineStart: rem(2),            
+        } as ComplexStyleRule,
+    } as ComplexStyleRule),
+
     menu: {
         item: style({
             height: rem(24),

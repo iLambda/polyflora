@@ -1,7 +1,7 @@
 
-import { styles } from '@app/ui/menu/MenuBar.css';
-import { MenuItems } from '@app/ui/menu/MenuItems';
-import { Menu, Button, DefaultMantineColor } from '@mantine/core';
+import { styles } from '@app/ui/header/menu/MenuBar.css';
+import { MenuItems } from '@app/ui/header/menu/MenuItems';
+import { Button, DefaultMantineColor, Menu } from '@mantine/core';
 import { getKeys } from '@utils/types';
 import { ReactNode } from 'react';
 
@@ -17,6 +17,7 @@ export type MenuItemData = {
     submenu?: MenuData;
     color?: DefaultMantineColor,
     text: string;
+    onClick?: () => void;
 };
 export type MenuSeparatorData = {
     type: 'separator',

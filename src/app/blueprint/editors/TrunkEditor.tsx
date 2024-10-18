@@ -1,14 +1,12 @@
 import { useFlora } from '@app/state/Flora';
-import { Fieldset, Flex, rem, Text } from '@mantine/core';
+import { Flex, rem, Text } from '@mantine/core';
 import { SkeletonParameters } from '@three/flora/gen/Skeleton';
-import { styles } from './TrunkEditor.css';
-import { DataControl } from './controls/DataControl';
-import { NumberPicker } from './controls/NumberPicker';
-import { SelectorPicker } from './controls/SelectorPicker';
-import { Separator } from './controls/Separator';
-import { TexturePicker } from './controls/TexturePicker';
-
-const setter = (set: (v: number) => void) => ((v: unknown) => {if (typeof v === 'number') { set(v); }});
+import { DataControl } from '@app/blueprint/editors/controls/DataControl';
+import { NumberPicker } from '@app/blueprint/editors/controls/NumberPicker';
+import { SelectorPicker } from '@app/blueprint/editors/controls/SelectorPicker';
+import { Separator } from '@app/blueprint/editors/controls/Separator';
+import { TexturePicker } from '@app/blueprint/editors/controls/TexturePicker';
+import { Fieldgroup } from '@app/blueprint/editors/controls/Fieldgroup';
 
 type BendingMode = SkeletonParameters['bendDirection'];
 export const TrunkEditor = () => {
@@ -19,7 +17,7 @@ export const TrunkEditor = () => {
     return (
         <Flex direction='column' gap='sm'>
             {/* Control segments */}
-            <Fieldset legend='Geometry' className={styles.fieldset}>
+            <Fieldgroup legend='Geometry'>
                 {/* Length segments */}
                 <DataControl label='Segments (length)' width={rem(64)}>
                     <NumberPicker
@@ -65,10 +63,10 @@ export const TrunkEditor = () => {
                         step={0.1}
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
 
             {/* Shape control */}
-            <Fieldset legend='Shape' className={styles.fieldset}>
+            <Fieldgroup legend='Shape'>
                 {/* Curvature */}
                 <DataControl label='Curvature' width={rem(55)}>
                     <NumberPicker
@@ -133,9 +131,9 @@ export const TrunkEditor = () => {
                         suffix='°'
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
             {/* Texture zone */}
-            <Fieldset legend='Material' className={styles.fieldset}>
+            <Fieldgroup legend='Material'>
                 <DataControl label='Tiling (U)'>
                     <NumberPicker
                         allowDecimal={true}
@@ -160,7 +158,7 @@ export const TrunkEditor = () => {
                     url={floraSnapshot.trunk.textureURL}
                     onURLChanged={v => flora.trunk.textureURL = v}
                 />
-            </Fieldset>
+            </Fieldgroup>
         </Flex>
     );
 };

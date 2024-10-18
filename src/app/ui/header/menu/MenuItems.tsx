@@ -1,21 +1,20 @@
 
-import { MenuData } from '@app/ui/menu/MenuBar';
+import { MenuData } from '@app/ui/header/menu/MenuBar';
+import { styles } from '@app/ui/header/menu/MenuBar.css';
 import { Kbd, Menu } from '@mantine/core';
-import { useCallback } from 'react';
 import { IconChevronRight } from '@tabler/icons-react';
-import { styles } from '@app/ui/menu/MenuBar.css';
+import { useCallback } from 'react';
 
 type MenuBarProps = {
     // The data of the menu
     data: MenuData
 };
 
-
 export const MenuItems = (props: MenuBarProps) => {
 
     // Helper to make a key
     const makeKey = useCallback((key: string, idx: number) => (
-        <Kbd key={idx} size='xs'>
+        <Kbd key={idx} size='xs' className={styles.kbd}>
             {key}
         </Kbd>
     ), []);
@@ -38,26 +37,29 @@ export const MenuItems = (props: MenuBarProps) => {
         }
         /* Case : submenu */
         else {
-            // Compute the item 
-            const menuItem = (
-                <Menu.Item 
-                    key={`${idx}`}
-                    color={item.color}
-                    leftSection={item.icon}
-                    rightSection={
-                        (item.submenu && 
-                            <IconChevronRight color='var(--mantine-color-dimmed)' size={14} stroke={1.5} />
+            // Compute the item props
+            const props = {
+                onClick: item.onClick,
+                color: item.color,
+                leftSection: item.icon,
+                rightSection: 
+                        (item.submenu && <IconChevronRight color='var(--mantine-color-dimmed)' size={14} stroke={1.5} />
                         ) 
-                     || (item.shortcut && item.shortcut.map(makeKey))
-                    }
-                >
-                    { item.text }
-                </Menu.Item>
-            );
+                     || (item.shortcut && item.shortcut.map(makeKey)),
+            };
+
             // If we do not have a submenu, plain return
             if (!item.submenu) { 
-                return menuItem; 
+                return (
+                    <Menu.Item 
+                        key={`${idx}`} 
+                        {...props}
+                    >
+                        {item.text}
+                    </Menu.Item>
+                ); 
             }
+            
             // We do. Put it in a new menu
             return (
                 <Menu key={`${idx}`} 
@@ -69,7 +71,7 @@ export const MenuItems = (props: MenuBarProps) => {
                     position='right-start'
                 >
                     <Menu.Target>
-                        { menuItem }
+                        <Menu.Item  {...props}>{item.text}</Menu.Item >
                     </Menu.Target>
                     <Menu.Dropdown>
                         <MenuItems data={item.submenu} />
