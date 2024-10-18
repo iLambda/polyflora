@@ -2,8 +2,9 @@
 import { styles } from '@app/ui/header/menu/MenuBar.css';
 import { MenuItems } from '@app/ui/header/menu/MenuItems';
 import { Button, DefaultMantineColor, Menu } from '@mantine/core';
+import { HotkeyItem, useHotkeys } from '@mantine/hooks';
 import { getKeys } from '@utils/types';
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 
 export type MenuLabelData = {
@@ -31,6 +32,36 @@ type MenuBarProps = {
 };
 
 export const MenuBar = (props: MenuBarProps) => {
+    /* Compute all the hotkeys */
+    const hotkeys = useMemo(() => {
+        // The array of hotkeys
+        const hotkeys : HotkeyItem[] = [];
+        // Add em all
+        const stack : MenuData[] = Object.values(props.data);
+        while (stack.length > 0) {
+            // Get from stack
+            const data = stack.shift()!;
+            // Go through all data
+            data.forEach(datum => {
+                // Skip if not item
+                if (datum.type !== 'item') { return; }
+                // If there is a shortcut, add it to hotkeys
+                if (datum.shortcut) {
+                    hotkeys.push([datum.shortcut.join('+').toLowerCase(), () => datum.onClick?.() ]);
+                }
+                // Add submenu to stack if exists
+                if (datum.submenu) {
+                    stack.push(datum.submenu);
+                }
+            });           
+        }
+        // Return hotkeys
+        return hotkeys;        
+    }, [props.data]);
+    /* Bind them */
+    useHotkeys(hotkeys);
+
+    /* Return menu */
     return getKeys(props.data).map(key => (
         <Menu key={key} offset={0} classNames={styles.menu}>
             <Menu.Target>
