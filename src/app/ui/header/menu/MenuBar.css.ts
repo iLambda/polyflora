@@ -15,10 +15,12 @@ export const styles = {
         borderColor: 'color-mix(in srgb, var(--mantine-color-dark-3) 50%, var(--mantine-color-dark-4) 50%)',
         backgroundColor: 'var(--mantine-color-dark-6)',
         paddingBlock: rem(-3),
-        '&+&': {
-            marginInlineStart: rem(2),            
-        } as ComplexStyleRule,
-    } as ComplexStyleRule),
+        selectors: {
+            '&+&': {
+                marginInlineStart: rem(2),            
+            },
+        },
+    }),
 
     menu: {
         item: style({
@@ -33,12 +35,12 @@ export const styles = {
         }),
 
         itemSection: style({
-
-            '&[data-position="right"]': {
-                marginInlineStart: `${rem(50)}`,
-            } satisfies ComplexStyleRule,
-
-        } as ComplexStyleRule),
+            selectors: {
+                '&[data-position="right"]': {
+                    marginInlineStart: `${rem(50)}`,
+                } satisfies ComplexStyleRule,
+            },
+        }),
 
 
     } satisfies MenuProps['classNames'],

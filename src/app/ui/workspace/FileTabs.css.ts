@@ -1,6 +1,6 @@
 import { vars } from '@app/theme.css';
 import { rem } from '@mantine/core';
-import { ComplexStyleRule, style } from '@vanilla-extract/css';
+import { style } from '@vanilla-extract/css';
 
 /* The styles exported by the stylesheet */
 export const styles = {
@@ -28,32 +28,35 @@ export const styles = {
             marginBottom: rem(4),
             borderBottomLeftRadius: rem(6),
             borderBottomRightRadius: rem(6),
-
-            /* If tab is inactive */
-            '&:not([data-active])': {
-                opacity: '35%',
-                border: `${rem(1)} solid black`,
-                borderTop: `${rem(1)} solid transparent`, 
-                // border: '1px solid var(--mantine-color-dark-9)',
-                // color: lighten('var(--tab-border-color)', 0.1),
-            } as ComplexStyleRule,
-    
-            /* If tab is active */
-            '&[data-active]': {
-                '--tab-border-color' : 'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4))',
-                '--tab-background-color': '#2b2b2b',
-                borderTop: `${rem(1)} solid transparent`, 
-                backgroundImage: `repeating-linear-gradient(90deg, var(--tab-border-color), var(--tab-border-color) ${rem(5)}, var(--tab-background-color) ${rem(5)}, var(--tab-background-color) ${rem(10)})`,
-                backgroundPosition: `left ${rem(-2)} top ${rem(-1)}`,
-                backgroundRepeat: 'repeat-x',
-                backgroundSize: `100% ${rem(1)}`,
-                backgroundColor: 'var(--tab-background-color)',
-                backgroundClip: 'border-box',
-                boxSizing: 'border-box',
-                boxShadow: '0px 3px #1b1b1b',
-                marginTop: rem(-1),
-            } as ComplexStyleRule,
-        } as ComplexStyleRule),
+            selectors: {
+                /* If tab is inactive */
+                '&:not([data-active])': {
+                    opacity: '35%',
+                    border: `${rem(1)} solid black`,
+                    borderTop: `${rem(1)} solid transparent`, 
+                    // border: '1px solid var(--mantine-color-dark-9)',
+                    // color: lighten('var(--tab-border-color)', 0.1),
+                },
+        
+                /* If tab is active */
+                '&[data-active]': {
+                    vars: {
+                        '--tab-border-color' : 'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4))',
+                        '--tab-background-color': '#2b2b2b',
+                    },
+                    borderTop: `${rem(1)} solid transparent`, 
+                    backgroundImage: `repeating-linear-gradient(90deg, var(--tab-border-color), var(--tab-border-color) ${rem(5)}, var(--tab-background-color) ${rem(5)}, var(--tab-background-color) ${rem(10)})`,
+                    backgroundPosition: `left ${rem(-2)} top ${rem(-1)}`,
+                    backgroundRepeat: 'repeat-x',
+                    backgroundSize: `100% ${rem(1)}`,
+                    backgroundColor: 'var(--tab-background-color)',
+                    backgroundClip: 'border-box',
+                    boxSizing: 'border-box',
+                    boxShadow: '0px 3px #1b1b1b',
+                    marginTop: rem(-1),
+                },
+            },
+        }),
 
         /* The icon on tabs */
         tabSection: style({
