@@ -1,9 +1,10 @@
 import { Tunnel3D, Tunnel3DOverlay, TunnelEditor } from '@app/ui/workspace/WorkspaceTunnel';
 import { TreeBlueprint3DView, TreeBlueprint3DViewController } from '@app/blueprint/TreeBlueprint3DView';
-import { ReactNode, useRef } from 'react';
+import { ReactNode } from 'react';
 import { TreeBlueprintOverlay } from './TreeBlueprintOverlay';
 import { TreeBlueprintEditor } from './TreeBlueprintEditor';
 import { FloraStoreProvider } from '@app/state/Flora';
+import { useReactiveRef } from '@utils/react/hooks/state';
 
 export type TreeBlueprintProps = {
     children?: ReactNode | ReactNode[];
@@ -11,7 +12,7 @@ export type TreeBlueprintProps = {
 
 export const TreeBlueprint = (props: TreeBlueprintProps) => {
     /* State and references */
-    const controllerRef = useRef<TreeBlueprint3DViewController | null>(null);
+    const [controllerRef, controller] = useReactiveRef<TreeBlueprint3DViewController>();
     
     return (
         <>
@@ -37,7 +38,7 @@ export const TreeBlueprint = (props: TreeBlueprintProps) => {
             {/* The view overlay */}
             <Tunnel3DOverlay.In>
                 <TreeBlueprintOverlay key='overlay'
-                    viewController={controllerRef.current}
+                    viewController={controller}
                 />
             </Tunnel3DOverlay.In>
 
