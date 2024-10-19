@@ -1,10 +1,22 @@
 import { DocumentStoreMolecule } from '@app/state/Documents';
 import { createScope, molecule } from 'bunshi';
+import { useScopes } from 'bunshi/react';
 import { Runtype } from 'runtypes';
 import { proxy } from 'valtio';
 
 /* The scope of blueprints */
 export const blueprintScope = createScope<string | null>(null);
+
+/* Get the blueprint's name */
+export const useBlueprintDocumentID = () => {
+    /* Get the scopes */
+    const scopes = useScopes();
+    const foundScope = scopes.find(([scope, _]) => scope === blueprintScope);
+    // Check value
+    const documentID = foundScope ? foundScope[1] as (string | null) : null;
+    // Return children
+    return documentID;
+};
 
 /* Create a blueprint state molecule */
 export const createBlueprintMolecule = <T extends object>(stateTy: Runtype<T>, initialStateFactory: () => T) => molecule((mol, scope) : T => {

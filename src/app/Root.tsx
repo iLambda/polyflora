@@ -9,21 +9,16 @@ import { ReactNode, useMemo } from 'react';
 import { TreeBlueprint } from './blueprint/TreeBlueprint';
 import { FileTabs } from './ui/workspace/FileTabs';
 import { DocumentStoreMolecule } from '@app/state/Documents';
-import { ScopeProvider, useMolecule, useScopes } from 'bunshi/react';
-import { blueprintScope } from '@app/state/Blueprint';
+import { ScopeProvider, useMolecule } from 'bunshi/react';
+import { blueprintScope, useBlueprintDocumentID } from '@app/state/Blueprint';
 import { useSnapshot } from 'valtio';
 
 /* [FIX] : Temporary fix for a problem in Bushi
     See Issue #71 (https://github.com/saasquatch/bunshi/issues/71) */
-export const ScopeChecker = ({ children }: { children: ReactNode | ReactNode[] }) => {
-    // Get scopes
-    const scopes = useScopes();
-    const foundScope = scopes.find(([scope, _]) => scope === blueprintScope);
-    // Check value
-    const documentID = foundScope ? foundScope[1] as (string | null) : null;
-    // Return children
-    return documentID !== null ? children : null;
-};
+export const ScopeChecker = ({ children }: { children: ReactNode | ReactNode[] }) => 
+    useBlueprintDocumentID() !== null 
+        ? children 
+        : null;
 
 export const Root = () => {
     /* Get documents data */
