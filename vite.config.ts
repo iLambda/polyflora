@@ -7,19 +7,19 @@ import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
 export default defineConfig({
-  build: {
-    outDir: './dist/web',
-    emptyOutDir: true,
-  },
-  plugins: [
-    react(),
-    glsl({ compress: true }), 
-    tsconfigPaths(),
-    vanillaExtractPlugin({ identifiers: 'debug' }),
-  ],
-  publicDir: './fix',
-  server: {
-    hmr: true,
-    port: 8080,
-  },
+    build: {
+        outDir: './dist/web',
+        emptyOutDir: true,
+    },
+    plugins: [
+        react(),
+        glsl({ compress: true }), 
+        tsconfigPaths(),
+        vanillaExtractPlugin({ identifiers: 'debug' }),
+    ],
+    publicDir: './fix',
+    server: {
+        hmr: true,
+        port: 8080,
+    },
 });
