@@ -1,13 +1,33 @@
+import { BlueprintTags } from '@app/blueprint/Blueprints';
 import { DocumentStoreMolecule } from '@app/state/Documents';
+import { Matrix4Tuple } from '@utils/datatypes/mat';
 import { createScope, molecule } from 'bunshi';
-import { Runtype } from 'runtypes';
+import { Record, Runtype, Static } from 'runtypes';
 import { proxy } from 'valtio';
 
 /* The scope of blueprints */
 export const blueprintScope = createScope<string | null>(null);
 
+/* The base state type of blueprint */
+export type BlueprintState = Static<typeof BlueprintState>;
+export const BlueprintState = Record({
+    __shared: Record({
+        type: BlueprintTags,
+        camera: Matrix4Tuple,
+    }),
+});
+export const initialSharedBlueprintState = (type: BlueprintTags) : BlueprintState => ({
+    __shared: {
+        type: type,
+        camera: [1, 0, 0, 0, 
+                 0, 1, 0, 0,
+                 0, 0, 1, 0,
+                 0, 0, 0, 1],
+    },
+});
+
 /* Create a blueprint state molecule */
-export const createBlueprintMolecule = <T extends object>(stateTy: Runtype<T>, initialStateFactory: () => T) => molecule((mol, scope) : T => {
+export const createBlueprintMolecule = <T extends BlueprintState>(stateTy: Runtype<T>, initialStateFactory: () => T) => molecule((mol, scope) : T => {
     /* Get the document ID from the blueprint scope and the documents store */
     const documentID = scope(blueprintScope);
     const documentStore = mol(DocumentStoreMolecule);

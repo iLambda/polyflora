@@ -1,4 +1,5 @@
  
+import { BlueprintState } from '@app/state/Blueprint';
 import { molecule } from 'bunshi';
 import { proxy } from 'valtio';
 import { proxyMap } from 'valtio/utils';
@@ -6,14 +7,12 @@ import { proxyMap } from 'valtio/utils';
 // The type of the store 
 export type DocumentStore = {
     current: string | null;
-    data: Map<string, { name: string, state: unknown }>;
+    data: Map<string, { name: string, state: BlueprintState | undefined }>;
     order: string[];
 
     new: () => string;
     close: (id: string) => boolean;
 };
-
-
 
 /* Create the store */
 export const DocumentStoreMolecule = molecule(() => {

@@ -1,19 +1,25 @@
-import { createBlueprintMolecule } from '@app/state/Blueprint';
+import { BlueprintState, createBlueprintMolecule, initialSharedBlueprintState } from '@app/state/Blueprint';
 import { BranchesParameters } from '@three/flora/tree/Branches';
 import { TrunkParameters } from '@three/flora/tree/Trunk';
-import { Literal, Record, Static, String, Union } from 'runtypes';
+import { Literal, Static, String, Union } from 'runtypes';
 
 /* The state of the blueprint */
 export type TreeBlueprintState = Static<typeof TreeBlueprintState>;
-export const TreeBlueprintState = Record({
+export const TreeBlueprintState = BlueprintState.extend({
     seed: String,
     shading: Union(Literal('shaded'), Literal('wireframe'), Literal('skeletal')),
     trunk: TrunkParameters,
     branch: BranchesParameters.extend({ textureURL: String }),
 });
 
+/* The tag of this blueprint */
+export const TreeBlueprintTag = 'tree';
+
 /* The initial value of the state of this blueprint */
 export const initialState = () : TreeBlueprintState => ({
+    // The shared blueprint state
+    ...initialSharedBlueprintState(TreeBlueprintTag),
+    // The rest of it
     seed: '3551376191',
     shading: 'shaded',
     trunk: {
