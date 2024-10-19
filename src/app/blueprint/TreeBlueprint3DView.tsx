@@ -12,6 +12,7 @@ import { Branches } from '../../three/flora/tree/Branches';
 import { useMolecule } from 'bunshi/react';
 import { TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
 import { useSnapshot } from 'valtio';
+import { useBlueprintDocumentID } from '@app/state/Blueprint';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -84,7 +85,7 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
             floraStore.camera.target = target.toArray();
         };
     }, [floraStore, controls]);
-    
+
     /* Return the control */
     return (
         <>
@@ -102,7 +103,10 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
             />
             
             {/* Generating the tree */ }
-            <group ref={mainGroupRef}>
+            <group ref={mainGroupRef} 
+                // Force refresh when document changed to avoid weird effect
+                key={useBlueprintDocumentID() ?? ''}
+            >
                 <Suspense>
                     {/* The trunk skeleton */}
                     <Trunk
