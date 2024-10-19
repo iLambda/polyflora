@@ -7,6 +7,10 @@ import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
 export default defineConfig({
+  build: {
+    outDir: './dist/web',
+    emptyOutDir: true,
+  },
   plugins: [
     react(),
     glsl({ compress: true }), 
@@ -18,4 +22,4 @@ export default defineConfig({
     hmr: true,
     port: 8080,
   },
-})
+});

@@ -9,6 +9,7 @@
     "paths": { 
       "@app": ["./src/app/App.tsx"],
       "@app/*": ["./src/app/*"],
+      "@electron/*": ["./src/electron/*"],
       "@three/*": ["./src/three/*"],
       "@utils/*": ["./src/utils/*"],
     },
