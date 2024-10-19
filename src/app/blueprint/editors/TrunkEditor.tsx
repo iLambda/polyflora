@@ -21,7 +21,7 @@ export const TrunkEditor = (props: TrunkEditorProps) => {
     
     /* Return the editor */
     return (
-        <Flex direction='column' gap='sm'>
+        <Flex direction='column' gap='sm' my={rem(12)}>
             {/* Control segments */}
             <Fieldgroup legend='Geometry'>
                 {/* Length segments */}

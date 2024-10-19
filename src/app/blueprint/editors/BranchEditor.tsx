@@ -24,7 +24,7 @@ export const BranchEditor = (props: BranchEditorProps) => {
 
     /* Return the edit */
     return (
-        <Flex direction='column' gap='sm'>
+        <Flex direction='column' gap='sm' my={rem(12)}>
             {/* Control segments */}
             <Fieldgroup legend='Geometry'>
                 {/* The geometry selection */}

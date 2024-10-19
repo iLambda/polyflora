@@ -25,6 +25,7 @@ export const TreeBlueprintEditor = () => {
                 <Tabs.Panel value='trunk'>
                     <ScrollArea className={styles.panelRoot} 
                         h={'100%'} 
+                        py={0}
                         scrollbarSize={6}
                         scrollbars='y'
                         type='always'
@@ -35,6 +36,7 @@ export const TreeBlueprintEditor = () => {
                 <Tabs.Panel value='branches'>
                     <ScrollArea className={styles.panelRoot} 
                         h={'100%'} 
+                        py={0}
                         scrollbarSize={6}
                         scrollbars='y'
                         type='always'
