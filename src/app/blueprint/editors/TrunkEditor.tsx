@@ -1,32 +1,36 @@
-import { useFlora } from '@app/state/Flora';
-import { Fieldset, Flex, rem, Text } from '@mantine/core';
-import { styles } from './TrunkEditor.css';
-import { TexturePicker } from '../controls/TexturePicker';
+import { Flex, rem, Text } from '@mantine/core';
 import { SkeletonParameters } from '@three/flora/gen/Skeleton';
-import { DataControl } from '../controls/DataControl';
-import { NumberPicker } from '../controls/NumberPicker';
-import { Separator } from '../controls/Separator';
-import { SelectorPicker } from '../controls/SelectorPicker';
+import { DataControl } from '@app/blueprint/editors/controls/DataControl';
+import { NumberPicker } from '@app/blueprint/editors/controls/NumberPicker';
+import { SelectorPicker } from '@app/blueprint/editors/controls/SelectorPicker';
+import { Separator } from '@app/blueprint/editors/controls/Separator';
+import { TexturePicker } from '@app/blueprint/editors/controls/TexturePicker';
+import { Fieldgroup } from '@app/blueprint/editors/controls/Fieldgroup';
+import { TrunkParameters } from '@three/flora/tree/Trunk';
+import { useSnapshot } from 'valtio';
 
-const setter = (set: (v: number) => void) => ((v: unknown) => {if (typeof v === 'number') { set(v); }});
+type TrunkEditorProps = {
+    store: TrunkParameters;
+};
 
 type BendingMode = SkeletonParameters['bendDirection'];
-export const TrunkEditor = () => {
+export const TrunkEditor = (props: TrunkEditorProps) => {
     /* Setup state */
-    const [floraSnapshot, flora] = useFlora();
+    const trunk = props.store;
+    const trunkSnapshot = useSnapshot(trunk);
     
     /* Return the editor */
     return (
         <Flex direction='column' gap='sm'>
             {/* Control segments */}
-            <Fieldset legend='Geometry' className={styles.fieldset}>
+            <Fieldgroup legend='Geometry'>
                 {/* Length segments */}
                 <DataControl label='Segments (length)' width={rem(64)}>
                     <NumberPicker
                         allowDecimal={false}
                         allowNegative={false}
-                        value={floraSnapshot.trunk.segmentsLength} 
-                        onChange={v => flora.trunk.segmentsLength = v} 
+                        value={trunkSnapshot.segmentsLength} 
+                        onChange={v => trunk.segmentsLength = v} 
                         min={1}
                         step={1}
                     />
@@ -36,8 +40,8 @@ export const TrunkEditor = () => {
                     <NumberPicker
                         allowDecimal={false}
                         allowNegative={false}
-                        value={floraSnapshot.trunk.segmentsRadius} 
-                        onChange={v => flora.trunk.segmentsRadius = v} 
+                        value={trunkSnapshot.segmentsRadius} 
+                        onChange={v => trunk.segmentsRadius = v} 
                         min={3}
                         step={1}
                     />
@@ -49,8 +53,8 @@ export const TrunkEditor = () => {
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={false}
-                        value={floraSnapshot.trunk.sizeLength} 
-                        onChange={v => flora.trunk.sizeLength = v} 
+                        value={trunkSnapshot.sizeLength} 
+                        onChange={v => trunk.sizeLength = v} 
                         min={0.01}
                     />
                 </DataControl>
@@ -59,23 +63,23 @@ export const TrunkEditor = () => {
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={false}
-                        value={floraSnapshot.trunk.sizeRadius} 
-                        onChange={v => flora.trunk.sizeRadius = v} 
+                        value={trunkSnapshot.sizeRadius} 
+                        onChange={v => trunk.sizeRadius = v} 
                         min={0.01}
                         step={0.1}
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
 
             {/* Shape control */}
-            <Fieldset legend='Shape' className={styles.fieldset}>
+            <Fieldgroup legend='Shape'>
                 {/* Curvature */}
                 <DataControl label='Curvature' width={rem(55)}>
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={false}
-                        value={floraSnapshot.trunk.curvature} 
-                        onChange={v => flora.trunk.curvature = v}  
+                        value={trunkSnapshot.curvature} 
+                        onChange={v => trunk.curvature = v}  
                         min={0.01}
                         max={50}
                         step={0.1}
@@ -87,10 +91,10 @@ export const TrunkEditor = () => {
                         <NumberPicker
                             allowDecimal={true}
                             allowNegative={false}
-                            value={floraSnapshot.trunk.crinklingMin} 
-                            onChange={v => flora.trunk.crinklingMin = v}  
+                            value={trunkSnapshot.crinklingMin} 
+                            onChange={v => trunk.crinklingMin = v}  
                             min={0}
-                            max={flora.trunk.crinklingMax}
+                            max={trunk.crinklingMax}
                             step={0.25}
                             suffix='°'
                         />
@@ -99,9 +103,9 @@ export const TrunkEditor = () => {
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={false}
-                        value={floraSnapshot.trunk.crinklingMax} 
-                        onChange={v => flora.trunk.crinklingMax = v}  
-                        min={flora.trunk.crinklingMin}
+                        value={trunkSnapshot.crinklingMax} 
+                        onChange={v => trunk.crinklingMax = v}  
+                        min={trunk.crinklingMin}
                         max={360}
                         step={0.25}
                         suffix='°'
@@ -117,31 +121,31 @@ export const TrunkEditor = () => {
                             { value: 'down' satisfies BendingMode, label: 'Down' },
                             { value: 'normal' satisfies BendingMode, label: 'Normal' },
                         ]}
-                        value={floraSnapshot.trunk.bendDirection}
-                        onChange={v => flora.trunk.bendDirection = (v as BendingMode)}
+                        value={trunkSnapshot.bendDirection}
+                        onChange={v => trunk.bendDirection = (v as BendingMode)}
                     />               
                 </DataControl>
                 <DataControl label='Bend (amount)' width={rem(55)}>
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={true}
-                        value={floraSnapshot.trunk.bendAmount} 
-                        onChange={v => flora.trunk.bendAmount = v}  
+                        value={trunkSnapshot.bendAmount} 
+                        onChange={v => trunk.bendAmount = v}  
                         min={-360}
                         max={360}
                         step={1}
                         suffix='°'
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
             {/* Texture zone */}
-            <Fieldset legend='Material' className={styles.fieldset}>
+            <Fieldgroup legend='Material'>
                 <DataControl label='Tiling (U)'>
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={true}
-                        value={floraSnapshot.trunk.tilingU} 
-                        onChange={v => flora.trunk.tilingU = v}
+                        value={trunkSnapshot.tilingU} 
+                        onChange={v => trunk.tilingU = v}
                         step={0.1}
                     />
                 </DataControl>
@@ -149,18 +153,18 @@ export const TrunkEditor = () => {
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={true}
-                        value={floraSnapshot.trunk.tilingV} 
-                        onChange={v => flora.trunk.tilingV = v}
+                        value={trunkSnapshot.tilingV} 
+                        onChange={v => trunk.tilingV = v}
                         step={0.1}
                     />
                 </DataControl>
                 <Separator />
                 <TexturePicker 
                     label='Texture'
-                    url={floraSnapshot.trunk.textureURL}
-                    onURLChanged={v => flora.trunk.textureURL = v}
+                    url={trunkSnapshot.textureURL}
+                    onURLChanged={v => trunk.textureURL = v}
                 />
-            </Fieldset>
+            </Fieldgroup>
         </Flex>
     );
 };

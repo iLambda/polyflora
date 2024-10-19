@@ -1,5 +1,5 @@
 import { vars } from '@app/theme.css';
-import { rem } from '@mantine/core';
+import { rem, TabsProps } from '@mantine/core';
 import { style } from '@vanilla-extract/css';
 
 /* The styles exported by the stylesheet */
@@ -25,14 +25,26 @@ export const styles = {
         maxWidth: 'none',
     }),
 
-    // The tab root
-    tabRoot: style({
-        height: '100%',
-    }),
+    // The tab styles
+    tab: {
+        root: style({
+            height: '100%',
+        }),
 
-    // The tab panel
-    tabPanel: style({
-        height: '100%', 
-        overflow: 'scroll !important',
-    }),
+        panel: style({
+            height: '100%', 
+            overflow: 'scroll !important',
+        }),
+
+        tab: style({
+            fontSize: vars.fontSizes.xs,
+            paddingBlock: rem(6),
+            selectors: {
+                '&:first-child': {
+                    marginLeft: rem(5),
+                },
+            },
+        }),
+
+    } satisfies TabsProps['classNames'],
 };

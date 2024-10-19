@@ -8,7 +8,7 @@ import { useParentSkeleton } from './SkeletonContext';
 import { SkeletonData } from './SkeletonData';
 import { Line } from '@react-three/drei';
 import { assertExhaustive } from '@utils/types';
-import { useRegisterPolygonCount } from '@app/state/PolygonCount';
+import { useRegisterPolygonCount } from '@three/utils/PolygonCount';
 
 
 /* The direction a cross is going */

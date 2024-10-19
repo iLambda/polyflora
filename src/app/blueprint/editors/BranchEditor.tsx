@@ -1,25 +1,32 @@
-import { FloraData, useFlora } from '@app/state/Flora';
-import { Fieldset, Flex, MultiSelect, rem, Text } from '@mantine/core';
-import { styles } from './BranchEditor.css';
-import { TexturePicker } from '../controls/TexturePicker';
-import { NumberPicker } from '../controls/NumberPicker';
-import { DataControl } from '../controls/DataControl';
+import { Flex, MultiSelect, rem, Text } from '@mantine/core';
 import { useMemo } from 'react';
-import { Separator } from '../controls/Separator';
-import { SelectorPicker } from '../controls/SelectorPicker';
+import { DataControl } from '@app/blueprint/editors/controls/DataControl';
+import { NumberPicker } from '@app/blueprint/editors/controls/NumberPicker';
+import { SelectorPicker } from '@app/blueprint/editors/controls/SelectorPicker';
+import { Separator } from '@app/blueprint/editors/controls/Separator';
+import { TexturePicker } from '@app/blueprint/editors/controls/TexturePicker';
+import { Fieldgroup } from '@app/blueprint/editors/controls/Fieldgroup';
+import { BranchesParameters } from '@three/flora/tree/Branches';
+import { useSnapshot } from 'valtio';
+import { TreeBlueprintState } from '@app/blueprint/TreeBlueprintState';
 
-type BendingMode = FloraData['branch']['bendDirection'];
-type BranchGeometryModes = FloraData['branch']['geometryMode'];
+type BranchEditorProps = {
+    store: BranchesParameters & { textureURL: string; };
+};
+
+type BendingMode = TreeBlueprintState['branch']['bendDirection'];
+type BranchGeometryModes = TreeBlueprintState['branch']['geometryMode'];
 type BranchGeometryMode = BranchGeometryModes[0];
-export const BranchEditor = () => {
+export const BranchEditor = (props: BranchEditorProps) => {
     /* Setup state */
-    const [floraSnapshot, flora] = useFlora();
+    const branches = props.store;
+    const branchesSnapshot = useSnapshot(props.store);
 
     /* Return the edit */
     return (
         <Flex direction='column' gap='sm'>
             {/* Control segments */}
-            <Fieldset legend='Geometry' className={styles.fieldset}>
+            <Fieldgroup legend='Geometry'>
                 {/* The geometry selection */}
                 <MultiSelect
                         size='xs'
@@ -33,8 +40,8 @@ export const BranchEditor = () => {
                                 paddingTop: rem(2),
                             },
                         }}
-                        value={useMemo(() => [...floraSnapshot.branch.geometryMode], [floraSnapshot.branch.geometryMode])}
-                        onChange={v => flora.branch.geometryMode = (v as BranchGeometryModes)}
+                        value={useMemo(() => [...branchesSnapshot.geometryMode], [branchesSnapshot.geometryMode])}
+                        onChange={v => branches.geometryMode = (v as BranchGeometryModes)}
                     />
                 <Separator />
                 {/* # branches */}
@@ -42,16 +49,8 @@ export const BranchEditor = () => {
                     <NumberPicker
                         allowDecimal={false}
                         allowNegative={false}
-                        value={floraSnapshot.branch.nArticulations} 
-                        min={0}
-                        onChange={v => flora.branch.nArticulations = v} 
-                    />
-                </DataControl>
-                {/* # sub-brances */}
-                <DataControl label='# sub-branches' width={rem(64)}>
-                    <NumberPicker
-                        allowDecimal={false}
-                        allowNegative={false}
+                        value={branchesSnapshot.nArticulations} 
+                        onChange={v => branches.nArticulations = v} 
                         min={0}
                     />
                 </DataControl>
@@ -61,8 +60,8 @@ export const BranchEditor = () => {
                     <NumberPicker
                         allowDecimal={false}
                         allowNegative={false}
-                        value={floraSnapshot.branch.segmentsLength} 
-                        onChange={v => flora.branch.segmentsLength = v} 
+                        value={branchesSnapshot.segmentsLength} 
+                        onChange={v => branches.segmentsLength = v} 
                         min={1}
                         step={1}
                     />
@@ -70,18 +69,18 @@ export const BranchEditor = () => {
                 {/* Radius segments */}
                 <DataControl label='Segments (radius)' width={rem(64)}>
                     <NumberPicker
-                        disabled={!floraSnapshot.branch.geometryMode.includes('detailed')}
+                        disabled={!branchesSnapshot.geometryMode.includes('detailed')}
                         allowDecimal={false}
                         allowNegative={false}
-                        value={floraSnapshot.branch.segmentsRadius} 
-                        onChange={v => flora.branch.segmentsRadius = v} 
+                        value={branchesSnapshot.segmentsRadius} 
+                        onChange={v => branches.segmentsRadius = v} 
                         min={3}
                         step={1}
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
             {/* Position control */}
-            <Fieldset legend='Position distribution' className={styles.fieldset}>
+            <Fieldgroup legend='Position distribution'>
                 {/* Method */}
                 <DataControl label='Method'>
                     <SelectorPicker
@@ -97,8 +96,8 @@ export const BranchEditor = () => {
                         <NumberPicker
                             allowDecimal={false}
                             allowNegative={true}
-                            value={floraSnapshot.branch.minAngle} 
-                            onChange={v => flora.branch.minAngle = v} 
+                            value={branchesSnapshot.minAngle} 
+                            onChange={v => branches.minAngle = v} 
                             min={-360}
                             max={360}
                             step={0.25}
@@ -109,8 +108,8 @@ export const BranchEditor = () => {
                     <NumberPicker
                         allowDecimal={false}
                         allowNegative={true}
-                        value={floraSnapshot.branch.maxAngle} 
-                        onChange={v => flora.branch.maxAngle = v} 
+                        value={branchesSnapshot.maxAngle} 
+                        onChange={v => branches.maxAngle = v} 
                         min={-360}
                         max={360}
                         step={0.25}
@@ -123,8 +122,8 @@ export const BranchEditor = () => {
                         <NumberPicker
                             allowDecimal={true}
                             allowNegative={false}
-                            value={Math.round(floraSnapshot.branch.minPosition * 100 * 100) / 100} 
-                            onChange={v => flora.branch.minPosition = (v / 100)}
+                            value={Math.round(branchesSnapshot.minPosition * 100 * 100) / 100} 
+                            onChange={v => branches.minPosition = (v / 100)}
                             min={0}
                             max={100}
                             step={1}
@@ -135,20 +134,20 @@ export const BranchEditor = () => {
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={false}
-                        value={Math.round(floraSnapshot.branch.maxPosition * 100 * 100) / 100} 
-                        onChange={v => flora.branch.maxPosition = (v / 100)}
+                        value={Math.round(branchesSnapshot.maxPosition * 100 * 100) / 100} 
+                        onChange={v => branches.maxPosition = (v / 100)}
                         min={0}
                         max={100}
                         step={1}
                         suffix='%'
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
 
 
 
             {/* Size control */}
-            <Fieldset legend='Size distribution' className={styles.fieldset}>
+            <Fieldgroup legend='Size distribution'>
                 {/* Method */}
                 {/* <Select
                     size='xs'
@@ -164,8 +163,8 @@ export const BranchEditor = () => {
                         <NumberPicker
                             allowDecimal={true}
                             allowNegative={false}
-                            value={Math.round(floraSnapshot.branch.minLength * 100 * 100) / 100} 
-                            onChange={v => flora.branch.minLength = (v / 100)}
+                            value={Math.round(branchesSnapshot.minLength * 100 * 100) / 100} 
+                            onChange={v => branches.minLength = (v / 100)}
                             min={0}
                             max={100}
                             step={1}
@@ -176,8 +175,8 @@ export const BranchEditor = () => {
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={false}
-                        value={Math.round(floraSnapshot.branch.maxLength * 100 * 100) / 100} 
-                        onChange={v => flora.branch.maxLength = (v / 100)}
+                        value={Math.round(branchesSnapshot.maxLength * 100 * 100) / 100} 
+                        onChange={v => branches.maxLength = (v / 100)}
                         min={0}
                         max={100}
                         step={1}
@@ -189,11 +188,11 @@ export const BranchEditor = () => {
                 <DataControl label='Radius'>
                     <>
                         <NumberPicker
-                            disabled={!floraSnapshot.branch.geometryMode.includes('detailed')}
+                            disabled={!branchesSnapshot.geometryMode.includes('detailed')}
                             allowDecimal={true}
                             allowNegative={false}
-                            value={Math.round(floraSnapshot.branch.minRadius * 100 * 100) / 100} 
-                            onChange={v => flora.branch.minRadius = (v / 100)}
+                            value={Math.round(branchesSnapshot.minRadius * 100 * 100) / 100} 
+                            onChange={v => branches.minRadius = (v / 100)}
                             min={0}
                             max={100}
                             step={1}
@@ -202,11 +201,11 @@ export const BranchEditor = () => {
                         <Text size='xs'>to</Text>
                     </>
                     <NumberPicker
-                        disabled={!floraSnapshot.branch.geometryMode.includes('detailed')}
+                        disabled={!branchesSnapshot.geometryMode.includes('detailed')}
                         allowDecimal={true}
                         allowNegative={false}
-                        value={Math.round(floraSnapshot.branch.maxRadius * 100 * 100) / 100} 
-                        onChange={v => flora.branch.maxRadius = (v / 100)}
+                        value={Math.round(branchesSnapshot.maxRadius * 100 * 100) / 100} 
+                        onChange={v => branches.maxRadius = (v / 100)}
                         min={0}
                         max={100}
                         step={1}
@@ -218,12 +217,12 @@ export const BranchEditor = () => {
                 <DataControl label='Cross width'>
                     <>
                         <NumberPicker
-                            disabled={!(floraSnapshot.branch.geometryMode.includes('cross-x') 
-                                    || floraSnapshot.branch.geometryMode.includes('cross-y'))}
+                            disabled={!(branchesSnapshot.geometryMode.includes('cross-x') 
+                                    || branchesSnapshot.geometryMode.includes('cross-y'))}
                             allowDecimal={true}
                             allowNegative={false}
-                            value={Math.round(floraSnapshot.branch.minCrossWidth * 100 * 100) / 100} 
-                            onChange={v => flora.branch.minCrossWidth = (v / 100)}
+                            value={Math.round(branchesSnapshot.minCrossWidth * 100 * 100) / 100} 
+                            onChange={v => branches.minCrossWidth = (v / 100)}
                             min={0}
                             max={100}
                             step={1}
@@ -232,30 +231,30 @@ export const BranchEditor = () => {
                         <Text size='xs'>to</Text>
                     </>
                     <NumberPicker
-                        disabled={!(floraSnapshot.branch.geometryMode.includes('cross-x') 
-                                 || floraSnapshot.branch.geometryMode.includes('cross-y'))}
+                        disabled={!(branchesSnapshot.geometryMode.includes('cross-x') 
+                                 || branchesSnapshot.geometryMode.includes('cross-y'))}
                         allowDecimal={true}
                         allowNegative={false}
-                        value={Math.round(floraSnapshot.branch.maxCrossWidth * 100 * 100) / 100} 
-                        onChange={v => flora.branch.maxCrossWidth = (v / 100)}
+                        value={Math.round(branchesSnapshot.maxCrossWidth * 100 * 100) / 100} 
+                        onChange={v => branches.maxCrossWidth = (v / 100)}
                         min={0}
                         max={100}
                         step={1}
                         suffix='%'
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
 
             {/* Shape control */}
-            <Fieldset legend='Shape' className={styles.fieldset}>
+            <Fieldgroup legend='Shape'>
                 {/* Curvature */}
                 <DataControl label='Curvature' width={rem(55)}>
                     <NumberPicker
-                        disabled={!floraSnapshot.branch.geometryMode.includes('detailed')}
+                        disabled={!branchesSnapshot.geometryMode.includes('detailed')}
                         allowDecimal={true}
                         allowNegative={false}
-                        value={floraSnapshot.branch.curvature} 
-                        onChange={v => flora.branch.curvature = v}  
+                        value={branchesSnapshot.curvature} 
+                        onChange={v => branches.curvature = v}  
                         min={0.01}
                         max={50}
                         step={0.1}
@@ -267,10 +266,10 @@ export const BranchEditor = () => {
                         <NumberPicker
                             allowDecimal={true}
                             allowNegative={false}
-                            value={floraSnapshot.branch.crinklingMin} 
-                            onChange={v => flora.branch.crinklingMin = v}  
+                            value={branchesSnapshot.crinklingMin} 
+                            onChange={v => branches.crinklingMin = v}  
                             min={0}
-                            max={flora.branch.crinklingMax}
+                            max={branches.crinklingMax}
                             step={0.25}
                             suffix='°'
                         />
@@ -279,9 +278,9 @@ export const BranchEditor = () => {
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={false}
-                        value={floraSnapshot.branch.crinklingMax} 
-                        onChange={v => flora.branch.crinklingMax = v}  
-                        min={flora.branch.crinklingMin}
+                        value={branchesSnapshot.crinklingMax} 
+                        onChange={v => branches.crinklingMax = v}  
+                        min={branches.crinklingMin}
                         max={360}
                         step={0.25}
                         suffix='°'
@@ -297,32 +296,32 @@ export const BranchEditor = () => {
                             { value: 'down' satisfies BendingMode, label: 'Down' },
                             { value: 'normal' satisfies BendingMode, label: 'Normal' },
                         ]}
-                        value={floraSnapshot.branch.bendDirection}
-                        onChange={v => flora.branch.bendDirection = (v as BendingMode)}
+                        value={branchesSnapshot.bendDirection}
+                        onChange={v => branches.bendDirection = (v as BendingMode)}
                     />               
                 </DataControl>
                 <DataControl label='Bend (amount)' width={rem(55)}>
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={true}
-                        value={floraSnapshot.branch.bendAmount} 
-                        onChange={v => flora.branch.bendAmount = v}  
+                        value={branchesSnapshot.bendAmount} 
+                        onChange={v => branches.bendAmount = v}  
                         min={-360}
                         max={360}
                         step={1}
                         suffix='°'
                     />
                 </DataControl>
-            </Fieldset>
+            </Fieldgroup>
             {/* Texture zone */}
-            <Fieldset legend='Material' className={styles.fieldset}>
+            <Fieldgroup legend='Material'>
                 <TexturePicker
                     label='Texture'
-                    disabled={!(floraSnapshot.branch.geometryMode.includes('cross-x') || floraSnapshot.branch.geometryMode.includes('cross-y'))}
-                    url={floraSnapshot.branch.textureURL}
-                    onURLChanged={v => flora.branch.textureURL = v}
+                    disabled={!(branchesSnapshot.geometryMode.includes('cross-x') || branchesSnapshot.geometryMode.includes('cross-y'))}
+                    url={branchesSnapshot.textureURL}
+                    onURLChanged={v => branches.textureURL = v}
                 />
-            </Fieldset>
+            </Fieldgroup>
         </Flex>
     );
 };
