@@ -4,6 +4,7 @@ import { styles } from '@app/ui/header/menu/MenuBar.css';
 import { Kbd, Menu } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import { useCallback } from 'react';
+import { match } from 'ts-pattern';
 
 type MenuBarProps = {
     // The data of the menu
@@ -15,7 +16,12 @@ export const MenuItems = (props: MenuBarProps) => {
     // Helper to make a key
     const makeKey = useCallback((key: string, idx: number) => (
         <Kbd key={idx} size='xs' className={styles.kbd}>
-            {key}
+            { 
+                match(key)
+                    .with('Shift', () => '⇧ Shift')
+                    .with('Tab', () => '↹ Tab')
+                    .otherwise(() => key)
+            }
         </Kbd>
     ), []);
 
@@ -39,6 +45,7 @@ export const MenuItems = (props: MenuBarProps) => {
         else {
             // Compute the item props
             const props = {
+                disabled: item.disabled,
                 onClick: item.onClick,
                 color: item.color,
                 leftSection: item.icon,

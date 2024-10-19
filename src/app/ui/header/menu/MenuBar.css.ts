@@ -15,6 +15,9 @@ export const styles = {
         borderColor: 'color-mix(in srgb, var(--mantine-color-dark-3) 50%, var(--mantine-color-dark-4) 50%)',
         backgroundColor: 'var(--mantine-color-dark-6)',
         paddingBlock: rem(-3),
+        minWidth: rem(20),
+        textAlign: 'center',
+        whiteSpace: 'preserve',
         selectors: {
             '&+&': {
                 marginInlineStart: rem(2),            

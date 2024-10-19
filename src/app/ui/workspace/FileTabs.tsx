@@ -7,6 +7,8 @@ import { IconBrowserX, IconChevronsLeft, IconChevronsRight } from '@tabler/icons
 import { useContextMenu } from 'mantine-contextmenu';
 import { isOverflown } from '@utils/dom';
 import useResizeObserver from '@react-hook/resize-observer';
+import { useMolecule } from 'bunshi/react';
+import { DocumentStoreMolecule } from '@app/state/Documents';
 
 type FileTabData = {
     id: string;
@@ -42,17 +44,20 @@ export const FileTabs = (props: FileTabsProps) => {
     /* After render / on resize, try to see if we need to update the indicators */
     useEffect(updateFloatingIndicators);
     useResizeObserver(flexbarRef, updateFloatingIndicators);
+
+    /* Get document store */
+    const documentStore = useMolecule(DocumentStoreMolecule);
     
     /* Prepare a context menu */
     const { showContextMenu } = useContextMenu();
-    const showTabContextMenu = useCallback((_key: string) => showContextMenu([
+    const showTabContextMenu = useCallback((documentID: string) => showContextMenu([
         {
             key: 'close',
             title: 'Close',
             icon: <IconBrowserX size={16} />,
-            onClick: () => { console.log('TODO Close !'); },
+            onClick: () => { documentStore.close(documentID); },
         },
-    ]), [showContextMenu]);
+    ]), [showContextMenu, documentStore]);
 
     return (
         <Tabs 
@@ -102,14 +107,6 @@ export const FileTabs = (props: FileTabsProps) => {
                         onContextMenu={showTabContextMenu(id)}
                     />
                 ))
-                // new Array(13).fill(0).map((_, idx) => (
-                //     <FileTab 
-                //         key={`untitled${idx}`} 
-                //         id={`untitled${idx}`}
-                //         text={`Untitled ${idx}`}
-                //         onContextMenu={showTabContextMenu(`untitled${idx}`)}
-                //     />
-                // ))
             }
             {/* The scroll right indicator */}
             <Transition mounted={isOverflowing && !isAtEnd} transition="fade" duration={100} timingFunction="ease"> 

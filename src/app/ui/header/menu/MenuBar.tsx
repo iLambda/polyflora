@@ -13,6 +13,7 @@ export type MenuLabelData = {
 };
 export type MenuItemData = {
     type: 'item',
+    disabled?: boolean,
     icon?: ReactNode;
     shortcut?: string[];
     submenu?: MenuData;
