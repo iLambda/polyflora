@@ -1,5 +1,5 @@
-import { ActionIcon, Flex, SegmentedControl } from '@mantine/core';
-import { IconCrosshair } from '@tabler/icons-react';
+import { ActionIcon, Flex, rem, SegmentedControl, VisuallyHidden } from '@mantine/core';
+import { IconBone, IconCube, IconCube3dSphere, IconFocusCentered } from '@tabler/icons-react';
 import { styles } from './TreeBlueprintOverlay.css';
 import { TreeBlueprint3DViewController } from '@app/blueprint/TreeBlueprint3DView';
 import { TreeBlueprintState, TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
@@ -20,15 +20,39 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
         /* Shading selector */
         <SegmentedControl
             key='shading-selector'
-            className={styles.shadingSelector}
-            size='sm'
+            classNames={styles.shadingSelector}
+            size='xs'
             radius='xl'
             color='green'
             withItemsBorders={false}
             data={[
-                { value: 'shaded' satisfies TreeBlueprintState['shading'], label: 'Shaded' },
-                { value: 'wireframe' satisfies TreeBlueprintState['shading'], label: 'Wireframe' },
-                { value: 'skeletal' satisfies TreeBlueprintState['shading'], label: 'Skeletal' },
+                { 
+                    value: 'shaded' satisfies TreeBlueprintState['shading'], 
+                    label: (
+                        <>
+                            <IconCube stroke={1.6} />
+                            <VisuallyHidden>Shaded</VisuallyHidden>
+                        </>
+                    ),
+                },
+                { 
+                    value: 'wireframe' satisfies TreeBlueprintState['shading'], 
+                    label: (
+                        <>
+                            <IconCube3dSphere stroke={1.6} />
+                            <VisuallyHidden>Wireframe</VisuallyHidden>
+                        </>
+                    ),
+                },
+                { 
+                    value: 'skeletal' satisfies TreeBlueprintState['shading'], 
+                    label: (
+                        <>
+                            <IconBone stroke={1.6} />
+                            <VisuallyHidden>Skeletal</VisuallyHidden>
+                        </>
+                    ),
+                },
             ]}
             value={floraSnapshot.shading}
             onChange={v => flora.shading = v as TreeBlueprintState['shading']}
@@ -43,9 +67,10 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
             {/* Fit view to content */}
             <ActionIcon 
                 style={{ pointerEvents: 'all' }}
-                variant='filled' size='lg' radius='xl'
+                p={rem(3)}
+                variant='filled' size={rem(30)} radius='xl'
                 aria-label='Fit view to content'
-                children={<IconCrosshair />} 
+                children={<IconFocusCentered stroke={2} />} 
                 onClick={() => props.viewController?.fitToView?.() }
             />
         </Flex>,
