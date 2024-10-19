@@ -1,7 +1,7 @@
 import { Flex, ScrollArea, Tabs, Transition } from '@mantine/core';
 import { styles } from './FileTabs.css';
 import { FileTab } from './FileTab';
-import { useCallback, useEffect, useRef } from 'react';
+import { MouseEventHandler, useCallback, useEffect, useRef } from 'react';
 import { useIdempotentState } from '@utils/react/hooks/state';
 import { IconBrowserX, IconChevronsLeft, IconChevronsRight } from '@tabler/icons-react';
 import { useContextMenu } from 'mantine-contextmenu';
@@ -59,6 +59,16 @@ export const FileTabs = (props: FileTabsProps) => {
         },
     ]), [showContextMenu, documentStore]);
 
+    /* Handle the aux click */
+    const handleAuxClick = useCallback((documentID: string) : MouseEventHandler<HTMLButtonElement> => e => {
+        /* Check if auxclick is from middle mouse */
+        if (e.button !== 1) { return; }
+        if ('pointerType' in e && typeof e.pointerType === 'string' && e.pointerType !== 'mouse') { return; }
+        /* Close */
+        documentStore.close(documentID);        
+    }, [documentStore]);
+
+
     return (
         <Tabs 
             variant='outline' radius='md' inverted
@@ -105,6 +115,7 @@ export const FileTabs = (props: FileTabsProps) => {
                         id={id}
                         text={label}
                         onContextMenu={showTabContextMenu(id)}
+                        onAuxClick={handleAuxClick(id)}
                     />
                 ))
             }
