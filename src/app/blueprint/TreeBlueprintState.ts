@@ -1,11 +1,16 @@
 import { createBlueprintMolecule } from '@app/state/Blueprint';
 import { BranchesParameters } from '@three/flora/tree/Branches';
 import { TrunkParameters } from '@three/flora/tree/Trunk';
-import { Literal, Record, Static, String, Union } from 'runtypes';
+import { Literal, Number, Record, Static, String, Tuple, Union } from 'runtypes';
+import { ref } from 'valtio';
 
 /* The state of the blueprint */
 export type TreeBlueprintState = Static<typeof TreeBlueprintState>;
 export const TreeBlueprintState = Record({
+    camera: Record({
+        position: Tuple(Number, Number, Number),
+        target: Tuple(Number, Number, Number),
+    }),
     seed: String,
     shading: Union(Literal('shaded'), Literal('wireframe'), Literal('skeletal')),
     trunk: TrunkParameters,
@@ -14,6 +19,10 @@ export const TreeBlueprintState = Record({
 
 /* The initial value of the state of this blueprint */
 export const initialState = () : TreeBlueprintState => ({
+    camera: ref({
+        position: [68, 37, 0],
+        target: [0, 35, 0],
+    }),
     seed: '3551376191',
     shading: 'shaded',
     trunk: {

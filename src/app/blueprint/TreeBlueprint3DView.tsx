@@ -63,6 +63,27 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
         if (typeof controllerRef === 'function') { controllerRef?.(controller); } 
         else if (typeof controllerRef === 'object') { controllerRef.current = controller; }
     }, [controls, mainGroup, controllerRef]);
+
+    /* Restore and/or store the camera data */
+    useEffect(() => {
+        /* If there are no controls, return */
+        if (!controls) { return; }
+        /* Restore the data */
+        controls.setPosition(...floraStore.camera.position);
+        controls.setTarget(...floraStore.camera.target);
+        /* Cleanup function just saves it */
+        return () => {
+            // Create vectors 
+            const position = new THREE.Vector3();
+            const target = new THREE.Vector3();
+            // Set them
+            controls.getPosition(position);
+            controls.getTarget(target);
+            // Save em
+            floraStore.camera.position = position.toArray();
+            floraStore.camera.target = target.toArray();
+        };
+    }, [floraStore, controls]);
     
     /* Return the control */
     return (
