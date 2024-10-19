@@ -29,7 +29,7 @@ export const Workspace = (props: WorkspaceProps) => {
                         <View enabled={documentsSnapshot.current !== null} />
                     </PolygonCounter>
                 </Allotment.Pane>
-                <Allotment.Pane minSize={300} maxSize={900} preferredSize='300px'>
+                <Allotment.Pane className={styles.editorPane} minSize={300} maxSize={900} preferredSize='300px'>
                     {/* The editor content */}
                     <Editor enabled={documentsSnapshot.current !== null} />
                 </Allotment.Pane>

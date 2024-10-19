@@ -1,7 +1,7 @@
 import { TrunkEditor } from '@app/blueprint/editors/TrunkEditor';
 import { styles } from './TreeBlueprintEditor.css';
 
-import { Container, Tabs } from '@mantine/core';
+import { ScrollArea, Tabs } from '@mantine/core';
 import { BranchEditor } from '@app/blueprint/editors/BranchEditor';
 import { SeedEditor } from '@app/blueprint/editors/SeedEditor';
 import { useMolecule } from 'bunshi/react';
@@ -23,14 +23,24 @@ export const TreeBlueprintEditor = () => {
                 </Tabs.List>
 
                 <Tabs.Panel value='trunk'>
-                    <Container className={styles.panelRoot}>
+                    <ScrollArea className={styles.panelRoot} 
+                        h={'100%'} 
+                        scrollbarSize={6}
+                        scrollbars='y'
+                        type='always'
+                    >
                         <TrunkEditor store={flora.trunk} />
-                    </Container>
+                    </ScrollArea>
                 </Tabs.Panel>
                 <Tabs.Panel value='branches'>
-                    <Container className={styles.panelRoot}>
+                    <ScrollArea className={styles.panelRoot} 
+                        h={'100%'} 
+                        scrollbarSize={6}
+                        scrollbars='y'
+                        type='always'
+                    >
                         <BranchEditor store={flora.branch} />
-                    </Container>
+                    </ScrollArea>
                 </Tabs.Panel>
             </Tabs>
         </>

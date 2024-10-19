@@ -21,19 +21,21 @@ export const styles = {
         paddingInline: vars.spacing.md,
         paddingTop: vars.spacing.sm,
         paddingBottom: vars.spacing.sm,
-        overflow: 'scroll',
         maxWidth: 'none',
     }),
 
     // The tab styles
     tab: {
         root: style({
-            height: '100%',
+            flex: 1,
+            minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
         }),
 
         panel: style({
-            height: '100%', 
-            overflow: 'scroll !important',
+            flex: 1,
+            minHeight: 0,
         }),
 
         tab: style({

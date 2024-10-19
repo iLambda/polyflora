@@ -18,4 +18,10 @@ export const styles = {
     workPanel: style({
         flexGrow: 1,
     }),
+    
+    /* The editor pane */
+    editorPane: style({
+        display: 'flex',
+        flexDirection: 'column',
+    }),
 };

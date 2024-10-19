@@ -22,7 +22,7 @@ export const SeedEditor = (props: SeedEditorProps) => {
     }, [props.store]);
 
     return (
-        <Container px={rem(22)} py='xs'>
+        <Container px={rem(22)} py='xs' m={0}>
             {/* <Fieldgroup> */}
                 <DataControl label='Seed' width={rem(160)}>
                     <TextPicker
