@@ -36,6 +36,9 @@ export const BranchEditor = (props: BranchEditorProps) => {
                             { label: 'Cross Y', value: 'cross-y' satisfies BranchGeometryMode },
                         ]}
                         styles={{
+                            input: {
+                                height: rem(31),
+                            },
                             pillsList: {
                                 paddingTop: rem(2),
                             },
