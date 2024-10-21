@@ -23,6 +23,7 @@ export const styles = {
 
         /* The tabs themselves */
         tab: style({
+            position: 'relative',
             paddingBlock: rem(5),
             paddingInline: rem(10),
             marginBottom: rem(4),
@@ -31,11 +32,9 @@ export const styles = {
             selectors: {
                 /* If tab is inactive */
                 '&:not([data-active])': {
-                    opacity: '35%',
-                    border: `${rem(1)} solid black`,
-                    borderTop: `${rem(1)} solid transparent`, 
-                    // border: '1px solid var(--mantine-color-dark-9)',
-                    // color: lighten('var(--tab-border-color)', 0.1),
+                    color: 'rgba(255, 255, 255, 35%)',
+                    border: `${rem(1)} solid rgba(0,0,0,35%)`,
+                    borderTop: `${rem(1)} solid transparent`,
                 },
         
                 /* If tab is active */

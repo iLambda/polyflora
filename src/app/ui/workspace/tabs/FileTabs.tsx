@@ -1,7 +1,7 @@
 import { Flex, ScrollArea, Tabs, Transition } from '@mantine/core';
 import { styles } from './FileTabs.css';
-import { FileTab } from './FileTab';
-import { MouseEventHandler, useCallback, useEffect, useRef } from 'react';
+import { FileTab, FileTabDragData } from './FileTab';
+import { MouseEventHandler, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useIdempotentState } from '@utils/react/hooks/state';
 import { IconBrowserX, IconChevronsLeft, IconChevronsRight } from '@tabler/icons-react';
 import { useContextMenu } from 'mantine-contextmenu';
@@ -9,20 +9,21 @@ import { isOverflown } from '@utils/dom';
 import useResizeObserver from '@react-hook/resize-observer';
 import { useMolecule } from 'bunshi/react';
 import { DocumentStoreMolecule } from '@app/state/Documents';
+import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { reorderWithEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge';
+import { useSnapshot } from 'valtio';
 
-type FileTabData = {
-    id: string;
-    label: string;
-};
-
-type FileTabsProps = {
-    value: string | null;
-    data: FileTabData[];
+export const FileTabs = () => {
     
-    onChange: (value: string|null) => void;
-};
-
-export const FileTabs = (props: FileTabsProps) => {
+    /* Get documents data */
+    const documents = useMolecule(DocumentStoreMolecule);
+    const documentsSnapshot = useSnapshot(documents);
+    
+    /* Compute the tabs data */
+    const tabsData = useMemo(() => documentsSnapshot.order.map(
+        id => ({ id, label: documentsSnapshot.data.get(id)?.name ?? '[ERROR]' }),
+    ), [documentsSnapshot.data, documentsSnapshot.order]);
 
     /* Get the ref for the scrolling viewport */
     const viewportRef = useRef<HTMLDivElement | null>(null);
@@ -68,11 +69,47 @@ export const FileTabs = (props: FileTabsProps) => {
         documentStore.close(documentID);        
     }, [documentStore]);
 
+    /* Drag and drop */
+    useEffect(() => monitorForElements({
+        // Only allow monitoring if this is FileTab data
+        canMonitor: ({ source }) => FileTabDragData.guard(source.data),
+        // Handle drop
+        onDrop: ({ location, source }) => {
+            // Get first drop target
+            const target = location.current.dropTargets[0];
+            if (!target) { return; }
+            // Get data and ensure type
+            const sourceData = source.data;
+            const targetData = target.data;
+            if (!(FileTabDragData.guard(sourceData) && FileTabDragData.guard(targetData))) {
+                return;
+            }
+            // Find order ID
+            const sourceIdx = documentStore.order.findIndex((id) => id === sourceData.id);
+            const targetIdx = documentStore.order.findIndex((id) => id === targetData.id);
+            if (!(sourceIdx >= 0 && targetIdx >= 0)) {
+                return;
+            }
+            // Get edge
+            const closestEdgeOfTarget = extractClosestEdge(targetData);
+            const documentNewOrder = reorderWithEdge({
+                list: documentStore.order,
+                startIndex: sourceIdx,
+                indexOfTarget: targetIdx,
+                closestEdgeOfTarget,
+                axis: 'horizontal',
+              });
+            // Set new list
+            documentStore.order = documentNewOrder;
+        },
+    }), [documentStore]);
 
+    /* Return */
     return (
         <Tabs 
             variant='outline' radius='md' inverted
-            value={props.value} onChange={props.onChange}  
+            value={documentsSnapshot.current} 
+            onChange={v => documentStore.current = v}  
             classNames={styles.tabbar}
             renderRoot={({children, ...props}) => 
                 <ScrollArea viewportRef={viewportRef}
@@ -109,7 +146,7 @@ export const FileTabs = (props: FileTabsProps) => {
             </Transition>
             {/* The actual tabs */}
             {
-                props.data.map(({ id, label }) => (
+                tabsData.map(({ id, label }) => (
                     <FileTab 
                         key={id} 
                         id={id}

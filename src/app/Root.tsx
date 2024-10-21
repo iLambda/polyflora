@@ -5,9 +5,9 @@ import 'allotment/dist/style.css';
 import { styles } from '@app/Root.css';
 import { Workspace } from '@app/ui/workspace/Workspace';
 import { Flex } from '@mantine/core';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 import { TreeBlueprint } from './blueprint/TreeBlueprint';
-import { FileTabs } from './ui/workspace/FileTabs';
+import { FileTabs } from './ui/workspace/tabs/FileTabs';
 import { DocumentStoreMolecule } from '@app/state/Documents';
 import { ScopeProvider, useMolecule } from 'bunshi/react';
 import { blueprintScope, useBlueprintDocumentID } from '@app/state/Blueprint';
@@ -25,11 +25,6 @@ export const Root = () => {
     const documents = useMolecule(DocumentStoreMolecule);
     const documentsSnapshot = useSnapshot(documents);
     
-    /* Compute the tabs data */
-    const tabsData = useMemo(() => documentsSnapshot.order.map(
-        id => ({ id, label: documentsSnapshot.data.get(id)?.name ?? '[ERROR]' }),
-    ), [documentsSnapshot.data, documentsSnapshot.order]);
-
     /* Return component */
     return (
         <Flex className={styles.root} direction='column'>
@@ -43,11 +38,7 @@ export const Root = () => {
                 <Workspace />
             </ScopeProvider>
             {/* The tabs */}
-            <FileTabs 
-                data={tabsData}
-                value={documentsSnapshot.current} 
-                onChange={(id) => documents.current = id} 
-            />
+            <FileTabs />
         </Flex>
     );
 };
