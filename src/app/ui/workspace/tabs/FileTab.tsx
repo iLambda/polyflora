@@ -1,13 +1,14 @@
 import { Tabs } from '@mantine/core';
-import { IconTree } from '@tabler/icons-react';
+import { IconSeeding } from '@tabler/icons-react';
 import { styles } from './FileTab.css';
-import { MouseEventHandler, useEffect, useState } from 'react';
+import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import { draggable, dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { useReactiveRef } from '@utils/react/hooks/state';
 import { clsx } from 'clsx';
 import { Literal, Record, Static, String } from 'runtypes';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { attachClosestEdge, Edge, extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { FunctionTyped } from '@utils/runtypes';
 
 type FileTabProps = {
     id: string;
@@ -17,8 +18,12 @@ type FileTabProps = {
     onAuxClick?: MouseEventHandler<HTMLButtonElement>;
 };
 
-export const FileTabDragData = Record({ origin: Literal('filetab'), id: String });
 export type FileTabDragData = Static<typeof FileTabDragData>;
+export const FileTabDragData = Record({ 
+    origin: Literal('filetab'), 
+    id: String,
+    onDragInteractionOver: FunctionTyped<(was: 'source' | 'target') => void>(),
+});
 
 const parseEdge = (edge: Edge | null) : 'left' | 'right' | null => {
     if (edge === 'left' || edge === 'right') { return edge; }
@@ -30,6 +35,17 @@ export const FileTab = (props: FileTabProps) => {
     const [elementRef, element] = useReactiveRef<HTMLButtonElement>();
     const [dragged, setDragged] = useState<boolean>(false);
     const [draggedOn, setDraggedOn] = useState<'left' | 'right' | null>(null);
+    const [draggedInAnimationState, setDraggedInAnimationState] = useState<boolean>(false);
+    const [colorFlashAnimationState, setColorFlashAnimationState] = useState<boolean>(false);
+
+    /* Handle when this tab is done interacting with something, successfully */
+    const handleDragInteractionOver = useCallback((was: 'source' | 'target') => {
+        /* If we were a source, do a little animation to show that we have been dropped */
+        if (was === 'source') { 
+            setDraggedInAnimationState(true); 
+            setColorFlashAnimationState(true);
+        }
+    }, [setDraggedInAnimationState, setColorFlashAnimationState]);
     
     /* Subscribe to drag and drop */
     useEffect(() => {
@@ -44,6 +60,12 @@ export const FileTab = (props: FileTabProps) => {
                 // Handle state when dragged
                 onDragStart: () => setDragged(true),
                 onDrop: () => setDragged(false),
+                // The data
+                getInitialData: () : FileTabDragData => ({ 
+                    origin: 'filetab', 
+                    id: props.id,
+                    onDragInteractionOver: handleDragInteractionOver,
+                }),
                 // Generate the preview for the drag
                 /* onGenerateDragPreview: ({ nativeSetDragImage }) => {
                     setCustomNativeDragPreview({
@@ -57,10 +79,6 @@ export const FileTab = (props: FileTabProps) => {
                         },
                     });
                 }, */
-                // The data
-                getInitialData: () : FileTabDragData => ({ 
-                    origin: 'filetab', id: props.id,
-                }),
             }),
             /* Drop target */
             dropTargetForElements({
@@ -77,7 +95,11 @@ export const FileTab = (props: FileTabProps) => {
                 getData: ({ input }) => 
                     attachClosestEdge(
                         // The data
-                        { origin: 'filetab', id: props.id } satisfies FileTabDragData, 
+                        { 
+                            origin: 'filetab', 
+                            id: props.id,
+                            onDragInteractionOver: handleDragInteractionOver,
+                        } satisfies FileTabDragData, 
                         // Args
                         {
                             element,
@@ -85,7 +107,7 @@ export const FileTab = (props: FileTabProps) => {
                             allowedEdges: ['left', 'right'],
                         },
                     ),
-
+                // Do things when we're done
                 getIsSticky: () => true,
                 onDragEnter : ({ self }) => setDraggedOn(parseEdge(extractClosestEdge(self.data))),
                 onDrag : ({ self }) => setDraggedOn(parseEdge(extractClosestEdge(self.data))),
@@ -93,24 +115,37 @@ export const FileTab = (props: FileTabProps) => {
                 onDrop: () => setDraggedOn(null),
             }),
         );
-    }, [element, setDragged, setDraggedOn, props.id]);
+    }, [element, setDragged, setDraggedOn, props.id, handleDragInteractionOver]);
 
 
     /* Return the tab */    
     return (
         <Tabs.Tab ref={elementRef}
             value={props.id}
-            leftSection={<IconTree className={styles.icon} />}
+            leftSection={<IconSeeding className={styles.icon} />}
             onContextMenu={props.onContextMenu}
             onAuxClick={props.onAuxClick}
-            className={clsx(dragged && styles.dragged)}
+            className={clsx(
+                draggedInAnimationState && styles.animations.draggedIn, 
+                dragged && styles.dragged,
+            )}
+            onAnimationEnd={() => setDraggedInAnimationState(false)}
         >
-            { props.text }
+            {
+                colorFlashAnimationState && 
+                <div 
+                    className={clsx(styles.colorFlasher, 
+                        colorFlashAnimationState && styles.animations.colorFlash,
+                    )} 
+                    onAnimationEnd={() => setColorFlashAnimationState(false)}
+                />
+            }
             { draggedOn && 
                 <div className={styles.dragIndicator[draggedOn]} >
                     <div className={styles.dragIndicator.circle} />
                 </div>
             }
+            { props.text }
         </Tabs.Tab>
     );
 };

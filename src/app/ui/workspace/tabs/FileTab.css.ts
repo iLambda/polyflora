@@ -11,8 +11,28 @@ export const animations = {
         '75%': { transform: 'rotate(-5deg)' },
         '100%': { transform: 'rotate(0deg)' },
     }),
-
-
+    // Bounce
+    bounce: keyframes({
+        'from,\n  60%,\n  75%,\n  90%,\n  to': {
+            animationTimingFunction: 'cubic-bezier(0.215, 0.61, 0.355, 1)',
+        },
+        from: { opacity: 0, transform: 'translate3d(0, 300px, 0) scaleY(5)' },
+        '60%': { opacity: 1, transform: 'translate3d(0, 0px, 0) scaleY(0.9)' },
+        '75%': { transform: 'translate3d(0, 5px, 0) scaleY(0.95)' },
+        '90%': { transform: 'translate3d(0, 0px, 0) scaleY(0.985)' },
+        to: { transform: 'translate3d(0, 0, 0)' },
+    }),
+    // Slide 
+    slide: keyframes({
+        '0%': { transform: 'translateY(50px) scale(0.7)', opacity: 0.7 },
+        '80%': { transform: 'translateY(0px) scale(0.95)', opacity: 0.7 },
+        '100%': { transform: 'scale(1)', opacity: 1 },
+    }),
+    // Color flash
+    colorFlash: keyframes({
+        'from': { opacity: 1 },
+        'to': { opacity: 0 },
+    }),
 };
 
 /* The styles exported by the stylesheet */
@@ -22,7 +42,27 @@ export const styles = {
         width: rem(14), 
         height: rem(14),  
         margin: 0,
-        strokeWidth: `${rem(1)}`,
+        strokeWidth: 1.2,
+    }),
+
+    animations: {
+        draggedIn: style({
+            animation: `${animations.slide} 500ms`,
+        }),
+        colorFlash: style({
+            animation: `${animations.colorFlash} 750ms`,
+            animationTimingFunction: 'ease',
+        }),
+    },
+
+    colorFlasher: style({
+        position: 'absolute',
+        inset: '0 0 0 0',
+        borderBottomLeftRadius: rem(6),
+        borderBottomRightRadius: rem(6),
+        zIndex: 16,
+        backgroundColor: 'var(--mantine-color-green-8)',
+        opacity: 0,
     }),
 
     dragged: style({
@@ -51,13 +91,11 @@ export const styles = {
         circle: style({
             width: rem(4),
             height: rem(4),
-            borderRadius: '100vh',
             position: 'absolute',
             left: `calc(50% - (${rem(4)} / 2))`,
             bottom: 0,
             backgroundColor: '#ccc',
             zIndex: 15,
-            clipPath: `circle(${rem(3)} at 50% 50%)`,
         }),
     },
 

@@ -101,6 +101,10 @@ export const FileTabs = () => {
               });
             // Set new list
             documentStore.order = documentNewOrder;
+
+            // We're done
+            sourceData.onDragInteractionOver('source');
+            targetData.onDragInteractionOver('target');            
         },
     }), [documentStore]);
 
