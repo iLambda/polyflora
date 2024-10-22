@@ -37,7 +37,7 @@ export const initialState = () : TreeBlueprintState => ({
         sizeRadius: 1,
         tilingU: 1,
         tilingV: 8,
-        textureURL: 'Wood03.png',
+        textureURL: 'Bark01.png',
     },
     branch: {
         bendAmount: -65,
@@ -60,7 +60,7 @@ export const initialState = () : TreeBlueprintState => ({
         nArticulations: 30,
         segmentsLength: 4,
         segmentsRadius: 3,
-        textureURL: 'Cross09.png',
+        textureURL: 'Cross01.png',
     },
 });
 
