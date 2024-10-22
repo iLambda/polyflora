@@ -10,9 +10,9 @@ export type DocumentStore = {
     data: Map<string, { name: string, state: unknown }>;
     order: string[];
 
-    new: () => string;
-    close: (id: string) => boolean;
-    cycle: (offset: number) => void;
+    readonly new: () => string;
+    readonly close: (id: string) => boolean;
+    readonly cycle: (offset: number) => void;
 };
 
 
@@ -26,7 +26,7 @@ export const DocumentStoreMolecule = molecule(() => {
         current: null,
         data: proxyMap(),
         order: [],
-
+        
         // Create new file
         new: () => {
             /* Get its ID */
@@ -77,6 +77,8 @@ export const DocumentStoreMolecule = molecule(() => {
             // Return
             return state.current;
         },
+
+        // 
 
     });
     // Return it
