@@ -1,10 +1,11 @@
-import { ActionIcon, Flex, rem, SegmentedControl, VisuallyHidden } from '@mantine/core';
+import { ActionIcon, Container, Flex, rem, SegmentedControl, VisuallyHidden } from '@mantine/core';
 import { IconBone, IconCube, IconCube3dSphere, IconFocusCentered } from '@tabler/icons-react';
 import { styles } from './TreeBlueprintOverlay.css';
 import { TreeBlueprint3DViewController } from '@app/blueprint/TreeBlueprint3DView';
 import { TreeBlueprintState, TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
 import { useMolecule } from 'bunshi/react';
 import { useSnapshot } from 'valtio';
+import { Resizable } from 're-resizable';
 
 type TreeBlueprintOverlayProps = {
     viewController: TreeBlueprint3DViewController | null;
@@ -74,5 +75,36 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
                 onClick={() => props.viewController?.fitToView?.() }
             />
         </Flex>,
+
+
+        <Resizable
+            key='2d-render-viewport'
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                pointerEvents: 'all',
+              }}
+            lockAspectRatio
+            defaultSize={{
+                width: 320,
+                height: 320,
+            }}
+            minWidth={100}
+            maxWidth={600}
+        >
+            <Container style={{ 
+                width: '100%', 
+                height: '100%',
+                backgroundColor: 'var(--mantine-color-body)',
+                border: rem(1) + ` solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4))`,
+                borderRadius: rem(4),
+            }}>
+                Test
+            </Container>
+        </Resizable>,
     ];
 };

@@ -1,9 +1,9 @@
-import { CameraControls } from '@react-three/drei';
+import { CameraControls, PivotControls } from '@react-three/drei';
 import { deg2rad } from '@utils/math';
 import { Grid, GridSettings } from '../../three/viewer/Grid';
 import { Lighting, LightingSettings } from '../../three/viewer/Lighting';
 import { Record, Static } from 'runtypes';
-import { MutableRefObject, Suspense, useEffect, useMemo } from 'react';
+import { MutableRefObject, Suspense, useEffect, useMemo, useRef } from 'react';
 
 import { useReactiveRef } from '@utils/react/hooks/state';
 import * as THREE from 'three';
@@ -13,6 +13,7 @@ import { useMolecule } from 'bunshi/react';
 import { TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
 import { useSnapshot } from 'valtio';
 import { useBlueprintDocumentID } from '@app/state/Blueprint';
+import { useInstance } from '@utils/react/hooks/refs';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -86,12 +87,32 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
         };
     }, [floraStore, controls]);
 
+    const cameraRef = useRef<THREE.OrthographicCamera | null>(null);
+    const boxHelperRef = useRef<THREE.Box3Helper | null>(null);
+
+    const box = useInstance(THREE.Box3);
+    if (mainGroup) {
+        box.setFromObject(mainGroup, true);
+        boxHelperRef.current?.updateMatrixWorld();
+    }
+
     /* Return the control */
     return (
         <>
             {/* The environment (grid, shadows, etc) */}
             <Grid {...props.environment.grid} />
             <Lighting {...props.environment.lighting} />
+
+            { cameraRef.current && <cameraHelper args={[cameraRef.current]} /> }
+            { mainGroup && <box3Helper ref={boxHelperRef} args={[box, 0xFFFFFF]}  /> }
+
+            <PivotControls rotation={[0, -Math.PI / 2, 0]} scale={75} depthTest={false} fixed lineWidth={2}>
+                <orthographicCamera ref={cameraRef} zoom={0.1} />
+                {/* <mesh castShadow receiveShadow>
+                    <boxGeometry args={[10, 10, 10]} />
+                    <meshStandardMaterial />
+                </mesh> */}
+            </PivotControls>
 
             {/* The orbit controls */}
             <CameraControls makeDefault
