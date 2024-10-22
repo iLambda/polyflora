@@ -15,8 +15,6 @@ export type DocumentStore = {
     readonly cycle: (offset: number) => void;
 };
 
-
-
 /* Create the store */
 export const DocumentStoreMolecule = molecule(() => {
     // Create id counter holder
