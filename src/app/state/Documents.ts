@@ -7,8 +7,13 @@ import { proxyMap } from 'valtio/utils';
 // The type of the store 
 export type DocumentStore = {
     current: string | null;
-    data: Map<string, { name: string, state: unknown }>;
     order: string[];
+    data: Map<string, 
+        { 
+            name: string, 
+            state: unknown 
+            blobs: Map<string, { url: string, file: File }>,
+        }>;
 
     readonly new: () => string;
     readonly close: (id: string) => boolean;
@@ -22,8 +27,8 @@ export const DocumentStoreMolecule = molecule(() => {
     // Create state 
     const state : DocumentStore = proxy<DocumentStore>({
         current: null,
-        data: proxyMap(),
         order: [],
+        data: proxyMap(),
         
         // Create new file
         new: () => {
@@ -31,7 +36,11 @@ export const DocumentStoreMolecule = molecule(() => {
             const ID = id.current++;
             const fullID = `document${ID}`;
             /* Add it */
-            state.data.set(fullID, { name: `Untitled (${ID})`, state: undefined });
+            state.data.set(fullID, { 
+                name: `Untitled (${ID})`, 
+                state: undefined,
+                blobs: proxyMap(),
+            });
             state.order.push(fullID);
             state.current = fullID;
             /* Return */
@@ -60,6 +69,12 @@ export const DocumentStoreMolecule = molecule(() => {
             if (orderIdx > -1) {
                 state.order.splice(orderIdx, 1);
             }
+            /* Release all blobs */
+            const blobs = state.data.get(documentID)!.blobs;
+            blobs.forEach(({ url }) => {
+                URL.revokeObjectURL(url);
+            });
+
             /* Remove from state list */
             return state.data.delete(documentID);
         },

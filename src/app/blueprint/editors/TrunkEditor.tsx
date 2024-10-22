@@ -161,6 +161,7 @@ export const TrunkEditor = (props: TrunkEditorProps) => {
                 <Separator />
                 <TexturePicker 
                     label='Texture'
+                    blobLibraryID='trunk'
                     url={trunkSnapshot.textureURL}
                     onURLChanged={v => trunk.textureURL = v}
                 />

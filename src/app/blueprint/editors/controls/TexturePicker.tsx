@@ -1,42 +1,60 @@
 import { AspectRatio, Center, Flex, Image, Loader, Overlay, rem } from '@mantine/core';
 import { imageMIME } from '@utils/mime';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataControl } from './DataControl';
 import { FilePicker } from './FilePicker';
+import { ComponentScope, molecule, useMolecule } from 'bunshi/react';
+import { BlobLibraryMolecule } from '@app/state/BlobLibrary';
+import { blueprintScope } from '@app/state/Blueprint';
+import { proxy, ref, useSnapshot } from 'valtio';
 
 export type TexturePickerProps = {
+    blobLibraryID: string;
     url: string;
     onURLChanged: (url: string) => void;
     disabled?: boolean;
     label: string;
 };
 
-export const TexturePicker = (props: TexturePickerProps) => {
-    /* Setup state */
-    const [url, setURL] = useState<string>(props.url);
-    const [textureFile, setTextureFile] = useState<File | null>(() => new File([], props.url));
-    const [isLoading, setLoading] = useState<boolean>(false);
-    
-    /* Generate texture URL */
-    useEffect(() => {
-        /* Check if texture is real */
-        if (!textureFile) { return; }
-        /* Generate URL */
-        const blobURL = URL.createObjectURL(textureFile);
-        /* Set it */
-        setURL(blobURL);
-        /* Cleanup function */
-        return () => URL.revokeObjectURL(blobURL);
-        
-    }, [textureFile]);
+const TexturePickerInternalMolecule = molecule<{ file: File | null }>((mol, scope) => {
+    scope(ComponentScope);
+    scope(blueprintScope);
+    return proxy({ file: null });
+});
 
-    /* Send outwards */
+export const TexturePicker = (props: TexturePickerProps) => {
+    /* Access the blob library */
+    const blobLibrary = useMolecule(BlobLibraryMolecule);
+
+    /* Setup state */
+    const [isLoading, setLoading] = useState<boolean>(false);
+    const state = useMolecule(TexturePickerInternalMolecule);
+    const snapshot = useSnapshot(state);
+    const file = snapshot.file;
+ 
+    /* Generate texture URL */
     const onURLChanged = props.onURLChanged;
-    useEffect(() => {setURL(props.url);}, [setURL, props.url]);
-    useEffect(() => {onURLChanged?.(url);}, [onURLChanged, url]);
+    useEffect(() => {
+        /* Check if texture is real, avoid re-register if same file */
+        if (!(file && file?.size > 0)) { return; }
+        if (blobLibrary.data.get(props.blobLibraryID)?.file === file) { return; }
+        /* Register in BlobLib */
+        const blobURL = blobLibrary.register(props.blobLibraryID, file);
+        /* Set it */
+        onURLChanged?.(blobURL);
+    }, [props.blobLibraryID, blobLibrary, file, onURLChanged]);
 
     /* Set loading */
-    useEffect(() => setLoading(true), [url]);
+    useEffect(() => setLoading(true), [props.url]);
+
+    /* Compute the displayed file */
+    const displayedFile : File = useMemo(() => {
+        // If we have a file, return it
+        if (file) { return file; }
+        // If the URL corresponds to the one stored in bloblib, make a dummy with the right name
+        // By default, return normal
+        return new File([], blobLibrary.data.get(props.blobLibraryID)?.file?.name ?? props.url);
+    }, [file, props.url, props.blobLibraryID, blobLibrary.data]);
 
     return (
         <Flex direction='column' gap={rem(6)} >
@@ -44,8 +62,8 @@ export const TexturePicker = (props: TexturePickerProps) => {
             <DataControl label={props.label}>
                 <FilePicker accept={imageMIME.join(',')} 
                     disabled={props.disabled}
-                    value={textureFile}
-                    onChange={setTextureFile}
+                    value={displayedFile}
+                    onChange={v => state.file = v ? ref(v) : null}
                 />
             </DataControl>
             {/* The texture display */}

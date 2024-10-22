@@ -320,6 +320,7 @@ export const BranchEditor = (props: BranchEditorProps) => {
             <Fieldgroup legend='Material'>
                 <TexturePicker
                     label='Texture'
+                    blobLibraryID='branches'
                     disabled={!(branchesSnapshot.geometryMode.includes('cross-x') || branchesSnapshot.geometryMode.includes('cross-y'))}
                     url={branchesSnapshot.textureURL}
                     onURLChanged={v => branches.textureURL = v}
