@@ -162,6 +162,7 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             name='branches'
                         >
                             <Leaves
+                                orientationSpace='local'
                                 distribution='null'
                                 minAngle={0} maxAngle={0}
                                 minPosition={0.3} maxPosition={1}
@@ -171,7 +172,7 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                                 shading='shaded'
                                 sizeHeight={2.5} sizeWidth={2.5}
                                 texturePivotU={0.5} texturePivotV={0}
-                                palette={['red', 'blue']}
+                                palette={['#ABBE7D','#9CCF64','#A2D077','#D5FF4C','#C9E65D','#C3D276','#AAC682','#B4CC88','#C3E186']}
                                 textureURL='Leaf01.png'
                                 parentLimbCurvature={0}
                                 name='leaves'
