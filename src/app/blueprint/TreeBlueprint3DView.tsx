@@ -13,6 +13,7 @@ import { useMolecule } from 'bunshi/react';
 import { TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
 import { useSnapshot } from 'valtio';
 import { useBlueprintDocumentID } from '@app/state/Blueprint';
+import { Leaves } from '@three/flora/tree/Leaves';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -160,6 +161,21 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             seed={floraSnapshot.seed}
                             name='branches'
                         >
+                            <Leaves
+                                distribution='null'
+                                minAngle={0} maxAngle={0}
+                                minPosition={0.3} maxPosition={1}
+                                nArticulations={15}
+                                parentLimbBaseRadius={0}
+                                seed='test'
+                                shading='shaded'
+                                sizeHeight={2.5} sizeWidth={2.5}
+                                texturePivotU={0.5} texturePivotV={0}
+                                palette={['red', 'blue']}
+                                textureURL='Leaf01.png'
+                                parentLimbCurvature={0}
+                                name='leaves'
+                            />
                         </Branches>
 
                     </Trunk>
