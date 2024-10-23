@@ -1,4 +1,4 @@
-import { Literal, Number, Record, Static } from 'runtypes';
+import { Literal, Number, Record, Static, Union } from 'runtypes';
 import { useParentSkeleton } from './SkeletonContext';
 import { memo, ReactNode, useMemo } from 'react';
 
@@ -12,7 +12,7 @@ import { match } from 'ts-pattern';
 export type ArticulationsParameters = Static<typeof ArticulationsParameters>;
 export const ArticulationsParameters = Record({
     // The distribution we use
-    distribution: Literal('random'),
+    distribution: Union(Literal('random'), Literal('null')),
     // The minimum angle variation of the distribution
     minAngle: Number,
     // The maximum angle of the distribution
@@ -74,6 +74,7 @@ export const Articulations = memo((props: ArticulationsProps) => {
                 // TODO: implement other modes than random
                 match(distribution)
                     .with('random', () => 2.0 * Math.PI * rng.next())
+                    .with('null', () => 0.0)
                     .exhaustive(),
                 // The altitude angle coordinate
                 rng.next() * deg2rad(maxAngle - minAngle) + deg2rad(minAngle),
