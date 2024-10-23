@@ -7,6 +7,7 @@ import { SkeletonData } from './SkeletonData';
 import Rand, { PRNG } from 'rand-seed';
 import { Triplet } from '@utils/types';
 import { deg2rad } from '@utils/math';
+import { match } from 'ts-pattern';
     
 export type ArticulationsParameters = Static<typeof ArticulationsParameters>;
 export const ArticulationsParameters = Record({
@@ -56,6 +57,7 @@ export const Articulations = memo((props: ArticulationsProps) => {
     const maxAngle = THREE.MathUtils.clamp(props.maxAngle, 0, 180);
     const baseSeed = `${props.seed}:${props.name}`;
     const nArticulations = Math.max(0, props.nArticulations);
+    const distribution = props.distribution;
     
     /* Compute all the normalized coordinates */
     const randomCoords = useMemo(() => {
@@ -69,14 +71,17 @@ export const Articulations = memo((props: ArticulationsProps) => {
                 // i / (nArticulations - 1),
                 ((maxPosition - minPosition) * rng.next()) + minPosition,
                 // The azimutal angle coordinate
-                2.0 * Math.PI * rng.next(),
+                // TODO: implement other modes than random
+                match(distribution)
+                    .with('random', () => 2.0 * Math.PI * rng.next())
+                    .exhaustive(),
                 // The altitude angle coordinate
                 rng.next() * deg2rad(maxAngle - minAngle) + deg2rad(minAngle),
             ];
         }
         // Return coords
         return coords;
-    }, [baseSeed, nArticulations, minPosition, maxPosition, minAngle, maxAngle]);
+    }, [baseSeed, nArticulations, minPosition, maxPosition, minAngle, maxAngle, distribution]);
 
     /* Then compute the final positions/rotations */
     const worldCoordinates = useMemo(() => SkeletonData.along(skeleton, randomCoords, props.parentLimbCurvature), [skeleton, randomCoords, props.parentLimbCurvature]);
