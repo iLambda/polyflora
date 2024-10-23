@@ -1,4 +1,37 @@
-- Alternative cross geometry (parallel / free)
-- Leaves shape control
-    - Add angle 
-- Save/load from JSON
+# TODO (order of importance)
+
+-> Leaves
+
+-> All bend modes can be summed up into two parameters
+    -> Initial bend (only affects i=0 (up, down mode)) & Cumulative bend
+        -> At joint i, the angle is α_i = α_init + (i * α_cumul) 
+-> Add distribution modes to branches
+    -> Opposite, stair, pair, twisted pair
+-> Allow cross geometry to have middle seam
+    -> Parametrize seam angle
+
+-> Subbranches
+
+-> Save/load from JSON
+-> Export vertex painted model
+
+-> Multiple tree-generating models. When creating new file, ask for model
+    -> Currently using tree[d] generation algorithm
+    -> Scripting language to generate it ?
+        - https://discuss.ocaml.org/t/using-menhir-to-parse-into-idiomatic-js-typescript-structures/13809
+
+-> 2D render mode
+    -> Serializes camera position for further renders
+    -> Can toggle show/hide branches in render by clicking on them
+
+# Look up into
+
+-> Flower & shrubs generation
+    -> Look into TheGameCreators - Plant Life
+        - https://archive.org/details/plant-life-10501
+
+-> Curve mode for trunk shape ?
+-> Modify individual branches.
+    -> This locks the seed, and only unlocks it if user is willing to throw away all its changes
+
+-> Multiple trunks

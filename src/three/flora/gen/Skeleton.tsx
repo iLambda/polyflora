@@ -70,10 +70,26 @@ export const Skeleton = memo((props: SkeletonProps) => {
 
                 // up
                 case 'up': {
+                    if (i === 0) {
+                        tmpEuler.set(0, 0, -deg2rad(props.bendAmount));
+                    } else {
+                        tmpEuler.set(0, 0, deg2rad(props.bendAmount / lengthSegments));
+                    }
+
+                    tmpMatrix.makeRotationFromEuler(tmpEuler);
+                    segmentToObject.multiply(tmpMatrix);
                     break;
                 }
                 // down
                 case 'down': {
+                    if (i === 0) {
+                        tmpEuler.set(0, 0, deg2rad(props.bendAmount));
+                    } else {
+                        tmpEuler.set(0, 0, deg2rad(props.bendAmount / lengthSegments));
+                    }
+
+                    tmpMatrix.makeRotationFromEuler(tmpEuler);
+                    segmentToObject.multiply(tmpMatrix);
                     break;
                 }
 
