@@ -47,14 +47,14 @@ export const Lighting = memo((props: LightingProps) => {
                 intensity={props.sun.intensity}
                 color={useColor(props.sun.color)} 
                 position={[100, 40 , 0]}
+                rotation={[0, 0, -Math.PI/8]}
                 castShadow  
             />
-            {/* directionalLight && (
+            {/* {directionalLight && (
                 <>
-                    <cameraHelper args={[directionalLight.shadow.camera]} />
                     <directionalLightHelper args={[directionalLight, 2, 'yellow']} />
                 </>
-            ) */}
+            )} */}
         </>
     );
 });
