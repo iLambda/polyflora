@@ -1,6 +1,7 @@
 # TODO (order of importance)
 
 -> Leaves
+-> Stumps for trunks
 
 -> All bend modes can be summed up into two parameters
     -> Initial bend (only affects i=0 (up, down mode)) & Cumulative bend

@@ -9,7 +9,7 @@ import { Array, Literal, Number, Static, String, Union } from 'runtypes';
 import * as THREE from 'three';
 
 export type LeavesParameters = Static<typeof LeavesParameters>;
-const LeavesParameters = ArticulationsParameters.extend({
+export const LeavesParameters = ArticulationsParameters.extend({
     /* The texture pivot U coord */
     texturePivotU: Number,
     /* The texture pivot V coord */
@@ -37,7 +37,7 @@ const LeavesParameters = ArticulationsParameters.extend({
 
 });
 
-export type LeavesProps = LeavesParameters & {
+export type LeavesProps = Omit<LeavesParameters, 'palette'> & {
     /* The seed of the generated leaves */
     seed: string;
     /* The name will be appended to the seed for better generation */
@@ -45,11 +45,13 @@ export type LeavesProps = LeavesParameters & {
     
     /* The curvature of the parent limb */
     parentLimbCurvature: number;
-    /* The base radius of the parent limb */
+    /* The base radius of the parent lim b */
     parentLimbBaseRadius: number;
     
     /* The shading used */
     shading: LimbProps['shading'];
+    /* The color palette */
+    palette: readonly string[]
 };
 
 const ParentRotationMode = (props: { children?: ReactNode | ReactNode[], orientationSpace: LeavesParameters['orientationSpace'] }) => {
@@ -126,10 +128,6 @@ export const Leaves = (props: LeavesProps) => {
 
                             />
                         </ParentRotationMode>
-                        /* <JointReferenceFrame 
-                            key={branchID} 
-                            radius={_radius + 0.25} 
-                        /> */
                     );
                 }}
             </Articulations>

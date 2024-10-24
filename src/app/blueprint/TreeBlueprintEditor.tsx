@@ -6,6 +6,7 @@ import { BranchEditor } from '@app/blueprint/editors/BranchEditor';
 import { SeedEditor } from '@app/blueprint/editors/SeedEditor';
 import { useMolecule } from 'bunshi/react';
 import { TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
+import { LeavesEditor } from '@app/blueprint/editors/LeavesEditor';
 
 export const TreeBlueprintEditor = () => {
 
@@ -20,6 +21,7 @@ export const TreeBlueprintEditor = () => {
                 <Tabs.List>
                     <Tabs.Tab value='trunk'> Trunk </Tabs.Tab>
                     <Tabs.Tab value='branches'> Branches </Tabs.Tab>
+                    <Tabs.Tab value='leaves'> Leaves </Tabs.Tab>
                 </Tabs.List>
 
                 <Tabs.Panel value='trunk'>
@@ -42,6 +44,17 @@ export const TreeBlueprintEditor = () => {
                         type='always'
                     >
                         <BranchEditor store={flora.branch} />
+                    </ScrollArea>
+                </Tabs.Panel>
+                <Tabs.Panel value='leaves'>
+                    <ScrollArea className={styles.panelRoot} 
+                        h={'100%'} 
+                        py={0}
+                        scrollbarSize={6}
+                        scrollbars='y'
+                        type='always'
+                    >
+                        <LeavesEditor store={flora.leaves} />
                     </ScrollArea>
                 </Tabs.Panel>
             </Tabs>

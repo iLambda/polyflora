@@ -162,19 +162,23 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             name='branches'
                         >
                             <Leaves
-                                orientationSpace='local'
-                                distribution='null'
-                                minAngle={0} maxAngle={0}
-                                minPosition={0.3} maxPosition={1}
-                                nArticulations={15}
+                                distribution={floraSnapshot.leaves.distribution}
+                                nArticulations={floraSnapshot.leaves.nArticulations}
+                                minAngle={floraSnapshot.leaves.minAngle} 
+                                maxAngle={floraSnapshot.leaves.maxAngle}
+                                minPosition={floraSnapshot.leaves.minPosition} 
+                                maxPosition={floraSnapshot.leaves.maxPosition}
+                                orientationSpace={floraSnapshot.leaves.orientationSpace}
+                                palette={floraSnapshot.leaves.palette}
                                 parentLimbBaseRadius={0}
-                                seed='test'
-                                shading='shaded'
-                                sizeHeight={2.5} sizeWidth={2.5}
-                                texturePivotU={0.5} texturePivotV={0}
-                                palette={['#ABBE7D','#9CCF64','#A2D077','#D5FF4C','#C9E65D','#C3D276','#AAC682','#B4CC88','#C3E186']}
-                                textureURL='Leaf01.png'
                                 parentLimbCurvature={0}
+                                sizeHeight={floraSnapshot.leaves.sizeHeight} 
+                                sizeWidth={floraSnapshot.leaves.sizeWidth}
+                                texturePivotU={floraSnapshot.leaves.texturePivotU} 
+                                texturePivotV={floraSnapshot.leaves.texturePivotV}
+                                textureURL={floraSnapshot.leaves.textureURL}
+                                shading={floraSnapshot.shading}
+                                seed={floraSnapshot.seed}
                                 name='leaves'
                             />
                         </Branches>
