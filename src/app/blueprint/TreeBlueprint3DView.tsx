@@ -70,8 +70,8 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
         /* If there are no controls, return */
         if (!controls) { return; }
         /* Restore the data */
-        controls.setPosition(...floraStore.camera.position);
-        controls.setTarget(...floraStore.camera.target);
+        controls.setPosition(...floraStore.env.camera.position);
+        controls.setTarget(...floraStore.env.camera.target);
         /* Cleanup function just saves it */
         return () => {
             // Create vectors 
@@ -81,8 +81,8 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
             controls.getPosition(position);
             controls.getTarget(target);
             // Save em
-            floraStore.camera.position = position.toArray();
-            floraStore.camera.target = target.toArray();
+            floraStore.env.camera.position = position.toArray();
+            floraStore.env.camera.target = target.toArray();
         };
     }, [floraStore, controls]);
 
