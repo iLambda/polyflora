@@ -87,7 +87,7 @@ export const TexturePicker = (props: TexturePickerProps) => {
                         style={{ filter: `grayscale(${props.disabled ? 1 : 0})` }}
                     />
                     {
-                        props.pivot && props.onPivotChanged && (<Overlay backgroundOpacity={0}>
+                        props.pivot && props.onPivotChanged && !props.disabled && (<Overlay backgroundOpacity={0}>
                             <PivotPicker 
                                 style={{ width: '100%', height: '100%', overflow: 'hidden' }} 
                                 value={props.pivot}

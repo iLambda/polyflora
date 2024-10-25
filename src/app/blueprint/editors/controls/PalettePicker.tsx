@@ -7,6 +7,7 @@ import { useState } from 'react';
 type PalettePickerProps = {
     palette: readonly string[];
     onPaletteChanged: (v: string[]) => void;
+    disabled?: boolean;
 };
 
 export const PalettePicker = (props: PalettePickerProps) => {
@@ -21,11 +22,16 @@ export const PalettePicker = (props: PalettePickerProps) => {
                             {
                                 props.palette.map((color, idx) => (
                                     <UnstyledButton key={idx} 
-                                        style={assignInlineVars({
-                                            [variables.colorEntry]: color,
-                                        })} 
+                                        style={{
+                                            ...assignInlineVars({
+                                                [variables.colorEntry]: color,
+                                            }),
+                                            filter: props.disabled ? `grayscale(1) brightness(0.35)` : '',
+                                            cursor: props.disabled ? 'not-allowed' : 'pointer',
+                                        }}
                                         className={clsx(styles.colorEntry, (selectedId == idx) && styles.colorEntrySelected)}
                                         onClick={() => setSelectedId(idx)}
+                                        disabled={props.disabled}
                                     />
                                 ))
                             }
@@ -45,6 +51,11 @@ export const PalettePicker = (props: PalettePickerProps) => {
                             props.onPaletteChanged(val);
                         }
                     }
+                }}
+                styles={{
+                    colorPreview: {
+                        filter: props.disabled ? `grayscale(1) brightness(0.35)` : '',
+                    },
                 }}
             />
             {/* <PillsInput>

@@ -1,4 +1,4 @@
-import { Flex, rem, Text } from '@mantine/core';
+import { Flex, rem, Switch, Text } from '@mantine/core';
 import { DataControl } from '@app/blueprint/editors/controls/DataControl';
 import { NumberPicker } from '@app/blueprint/editors/controls/NumberPicker';
 import { SelectorPicker } from '@app/blueprint/editors/controls/SelectorPicker';
@@ -24,9 +24,19 @@ export const LeavesEditor = (props: BranchEditorProps) => {
         <Flex direction='column' gap='sm' my={rem(12)}>
             {/* Control segments */}
             <Fieldgroup legend='Geometry'>
+                {/* Enabled ? */}
+                <DataControl label='Enable leaves' width={'fit-content'}>
+                    <Switch
+                        checked={leavesSnapshot.enabled}
+                        onChange={e => leaves.enabled = e.target.checked}
+                    />
+                </DataControl>
+                <Separator />
+
                 {/* # branches */}
                 <DataControl label='# leaves' width={rem(64)}>
                     <NumberPicker
+                        disabled={!leavesSnapshot.enabled}
                         allowDecimal={false}
                         allowNegative={false}
                         value={leavesSnapshot.nArticulations} 
@@ -34,10 +44,9 @@ export const LeavesEditor = (props: BranchEditorProps) => {
                         min={0}
                     />
                 </DataControl>
-                <Separator />
             </Fieldgroup>
             {/* Position control */}
-            <Fieldgroup legend='Position distribution'>
+            <Fieldgroup legend='Position distribution' disabled={!leavesSnapshot.enabled}>
                 {/* Method */}
                 <DataControl label='Method'>
                     <SelectorPicker
@@ -104,7 +113,7 @@ export const LeavesEditor = (props: BranchEditorProps) => {
 
 
             {/* Size control */}
-            <Fieldgroup legend='Size distribution'>
+            <Fieldgroup legend='Size distribution' disabled={!leavesSnapshot.enabled}>
                 {/* Length (min) */}
                 <DataControl label='Size'>
                     <NumberPicker
@@ -127,15 +136,16 @@ export const LeavesEditor = (props: BranchEditorProps) => {
             </Fieldgroup>
 
             {/* Palette */}
-            <Fieldgroup legend='Palette'>
+            <Fieldgroup legend='Palette' disabled={!leavesSnapshot.enabled}>
                 <PalettePicker 
                     palette={leavesSnapshot.palette}
                     onPaletteChanged={v => leaves.palette = v}
+                    disabled={!leavesSnapshot.enabled}
                 />  
             </Fieldgroup>
 
             {/* Texture zone */}
-            <Fieldgroup legend='Material'>
+            <Fieldgroup legend='Material' disabled={!leavesSnapshot.enabled}>
                 <DataControl label='Pivot'>
                     <NumberPicker
                         allowDecimal={true}
@@ -158,6 +168,7 @@ export const LeavesEditor = (props: BranchEditorProps) => {
                     blobLibraryID='trunk'
                     url={leavesSnapshot.textureURL}
                     onURLChanged={v => leaves.textureURL = v}
+                    disabled={!leavesSnapshot.enabled}
                     pivot={useMemo(() => ({ x: leavesSnapshot.texturePivotU, y: 1 - leavesSnapshot.texturePivotV })
                                     , [leavesSnapshot.texturePivotU, leavesSnapshot.texturePivotV])}
                     onPivotChanged={useCallback((v: {x: number, y: number}) => {

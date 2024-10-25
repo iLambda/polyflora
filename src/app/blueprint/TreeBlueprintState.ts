@@ -69,7 +69,7 @@ export const initialState = () : TreeBlueprintState => ({
         textureURL: 'Cross01.png',
     },
     leaves: {
-        enabled: true,
+        enabled: false,
         distribution: 'null',
         nArticulations: 15,
         minAngle: 0,

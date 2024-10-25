@@ -161,26 +161,28 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             seed={floraSnapshot.seed}
                             name='branches'
                         >
-                            <Leaves
-                                distribution={floraSnapshot.leaves.distribution}
-                                nArticulations={floraSnapshot.leaves.nArticulations}
-                                minAngle={floraSnapshot.leaves.minAngle} 
-                                maxAngle={floraSnapshot.leaves.maxAngle}
-                                minPosition={floraSnapshot.leaves.minPosition} 
-                                maxPosition={floraSnapshot.leaves.maxPosition}
-                                orientationSpace={floraSnapshot.leaves.orientationSpace}
-                                palette={floraSnapshot.leaves.palette}
-                                parentLimbBaseRadius={0}
-                                parentLimbCurvature={0}
-                                sizeHeight={floraSnapshot.leaves.sizeHeight} 
-                                sizeWidth={floraSnapshot.leaves.sizeWidth}
-                                texturePivotU={floraSnapshot.leaves.texturePivotU} 
-                                texturePivotV={floraSnapshot.leaves.texturePivotV}
-                                textureURL={floraSnapshot.leaves.textureURL}
-                                shading={floraSnapshot.shading}
-                                seed={floraSnapshot.seed}
-                                name='leaves'
-                            />
+                            { floraSnapshot.leaves.enabled &&
+                                <Leaves
+                                    distribution={floraSnapshot.leaves.distribution}
+                                    nArticulations={floraSnapshot.leaves.nArticulations}
+                                    minAngle={floraSnapshot.leaves.minAngle} 
+                                    maxAngle={floraSnapshot.leaves.maxAngle}
+                                    minPosition={floraSnapshot.leaves.minPosition} 
+                                    maxPosition={floraSnapshot.leaves.maxPosition}
+                                    orientationSpace={floraSnapshot.leaves.orientationSpace}
+                                    palette={floraSnapshot.leaves.palette}
+                                    parentLimbBaseRadius={0}
+                                    parentLimbCurvature={0}
+                                    sizeHeight={floraSnapshot.leaves.sizeHeight} 
+                                    sizeWidth={floraSnapshot.leaves.sizeWidth}
+                                    texturePivotU={floraSnapshot.leaves.texturePivotU} 
+                                    texturePivotV={floraSnapshot.leaves.texturePivotV}
+                                    textureURL={floraSnapshot.leaves.textureURL}
+                                    shading={floraSnapshot.shading}
+                                    seed={floraSnapshot.seed}
+                                    name='leaves'
+                                /> 
+                            }
                         </Branches>
 
                     </Trunk>

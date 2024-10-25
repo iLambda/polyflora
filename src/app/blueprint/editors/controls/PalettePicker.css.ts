@@ -30,9 +30,6 @@ export const styles = {
         backgroundColor: variables.colorEntry, 
         height: rem(26), 
         width: rem(26),
-        // fontSize: vars.fontSizes.xs,
-        // color: 'black',
-        
     }),
 
     colorEntrySelected: style({
