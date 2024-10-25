@@ -15,9 +15,13 @@ export const TextPicker = (props: TextPickerProps) => {
                 input: {
                     height: rem(22),
                     minHeight: rem(22),
-                    paddingLeft: rem(1),
-                    paddingRight: rem(20),
+                    padding: rem(0),
+                    paddingRight: rem(8),
                     textAlign: 'end',
+                },
+                section: {
+                    borderLeft: `${rem(1)} var(--input-bd) solid`,
+                    width: rem(16),
                 },
             }}
             size='xs'
