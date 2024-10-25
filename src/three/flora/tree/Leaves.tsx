@@ -121,10 +121,11 @@ export const Leaves = (props: LeavesProps) => {
                                 color={props.palette[colorID]}
                                 
                                 rotation={[Math.PI/2, 0, 0]}
-                                // position={[
-                                //     props.texturePivotV * props.sizeHeight, 0, 
-                                //     props.texturePivotU * props.sizeWidth,
-                                // ]}
+                                position={[
+                                    ((1 - props.texturePivotU) - 0.5) * props.sizeWidth,
+                                    0,
+                                    -(props.texturePivotV - 0.5) * props.sizeHeight, 
+                                ]}
 
                             />
                         </ParentRotationMode>
