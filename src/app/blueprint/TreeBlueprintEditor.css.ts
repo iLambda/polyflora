@@ -41,6 +41,7 @@ export const styles = {
         tab: style({
             fontSize: vars.fontSizes.xs,
             paddingBlock: rem(6),
+            paddingInline: rem(12),
             selectors: {
                 '&:first-child': {
                     marginLeft: rem(5),
