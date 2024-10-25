@@ -8,9 +8,11 @@ import { ref } from 'valtio';
 /* The state of the blueprint */
 export type TreeBlueprintState = Static<typeof TreeBlueprintState>;
 export const TreeBlueprintState = Record({
-    camera: Record({
-        position: Tuple(Number, Number, Number),
-        target: Tuple(Number, Number, Number),
+    env: Record({
+        camera: Record({
+            position: Tuple(Number, Number, Number),
+            target: Tuple(Number, Number, Number),
+        }),
     }),
     seed: String,
     shading: Union(Literal('shaded'), Literal('wireframe'), Literal('skeletal')),
@@ -21,10 +23,12 @@ export const TreeBlueprintState = Record({
 
 /* The initial value of the state of this blueprint */
 export const initialState = () : TreeBlueprintState => ({
-    camera: ref({
-        position: [68, 37, 0],
-        target: [0, 35, 0],
-    }),
+    env: {
+        camera: ref({
+            position: [68, 37, 0],
+            target: [0, 35, 0],
+        }),
+    },
     seed: '3551376191',
     shading: 'shaded',
     trunk: {
