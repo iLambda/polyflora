@@ -7,7 +7,8 @@ type SelectorPickerProps = Omit<SelectProps, 'styles' | 'size'> & {
 export const SelectorPicker = (props: SelectorPickerProps) => {
 
     return (
-        <Select                 
+        <Select       
+            allowDeselect={false}          
             styles={{
                 root: {
                     flex: 1,
@@ -23,9 +24,17 @@ export const SelectorPicker = (props: SelectorPickerProps) => {
                     borderLeft: `${rem(1)} var(--input-bd) solid`,
                     width: rem(16),
                 },
-                
             }}
             size='xs'
+            comboboxProps={{
+                offset: 0,
+                size:'xs',
+                styles: {
+                    option: {
+                        height: rem(20),
+                    },
+                },
+            }}
             {...props}
     />);
 };
