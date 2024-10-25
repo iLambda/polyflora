@@ -1,7 +1,8 @@
 import { createBlueprintMolecule } from '@app/state/Blueprint';
 import { BranchesParameters } from '@three/flora/tree/Branches';
+import { LeavesParameters } from '@three/flora/tree/Leaves';
 import { TrunkParameters } from '@three/flora/tree/Trunk';
-import { Literal, Number, Record, Static, String, Tuple, Union } from 'runtypes';
+import { Boolean, Literal, Number, Record, Static, String, Tuple, Union } from 'runtypes';
 import { ref } from 'valtio';
 
 /* The state of the blueprint */
@@ -17,6 +18,7 @@ export const TreeBlueprintState = Record({
     shading: Union(Literal('shaded'), Literal('wireframe'), Literal('skeletal')),
     trunk: TrunkParameters,
     branch: BranchesParameters.extend({ textureURL: String }),
+    leaves: LeavesParameters.extend({ enabled: Boolean }),
 });
 
 /* The initial value of the state of this blueprint */
@@ -65,6 +67,32 @@ export const initialState = () : TreeBlueprintState => ({
         segmentsLength: 4,
         segmentsRadius: 3,
         textureURL: 'Cross01.png',
+    },
+    leaves: {
+        enabled: true,
+        distribution: 'null',
+        nArticulations: 15,
+        minAngle: 0,
+        maxAngle: 0,
+        minPosition: 0,
+        maxPosition: 1, 
+        orientationSpace: 'local',
+        palette: [
+            '#ABBE7D',
+            '#9CCF64',
+            '#A2D077',
+            '#D5FF4C',
+            '#C9E65D',
+            '#C3D276',
+            '#AAC682',
+            '#B4CC88',
+            '#C3E186',
+        ],
+        sizeHeight: 2.5,
+        sizeWidth: 2.5,
+        texturePivotU: 0.4711,
+        texturePivotV: 0.0,
+        textureURL: 'Leaf01.png',
     },
 });
 

@@ -7,13 +7,16 @@ import { ComponentScope, molecule, useMolecule } from 'bunshi/react';
 import { BlobLibraryMolecule } from '@app/state/BlobLibrary';
 import { blueprintScope } from '@app/state/Blueprint';
 import { proxy, ref, useSnapshot } from 'valtio';
+import { PivotPicker } from '@app/blueprint/editors/controls/PivotPicker';
 
 export type TexturePickerProps = {
     blobLibraryID: string;
-    url: string;
-    onURLChanged: (url: string) => void;
     disabled?: boolean;
     label: string;
+    url: string;
+    onURLChanged: (url: string) => void;
+    pivot?: { x: number, y: number };
+    onPivotChanged?: (v: { x: number, y: number }) => void;
 };
 
 const TexturePickerInternalMolecule = molecule<{ file: File | null }>((mol, scope) => {
@@ -83,6 +86,15 @@ export const TexturePicker = (props: TexturePickerProps) => {
                         onLoad={() => setLoading(false)}
                         style={{ filter: `grayscale(${props.disabled ? 1 : 0})` }}
                     />
+                    {
+                        props.pivot && props.onPivotChanged && (<Overlay backgroundOpacity={0}>
+                            <PivotPicker 
+                                style={{ width: '100%', height: '100%', overflow: 'hidden' }} 
+                                value={props.pivot}
+                                onChanged={props.onPivotChanged}
+                            />
+                        </Overlay>)  
+                    }
                     {
                         isLoading &&
                             (<Overlay blur={5} component={Center}>

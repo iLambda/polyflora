@@ -24,6 +24,7 @@
     "@react-three/fiber": "^8.17.10",
     "@tabler/icons-react": "3.17.0",
     "@vanilla-extract/css": "^1.16.0",
+    "@vanilla-extract/dynamic": "^2.1.2",
     "allotment": "^1.20.2",
     "bunshi": "^2.1.5",
     "clsx": "^2.1.1",
