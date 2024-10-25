@@ -19,27 +19,35 @@ export const styles = {
     }),
 
     colorList: style({
-        gap: `${rem(6)} ${rem(6)}`,
+        gap: `${rem(4)} ${rem(4)}`,
         flexWrap: 'wrap',
         width: 'fit-content',
     }),
   
     colorEntry: style({
-        border: `1px solid var(--mantine-color-dark-4)`,
-        borderRadius: vars.radius.md,
+        borderRadius: vars.radius.xs,
         backgroundColor: variables.colorEntry, 
-        height: rem(26), 
-        width: rem(26),
+        height: rem(24), 
+        width: rem(24),
+        boxShadow: 'rgba(0,0,0,.1) 0 0 0 calc(.0625rem * var(--mantine-scale)) inset,rgba(0,0,0,.15) 0 0 calc(.25rem * var(--mantine-scale)) inset',
     }),
-
+    
     colorEntrySelected: style({
-        border: `2px solid var(--mantine-color-dark-3)`,
-        borderRadius: vars.radius.md,
+        border: `2px solid var(--mantine-color-dark-1)`,
         '::after': {
             border: `4px solid red`,
             borderRadius: vars.radius.md,
         },
         
     }),
+
+    addButton: style({
+        height: rem(26), 
+        width: rem(26),
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    }),
+
 
 };
