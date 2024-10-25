@@ -8,6 +8,7 @@ import { Fieldgroup } from '@app/blueprint/editors/controls/Fieldgroup';
 import { useSnapshot } from 'valtio';
 import { TreeBlueprintState } from '@app/blueprint/TreeBlueprintState';
 import { PalettePicker } from '@app/blueprint/editors/controls/PalettePicker';
+import { useCallback, useMemo } from 'react';
 
 type BranchEditorProps = {
     store: TreeBlueprintState['leaves'];
@@ -157,6 +158,12 @@ export const LeavesEditor = (props: BranchEditorProps) => {
                     blobLibraryID='trunk'
                     url={leavesSnapshot.textureURL}
                     onURLChanged={v => leaves.textureURL = v}
+                    pivot={useMemo(() => ({ x: leavesSnapshot.texturePivotU, y: 1 - leavesSnapshot.texturePivotV })
+                                    , [leavesSnapshot.texturePivotU, leavesSnapshot.texturePivotV])}
+                    onPivotChanged={useCallback((v: {x: number, y: number}) => {
+                        leaves.texturePivotU = v.x;
+                        leaves.texturePivotV = 1.0 - v.y;
+                    }, [leaves])}
                 />
             </Fieldgroup>
         </Flex>

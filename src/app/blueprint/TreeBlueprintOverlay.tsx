@@ -1,11 +1,12 @@
-import { ActionIcon, Flex, Popover, rem, SegmentedControl, Switch, VisuallyHidden } from '@mantine/core';
-import { IconBone, IconBulb, IconCube, IconCube3dSphere, IconFocusCentered, IconRuler, IconVideo } from '@tabler/icons-react';
+import { ActionIcon, Flex, rem } from '@mantine/core';
+import { IconFocusCentered } from '@tabler/icons-react';
 import { styles } from './TreeBlueprintOverlay.css';
 import { TreeBlueprint3DViewController } from '@app/blueprint/TreeBlueprint3DView';
-import { TreeBlueprintState, TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
+import { TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
 import { useMolecule } from 'bunshi/react';
 import { useSnapshot } from 'valtio';
-import { DataControl } from '@app/blueprint/editors/controls/DataControl';
+import { ShadingSelector } from '@app/blueprint/overlays/ShadingSelector';
+import { Toolbar } from '@app/blueprint/overlays/Toolbar';
 
 type TreeBlueprintOverlayProps = {
     viewController: TreeBlueprint3DViewController | null;
@@ -19,44 +20,10 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
 
     return [
         /* Shading selector */
-        <SegmentedControl
+        <ShadingSelector
             key='shading-selector'
-            classNames={styles.shadingSelector}
-            size='xs'
-            radius='xl'
-            color='green'
-            withItemsBorders={false}
-            data={[
-                { 
-                    value: 'shaded' satisfies TreeBlueprintState['shading'], 
-                    label: (
-                        <>
-                            <IconCube stroke={1.2} />
-                            <VisuallyHidden>Shaded</VisuallyHidden>
-                        </>
-                    ),
-                },
-                { 
-                    value: 'wireframe' satisfies TreeBlueprintState['shading'], 
-                    label: (
-                        <>
-                            <IconCube3dSphere stroke={1.2} />
-                            <VisuallyHidden>Wireframe</VisuallyHidden>
-                        </>
-                    ),
-                },
-                { 
-                    value: 'skeletal' satisfies TreeBlueprintState['shading'], 
-                    label: (
-                        <>
-                            <IconBone stroke={1.2} />
-                            <VisuallyHidden>Skeletal</VisuallyHidden>
-                        </>
-                    ),
-                },
-            ]}
             value={floraSnapshot.shading}
-            onChange={v => flora.shading = v as TreeBlueprintState['shading']}
+            onChange={v => flora.shading = v}
         />,
 
         /* Buttons for modifying the view */
@@ -76,35 +43,8 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
             />
         </Flex>,
 
-        /* Overhead buttons */
-        <Flex
-            key='overhead-controls'
-            className={styles.overheadControls}
-        >   
+        <Toolbar key='toolbar' />,
 
-
-            <Popover width={200} position="bottom" withArrow shadow="md">
-                <Popover.Target>
-                    <ActionIcon variant="light" aria-label="Settings">
-                        <IconBulb style={{ width: '75%', height: '75%' }} stroke={1.5} />
-                    </ActionIcon>
-                </Popover.Target>
-            <Popover.Dropdown>
-                <DataControl label='Enable lighting' width={'fit-content'} >
-                    <Switch
-                        size='xs'
-                        defaultChecked
-                    />
-                </DataControl>
-            </Popover.Dropdown>
-            </Popover>
-
-            <ActionIcon variant="light" aria-label="Settings">
-                <IconVideo style={{ width: '75%', height: '75%' }} stroke={1.5} />
-            </ActionIcon>
-            <ActionIcon variant="light" aria-label="Settings">
-                <IconRuler style={{ width: '75%', height: '75%' }} stroke={1.5} />
-            </ActionIcon>
-        </Flex>,
+        
     ];
 };

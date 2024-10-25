@@ -90,7 +90,7 @@ export const initialState = () : TreeBlueprintState => ({
         ],
         sizeHeight: 2.5,
         sizeWidth: 2.5,
-        texturePivotU: 0.5,
+        texturePivotU: 0.4711,
         texturePivotV: 0.0,
         textureURL: 'Leaf01.png',
     },
