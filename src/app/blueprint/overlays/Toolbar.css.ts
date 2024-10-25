@@ -14,9 +14,29 @@ export const styles = {
         gap: rem(6),
         backgroundColor: 'var(--mantine-color-body)',
         border: rem('1px') + ` solid var(--mantine-color-dark-4)`,
+        display: 'flex',
+        justifyItems: 'center', 
+        alignContent: 'center',
         selectors: {
             '&': {
                 pointerEvents: 'all',
+            },
+        },
+    }),
+
+    toolbarKnub: style({
+        width: 'fit-content',  
+        display: 'flex', 
+        justifyItems: 'center', 
+        alignContent: 'center',
+        selectors: {
+            '&:after': {
+                fontSize: '10pt',
+                content: '⠿',
+                color: 'var(--mantine-color-dark-3)',
+                justifySelf: 'center', 
+                alignSelf: 'center',
+                height: 'fit-content',
             },
         },
     }),

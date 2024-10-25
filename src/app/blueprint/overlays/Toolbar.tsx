@@ -11,7 +11,7 @@ export const Toolbar = () => {
             key='overhead-controls'
             className={styles.toolbar}
         >   
-
+            <div className={styles.toolbarKnub} />
 
             <Popover width={200} position="bottom" withArrow shadow="md">
                 <Popover.Target>
