@@ -29,6 +29,7 @@ export const styles = {
         display: 'flex', 
         justifyItems: 'center', 
         alignContent: 'center',
+        cursor: 'move',
         selectors: {
             '&:after': {
                 fontSize: '10pt',
