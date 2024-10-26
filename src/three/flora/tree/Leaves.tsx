@@ -21,6 +21,11 @@ export const LeavesParameters = ArticulationsParameters.extend({
     sizeWidth: Number,
     /* The base size Y */
     sizeHeight: Number,
+    /* The size variation (min) */
+    minSize: Number,
+    /* The size variation (max) */
+    maxSize: Number,
+
 
     /* The plane subdivision */
     // subdivisions: Number,
@@ -79,6 +84,8 @@ const ParentRotationMode = (props: { children?: ReactNode | ReactNode[], orienta
     );
 };
 
+const rngFromTo = (rng: Rand, from: number, to: number) => Math.abs(to - from) * rng.next() + Math.min(from, to);
+
 export const Leaves = (props: LeavesProps) => {
     // Create the leaves instances we use in this node
     const [LeafInstances, Leaf] = useConstantWithInit(() => createInstances()); 
@@ -114,19 +121,19 @@ export const Leaves = (props: LeavesProps) => {
                     const rng = new Rand(`${props.seed}:${props.name}:${branchId}`);
                     // Compute attributes
                     const colorID = Math.floor(props.palette.length * rng.next()) % props.palette.length;
+                    const scale = rngFromTo(rng, props.minSize, props.maxSize);
                     // Return the instance 
                     return (
                         <ParentRotationMode key={branchId} orientationSpace={props.orientationSpace}>
                             <Leaf
                                 color={props.palette[colorID]}
-                                
                                 rotation={[Math.PI/2, 0, 0]}
                                 position={[
-                                    ((1 - props.texturePivotU) - 0.5) * props.sizeWidth,
+                                    ((1 - props.texturePivotU) - 0.5) * props.sizeWidth * scale,
                                     0,
-                                    -(props.texturePivotV - 0.5) * props.sizeHeight, 
+                                    -(props.texturePivotV - 0.5) * props.sizeHeight * scale,
                                 ]}
-
+                                scale={scale}
                             />
                         </ParentRotationMode>
                     );

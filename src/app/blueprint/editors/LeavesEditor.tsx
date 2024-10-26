@@ -1,4 +1,4 @@
-import { Flex, rem, Switch, Text } from '@mantine/core';
+import { Flex, MultiSelect, rem, Text } from '@mantine/core';
 import { DataControl } from '@app/blueprint/editors/controls/DataControl';
 import { NumberPicker } from '@app/blueprint/editors/controls/NumberPicker';
 import { SelectorPicker } from '@app/blueprint/editors/controls/SelectorPicker';
@@ -9,12 +9,16 @@ import { useSnapshot } from 'valtio';
 import { TreeBlueprintState } from '@app/blueprint/TreeBlueprintState';
 import { PalettePicker } from '@app/blueprint/editors/controls/PalettePicker';
 import { useCallback, useMemo } from 'react';
+import { ArrayElement } from '@utils/types';
+import { LeavesParameters } from '@three/flora/tree/Leaves';
 
-type BranchEditorProps = {
+type LeavesEditorProps = {
     store: TreeBlueprintState['leaves'];
 };
 
-export const LeavesEditor = (props: BranchEditorProps) => {
+type LeavesGenerationEnabled = ArrayElement<TreeBlueprintState['leaves']['enabled']>;
+
+export const LeavesEditor = (props: LeavesEditorProps) => {
     /* Setup state */
     const leaves = props.store;
     const leavesSnapshot = useSnapshot(props.store);
@@ -25,18 +29,30 @@ export const LeavesEditor = (props: BranchEditorProps) => {
             {/* Control segments */}
             <Fieldgroup legend='Geometry'>
                 {/* Enabled ? */}
-                <DataControl label='Enable leaves' width={'fit-content'}>
-                    <Switch
-                        checked={leavesSnapshot.enabled}
-                        onChange={e => leaves.enabled = e.target.checked}
+                <MultiSelect
+                        size='xs'
+                        data={[
+                            { label: 'Trunk', value: 'trunk' satisfies LeavesGenerationEnabled },
+                            { label: 'Branches', value: 'branches' satisfies LeavesGenerationEnabled },
+                        ]}
+                        styles={{
+                            input: {
+                                height: rem(31),
+                            },
+                            pillsList: {
+                                paddingTop: rem(2),
+                            },
+                        }}
+                        value={useMemo(() => [...leavesSnapshot.enabled], [leavesSnapshot.enabled])}
+                        onChange={v => leaves.enabled = (v as LeavesGenerationEnabled[])}
                     />
-                </DataControl>
+                
                 <Separator />
 
                 {/* # branches */}
                 <DataControl label='# leaves' width={rem(64)}>
                     <NumberPicker
-                        disabled={!leavesSnapshot.enabled}
+                        disabled={!(leavesSnapshot.enabled.length > 0)}
                         allowDecimal={false}
                         allowNegative={false}
                         value={leavesSnapshot.nArticulations} 
@@ -46,13 +62,27 @@ export const LeavesEditor = (props: BranchEditorProps) => {
                 </DataControl>
             </Fieldgroup>
             {/* Position control */}
-            <Fieldgroup legend='Position distribution' disabled={!leavesSnapshot.enabled}>
+            <Fieldgroup legend='Position distribution' disabled={!(leavesSnapshot.enabled.length > 0)}>
+                {/* Orientation space  */}
+                <DataControl label='Orientation'>
+                    <SelectorPicker
+                        defaultValue='local'
+                        data={[
+                            { value: 'local' satisfies LeavesParameters['orientationSpace'], label: 'Local' },
+                            { value: 'world' satisfies LeavesParameters['orientationSpace'], label: 'World' },
+                        ]}
+                        value={leavesSnapshot.orientationSpace}
+                        onChange={v => leaves.orientationSpace = v as LeavesParameters['orientationSpace']}
+                    />
+                </DataControl>
+                <Separator />
+
                 {/* Method */}
                 <DataControl label='Method'>
                     <SelectorPicker
                         defaultValue='random'
                         data={[
-                            { value: 'random', label: 'Random' },
+                            { value: 'random' satisfies LeavesParameters['distribution'], label: 'Random' },
                         ]}
                     />  
                 </DataControl>
@@ -113,9 +143,9 @@ export const LeavesEditor = (props: BranchEditorProps) => {
 
 
             {/* Size control */}
-            <Fieldgroup legend='Size distribution' disabled={!leavesSnapshot.enabled}>
-                {/* Length (min) */}
-                <DataControl label='Size'>
+            <Fieldgroup legend='Size distribution' disabled={!(leavesSnapshot.enabled.length > 0)}>
+                {/* Base size */}
+                <DataControl label='Base size'>
                     <NumberPicker
                         allowDecimal={true}
                         allowNegative={false}
@@ -133,19 +163,45 @@ export const LeavesEditor = (props: BranchEditorProps) => {
                         step={0.05}
                     />
                 </DataControl>
+                {/* Size variation */}
+                <DataControl label='Variation'>
+                    <>
+                        <NumberPicker
+                            allowDecimal={true}
+                            allowNegative={false}
+                            value={Math.round(leavesSnapshot.minSize * 100 * 100) / 100} 
+                            onChange={v => leaves.minSize = (v / 100)}
+                            min={0}
+                            max={100}
+                            step={1}
+                            suffix='%'
+                        />
+                        <Text size='xs'>to</Text>
+                    </>
+                    <NumberPicker
+                        allowDecimal={true}
+                        allowNegative={false}
+                        value={Math.round(leavesSnapshot.maxSize * 100 * 100) / 100} 
+                        onChange={v => leaves.maxSize = (v / 100)}
+                        min={0}
+                        max={100}
+                        step={1}
+                        suffix='%'
+                    />
+                </DataControl>
             </Fieldgroup>
 
             {/* Palette */}
-            <Fieldgroup legend='Palette' disabled={!leavesSnapshot.enabled}>
+            <Fieldgroup legend='Palette' disabled={!(leavesSnapshot.enabled.length > 0)}>
                 <PalettePicker 
                     palette={leavesSnapshot.palette}
                     onPaletteChanged={v => leaves.palette = v}
-                    disabled={!leavesSnapshot.enabled}
+                    disabled={!(leavesSnapshot.enabled.length > 0)}
                 />  
             </Fieldgroup>
 
             {/* Texture zone */}
-            <Fieldgroup legend='Material' disabled={!leavesSnapshot.enabled}>
+            <Fieldgroup legend='Material' disabled={!(leavesSnapshot.enabled.length > 0)}>
                 <DataControl label='Pivot'>
                     <NumberPicker
                         allowDecimal={true}
@@ -168,7 +224,7 @@ export const LeavesEditor = (props: BranchEditorProps) => {
                     blobLibraryID='trunk'
                     url={leavesSnapshot.textureURL}
                     onURLChanged={v => leaves.textureURL = v}
-                    disabled={!leavesSnapshot.enabled}
+                    disabled={!(leavesSnapshot.enabled.length > 0)}
                     pivot={useMemo(() => ({ x: leavesSnapshot.texturePivotU, y: 1 - leavesSnapshot.texturePivotV })
                                     , [leavesSnapshot.texturePivotU, leavesSnapshot.texturePivotV])}
                     onPivotChanged={useCallback((v: {x: number, y: number}) => {

@@ -48,3 +48,6 @@ export type DeepReadonly<T> =
     T extends readonly (infer TArray)[] ? (DeepReadonly<TArray>)[] :
     T extends number | string | boolean | null | undefined ? T :
     never;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ArrayElement<T extends any[]> = T extends (infer U)[] ? U : never;

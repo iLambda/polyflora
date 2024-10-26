@@ -161,7 +161,7 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             seed={floraSnapshot.seed}
                             name='branches'
                         >
-                            { floraSnapshot.leaves.enabled &&
+                            { floraSnapshot.leaves.enabled.includes('branches') &&
                                 <Leaves
                                     distribution={floraSnapshot.leaves.distribution}
                                     nArticulations={floraSnapshot.leaves.nArticulations}
@@ -169,6 +169,8 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                                     maxAngle={floraSnapshot.leaves.maxAngle}
                                     minPosition={floraSnapshot.leaves.minPosition} 
                                     maxPosition={floraSnapshot.leaves.maxPosition}
+                                    minSize={floraSnapshot.leaves.minSize}
+                                    maxSize={floraSnapshot.leaves.maxSize}
                                     orientationSpace={floraSnapshot.leaves.orientationSpace}
                                     palette={floraSnapshot.leaves.palette}
                                     parentLimbBaseRadius={0}

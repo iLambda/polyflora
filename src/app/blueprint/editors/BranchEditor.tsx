@@ -89,8 +89,10 @@ export const BranchEditor = (props: BranchEditorProps) => {
                     <SelectorPicker
                         defaultValue='random'
                         data={[
-                            { value: 'random', label: 'Random' },
+                            { value: 'random' satisfies BranchesParameters['distribution'], label: 'Random' },
                         ]}
+                        value={branchesSnapshot.distribution}
+                        onChange={v => branches.distribution = v as BranchesParameters['distribution']}
                     />  
                 </DataControl>
                 {/* Angle min */}
