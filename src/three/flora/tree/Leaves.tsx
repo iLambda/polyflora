@@ -4,7 +4,7 @@ import { LimbProps } from '@three/flora/gen/Limb';
 import { useConstantWithInit } from '@utils/react/hooks/refs';
 import { useReactiveRef } from '@utils/react/hooks/state';
 import Rand from 'rand-seed';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { Array, Literal, Number, Static, String, Union } from 'runtypes';
 import * as THREE from 'three';
 
@@ -87,19 +87,41 @@ const ParentRotationMode = (props: { children?: ReactNode | ReactNode[], orienta
 const rngFromTo = (rng: Rand, from: number, to: number) => Math.abs(to - from) * rng.next() + Math.min(from, to);
 
 export const Leaves = (props: LeavesProps) => {
-    // Create the leaves instances we use in this node
+    /* Create the leaves instances we use in this node */
     const [LeafInstances, Leaf] = useConstantWithInit(() => createInstances()); 
-    // Get the texture and a few refs
+    /* Get the texture and a few refs */
     const texture = useTexture(props.textureURL);
     const meshRef = useRef<THREE.InstancedMesh | null>(null);
 
+    /* Modify the shader to use the absolute value of the normal */
+    const onBeforeCompile = useCallback((parameters: THREE.WebGLProgramParametersWithUniforms) => {
+        parameters.fragmentShader = parameters.fragmentShader.replace(
+            // Inject ourself in the lambert lighting calculation
+            `#include <lights_lambert_pars_fragment>`, 
+            // ... and take the absolute value during irradience calc, so normal orientation is ignored
+            `#include <lights_lambert_pars_fragment>
+
+            void RE_Direct_Lambert_Foliage( const in IncidentLight directLight, const in vec3 geometryPosition, const in vec3 geometryNormal, const in vec3 geometryViewDir, const in vec3 geometryClearcoatNormal, const in LambertMaterial material, inout ReflectedLight reflectedLight ) {
+
+                float dotNL = saturate( abs(dot( geometryNormal, directLight.direction )) );
+                vec3 irradiance = dotNL * directLight.color;
+
+                reflectedLight.directDiffuse += irradiance * BRDF_Lambert( material.diffuseColor );
+
+            }
+            #undef  RE_Direct
+            #define RE_Direct				RE_Direct_Lambert_Foliage`,
+        );
+    }, []);
+
     // Return node
     return (
-        <LeafInstances ref={meshRef}>
+        <LeafInstances ref={meshRef} castShadow receiveShadow>
             <meshLambertMaterial 
                 map={texture} 
                 side={THREE.DoubleSide}
                 alphaTest={0.5}
+                onBeforeCompile={onBeforeCompile}
             />
             <planeGeometry 
                 args={[props.sizeWidth, props.sizeHeight]} 
