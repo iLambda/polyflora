@@ -14,7 +14,11 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { reorderWithEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge';
 import { useSnapshot } from 'valtio';
 
-export const FileTabs = () => {
+type FileTabsProps = {
+    onTabRenamed?: (id: string, newName: string) => void;
+};
+
+export const FileTabs = (props: FileTabsProps) => {
     
     /* Get documents data */
     const documents = useMolecule(DocumentStoreMolecule);
@@ -157,6 +161,7 @@ export const FileTabs = () => {
                         text={label}
                         onContextMenu={showTabContextMenu(id)}
                         onAuxClick={handleAuxClick(id)}
+                        onTabRenamed={(newName) => props.onTabRenamed?.(id, newName)}
                     />
                 ))
             }

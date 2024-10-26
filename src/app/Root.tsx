@@ -5,7 +5,7 @@ import 'allotment/dist/style.css';
 import { styles } from '@app/Root.css';
 import { Workspace } from '@app/ui/workspace/Workspace';
 import { Flex } from '@mantine/core';
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { TreeBlueprint } from './blueprint/TreeBlueprint';
 import { FileTabs } from './ui/workspace/tabs/FileTabs';
 import { DocumentStoreMolecule } from '@app/state/Documents';
@@ -38,7 +38,17 @@ export const Root = () => {
                 <Workspace />
             </ScopeProvider>
             {/* The tabs */}
-            <FileTabs />
+            <FileTabs 
+                onTabRenamed={useCallback(
+                    (id: string, newName: string) => {
+                        const entry = documents.data.get(id);
+                        if (entry) {
+                            entry.name = newName;
+                        }
+                    }           
+                , [documents])} 
+                
+            />
         </Flex>
     );
 };

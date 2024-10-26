@@ -1,4 +1,4 @@
-import { Tabs } from '@mantine/core';
+import { FocusTrap, Tabs, TextInput } from '@mantine/core';
 import { IconSeeding } from '@tabler/icons-react';
 import { styles } from './FileTab.css';
 import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
@@ -16,6 +16,7 @@ type FileTabProps = {
 
     onContextMenu?: MouseEventHandler<HTMLButtonElement>;
     onAuxClick?: MouseEventHandler<HTMLButtonElement>;
+    onTabRenamed?: (newName: string) => void;
 };
 
 export type FileTabDragData = Static<typeof FileTabDragData>;
@@ -37,6 +38,19 @@ export const FileTab = (props: FileTabProps) => {
     const [draggedOn, setDraggedOn] = useState<'left' | 'right' | null>(null);
     const [draggedInAnimationState, setDraggedInAnimationState] = useState<boolean>(false);
     const [colorFlashAnimationState, setColorFlashAnimationState] = useState<boolean>(false);
+
+    /* Renaming state */
+    const [newName, setNewName] = useState<string | null>(null);
+    const isRenaming = newName !== null;
+    const onTabRenamed = props.onTabRenamed;
+    const handleRename = useCallback(() => 
+        setNewName(newName => {
+            if (newName) {
+                onTabRenamed?.(newName);
+            }
+            return null;
+        })
+    , [onTabRenamed]);
 
     /* Handle when this tab is done interacting with something, successfully */
     const handleDragInteractionOver = useCallback((was: 'source' | 'target') => {
@@ -66,6 +80,8 @@ export const FileTab = (props: FileTabProps) => {
                     id: props.id,
                     onDragInteractionOver: handleDragInteractionOver,
                 }),
+                // Check if we can drag
+                canDrag: () => !isRenaming,
                 // Generate the preview for the drag
                 /* onGenerateDragPreview: ({ nativeSetDragImage }) => {
                     setCustomNativeDragPreview({
@@ -115,7 +131,7 @@ export const FileTab = (props: FileTabProps) => {
                 onDrop: () => setDraggedOn(null),
             }),
         );
-    }, [element, setDragged, setDraggedOn, props.id, handleDragInteractionOver]);
+    }, [element, isRenaming, setDragged, setDraggedOn, props.id, handleDragInteractionOver]);
 
 
     /* Return the tab */    
@@ -130,22 +146,45 @@ export const FileTab = (props: FileTabProps) => {
                 dragged && styles.dragged,
             )}
             onAnimationEnd={() => setDraggedInAnimationState(false)}
+            onDoubleClick={() => setNewName(props.text) }
         >
             {
                 colorFlashAnimationState && 
                 <div 
+                    key='colorFlash'
                     className={clsx(styles.colorFlasher, 
                         colorFlashAnimationState && styles.animations.colorFlash,
                     )} 
                     onAnimationEnd={() => setColorFlashAnimationState(false)}
                 />
             }
-            { draggedOn && 
-                <div className={styles.dragIndicator[draggedOn]} >
+            { 
+                draggedOn && 
+                <div key='dragIndicator' className={styles.dragIndicator[draggedOn]} >
                     <div className={styles.dragIndicator.circle} />
                 </div>
             }
-            { props.text }
+            { 
+                isRenaming
+                    ? (
+                        <FocusTrap>
+                            <TextInput 
+                                key='renaming'
+                                size='xs'
+                                value={newName}
+                                onChange={e => setNewName(e.currentTarget.value)}
+                                onBlur={handleRename}
+                                onKeyDown={(e) => {
+                                    if (e.key.toLowerCase() === 'enter') {
+                                        handleRename();
+                                    }
+                                }}
+                                classNames={styles.renamingInput}
+                            />
+                        </FocusTrap>                        
+                    )
+                    : props.text 
+            }
         </Tabs.Tab>
     );
 };

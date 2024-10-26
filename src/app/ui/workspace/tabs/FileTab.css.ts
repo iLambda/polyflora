@@ -99,4 +99,16 @@ export const styles = {
         }),
     },
 
+    renamingInput: {
+        input: style({
+            height: rem(20),
+            minHeight: rem(20),
+            paddingBlock: 0,
+            paddingInline: rem(3),
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+        }),
+    },
+
 };
