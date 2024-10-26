@@ -42,7 +42,11 @@ export const BranchEditor = (props: BranchEditorProps) => {
                             pillsList: {
                                 paddingTop: rem(2),
                             },
+                            inputField: {
+                                fontSize: '8pt',
+                            },                            
                         }}
+                        placeholder={branchesSnapshot.geometryMode.length === 0 ? 'Disabled' : ''}
                         value={useMemo(() => [...branchesSnapshot.geometryMode], [branchesSnapshot.geometryMode])}
                         onChange={v => branches.geometryMode = (v as BranchGeometryModes)}
                     />

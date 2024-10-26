@@ -42,7 +42,11 @@ export const LeavesEditor = (props: LeavesEditorProps) => {
                             pillsList: {
                                 paddingTop: rem(2),
                             },
+                            inputField: {
+                                fontSize: '8pt',
+                            },
                         }}
+                        placeholder={leavesSnapshot.enabled.length === 0 ? 'Disabled' : ''}
                         value={useMemo(() => [...leavesSnapshot.enabled], [leavesSnapshot.enabled])}
                         onChange={v => leaves.enabled = (v as LeavesGenerationEnabled[])}
                     />
