@@ -1,0 +1,42 @@
+diff --git a/cjs/components/Tabs/TabsTab/TabsTab.cjs b/cjs/components/Tabs/TabsTab/TabsTab.cjs
+index d929d9cbd961fa577a1e38f2fb83a9a9ab69f013..ca4908c30511f496e26962651134cd06fc389a5e 100644
+--- a/cjs/components/Tabs/TabsTab/TabsTab.cjs
++++ b/cjs/components/Tabs/TabsTab/TabsTab.cjs
+@@ -75,15 +75,7 @@ const TabsTab = factory.factory((_props, ref) => {
+       "aria-controls": ctx.getPanelId(value),
+       onClick: activateTab,
+       __vars: { "--tabs-color": color ? getThemeColor.getThemeColor(color, theme) : void 0 },
+-      onKeyDown: createScopedKeydownHandler.createScopedKeydownHandler({
+-        siblingSelector: '[role="tab"]',
+-        parentSelector: '[role="tablist"]',
+-        activateOnFocus: ctx.activateTabWithKeyboard,
+-        loop: ctx.loop,
+-        orientation: ctx.orientation || "horizontal",
+-        dir,
+-        onKeyDown
+-      }),
++      onKeyDown: onKeyDown,
+       children: [
+         leftSection && /* @__PURE__ */ jsxRuntime.jsx("span", { ...ctx.getStyles("tabSection", stylesApiProps), "data-position": "left", children: leftSection }),
+         children && /* @__PURE__ */ jsxRuntime.jsx("span", { ...ctx.getStyles("tabLabel", stylesApiProps), children }),
+diff --git a/esm/components/Tabs/TabsTab/TabsTab.mjs b/esm/components/Tabs/TabsTab/TabsTab.mjs
+index e5156bfad7059625995660e966f57a96f89cd36b..608802f7ac6886b35e703ef7e525374e63726cbc 100644
+--- a/esm/components/Tabs/TabsTab/TabsTab.mjs
++++ b/esm/components/Tabs/TabsTab/TabsTab.mjs
+@@ -73,15 +73,7 @@ const TabsTab = factory((_props, ref) => {
+       "aria-controls": ctx.getPanelId(value),
+       onClick: activateTab,
+       __vars: { "--tabs-color": color ? getThemeColor(color, theme) : void 0 },
+-      onKeyDown: createScopedKeydownHandler({
+-        siblingSelector: '[role="tab"]',
+-        parentSelector: '[role="tablist"]',
+-        activateOnFocus: ctx.activateTabWithKeyboard,
+-        loop: ctx.loop,
+-        orientation: ctx.orientation || "horizontal",
+-        dir,
+-        onKeyDown
+-      }),
++      onKeyDown: onKeyDown,
+       children: [
+         leftSection && /* @__PURE__ */ jsx("span", { ...ctx.getStyles("tabSection", stylesApiProps), "data-position": "left", children: leftSection }),
+         children && /* @__PURE__ */ jsx("span", { ...ctx.getStyles("tabLabel", stylesApiProps), children }),
