@@ -3,6 +3,7 @@ import { molecule } from 'bunshi';
 import { euclideanModulo } from 'three/src/math/MathUtils.js';
 import { proxy } from 'valtio';
 import { proxyMap } from 'valtio/utils';
+import { saveAs } from 'file-saver';
 
 // The type of the store 
 export type DocumentStore = {
@@ -16,6 +17,7 @@ export type DocumentStore = {
         }>;
 
     readonly new: () => string;
+    readonly save: (id: string) => void;
     readonly close: (id: string) => boolean;
     readonly cycle: (offset: number) => void;
 };
@@ -77,6 +79,24 @@ export const DocumentStoreMolecule = molecule(() => {
 
             /* Remove from state list */
             return state.data.delete(documentID);
+        },
+
+        // Save a file
+        // TODO: Make work when electron
+        save: (documentID: string) => {
+
+            /* If docID is wrong, return */
+            if (!state.data.has(documentID)) {
+                return;
+            }
+            /* Get document and state */
+            const entry = state.data.get(documentID)!;
+            const name = entry.name;
+            const data = entry.state;
+            /* Save */
+            const textPayload = JSON.stringify(data, undefined, 4);
+            const blob = new Blob([textPayload], { type: 'application/json' });
+            saveAs(blob, `${name}.json`);
         },
 
         // Go to next/previous item

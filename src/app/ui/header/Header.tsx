@@ -37,20 +37,19 @@ export const Header = () => {
                         text: 'Save file',
                         icon: <IconDeviceFloppy style={iconStyle} stroke={1.2} size={128} />,
                         shortcut: ['Ctrl', 'S'],
-                        onClick: () => console.log('TODO'),
-                    },
-                    {
-                        type: 'item',
-                        text: 'Save file as...',
-                        icon: <IconDeviceFloppy style={iconStyle} stroke={1.2} size={128} />,
-                        shortcut: ['Ctrl', 'Shift', 'S'],
-                        onClick: () => console.log('TODO'),
+                        disabled: documentSnapshot.current === null,
+                        onClick: () => {
+                            if (documentSnapshot.current) {
+                                documentStore.save(documentSnapshot.current);
+                            }
+                        },
                     },
                     {
                         type: 'item',
                         text: 'Export to...',
                         icon: <IconPackageExport style={iconStyle} stroke={1.2} size={128} />,
                         shortcut: ['Ctrl', 'Alt', 'S'],
+                        disabled: documentSnapshot.current === null,
                     },
                     { type: 'separator' },
                     {
@@ -71,6 +70,7 @@ export const Header = () => {
                         text: 'Previous tab',
                         icon: <IconChevronRight style={iconStyle} stroke={1.2} size={128} />,
                         shortcut: ['Ctrl', 'Shift', 'Tab'],
+                        disabled: documentSnapshot.order.length < 2,
                         onClick: () => documentStore.cycle(-1),
                     },
                     {
@@ -78,6 +78,7 @@ export const Header = () => {
                         text: 'Next tab',
                         icon: <IconChevronLeft style={iconStyle} stroke={1.2} size={128} />,
                         shortcut: ['Ctrl', 'Tab'],
+                        disabled: documentSnapshot.order.length < 2,
                         onClick: () => documentStore.cycle(+1),
                     },
                     // {
@@ -100,6 +101,7 @@ export const Header = () => {
                         text: 'Undo',
                         icon: <IconArrowBack style={iconStyle} stroke={1.2} size={128} />,
                         shortcut: ['Ctrl', 'Z'],
+                        disabled: documentSnapshot.current === null,
                         onClick: () => console.log('TODO'),
                     },
                     {
@@ -107,6 +109,7 @@ export const Header = () => {
                         text: 'Redo',
                         icon: <IconArrowForward style={iconStyle} stroke={1.2} size={128} />,
                         shortcut: ['Ctrl', 'Y'],
+                        disabled: documentSnapshot.current === null,
                         onClick: () => console.log('TODO'),
                     },
 
