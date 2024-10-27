@@ -61,7 +61,7 @@ export const styles = {
         borderBottomLeftRadius: rem(6),
         borderBottomRightRadius: rem(6),
         zIndex: 16,
-        backgroundColor: 'var(--mantine-color-green-8)',
+        backgroundColor: 'var(--mantine-primary-color-8)',
         opacity: 0,
     }),
 

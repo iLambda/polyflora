@@ -20,7 +20,7 @@ export const PivotPicker = ({value, onChanged, ...props}: PivotPicker) => {
                     top: `calc(${value.y * 100}% - ${rem(4)})`,
                     width: rem(8),
                     height: rem(8),
-                    border: `${rem(2)} solid var(--mantine-color-green-8)`,
+                    border: `${rem(2)} solid var(--mantine-primary-color-8)`,
                 }}
             />
             <div 
@@ -30,7 +30,7 @@ export const PivotPicker = ({value, onChanged, ...props}: PivotPicker) => {
                     bottom: `calc(100% - (${value.y * 100}% - ${rem(4)}))`,
                     left: `calc(${value.x * 100}%)`,
                     width: '1px',
-                    backgroundColor: `var(--mantine-color-green-5)`,
+                    backgroundColor: `var(--mantine-primary-color-5)`,
                 }}
             />
             <div 
@@ -40,7 +40,7 @@ export const PivotPicker = ({value, onChanged, ...props}: PivotPicker) => {
                     bottom: `0%`,
                     left: `calc(${value.x * 100}%)`,
                     width: '1px',
-                    backgroundColor: `var(--mantine-color-green-5)`,
+                    backgroundColor: `var(--mantine-primary-color-5)`,
                 }}
             />
             <div 
@@ -50,7 +50,7 @@ export const PivotPicker = ({value, onChanged, ...props}: PivotPicker) => {
                     right: `calc(100% - (${value.x * 100}% - ${rem(4)}))`,
                     top: `calc(${value.y * 100}%)`,
                     height: '1px',
-                    backgroundColor: `var(--mantine-color-green-5)`,
+                    backgroundColor: `var(--mantine-primary-color-5)`,
                 }}
             />
             <div 
@@ -60,7 +60,7 @@ export const PivotPicker = ({value, onChanged, ...props}: PivotPicker) => {
                     right: `0%`,
                     top: `calc(${value.y * 100}%)`,
                     height: '1px',
-                    backgroundColor: `var(--mantine-color-green-5)`,
+                    backgroundColor: `var(--mantine-primary-color-5)`,
                 }}
             />
         </div>

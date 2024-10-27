@@ -1,5 +1,6 @@
 import { styles } from '@app/blueprint/overlays/ShadingSelector.css';
 import { TreeBlueprintState } from '@app/blueprint/TreeBlueprintState';
+import { theme } from '@app/theme';
 import { SegmentedControl, VisuallyHidden } from '@mantine/core';
 import { IconBone, IconCube, IconCube3dSphere } from '@tabler/icons-react';
 
@@ -17,7 +18,7 @@ export const ShadingSelector = (props: ShadingProps) => {
             classNames={styles.shadingSelector}
             size='xs'
             radius='xl'
-            color='green'
+            color={theme.primaryColor}
             withItemsBorders={false}
             data={[
                 { 
