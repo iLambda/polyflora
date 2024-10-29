@@ -29,6 +29,7 @@
     "bunshi": "^2.1.5",
     "clsx": "^2.1.1",
     "colord": "^2.9.3",
+    "fflate": "^0.8.2",
     "file-saver": "^2.0.5",
     "mantine-contextmenu": "^7.12.2",
     "rand-seed": "^2.1.7",
