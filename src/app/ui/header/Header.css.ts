@@ -6,7 +6,9 @@ const headerHeight = rem('32px');
 export const styles = {
     
     logo: style({
-        marginRight: '16px',
+        height: '24.8px', 
+        strokeWidth: rem(10),
+        marginInline: rem(5),
     }),
 
     header: style({
