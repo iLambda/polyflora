@@ -61,19 +61,6 @@ export const Header = () => {
                     { type: 'separator' },
                     {
                         type: 'item',
-                        text: 'Close file',
-                        icon: <IconFileOff style={iconStyle} stroke={1.2} size={128} />,
-                        shortcut: ['Ctrl', 'F4'],
-                        disabled: documentSnapshot.current === null,
-                        onClick: () => {
-                            if (documentSnapshot.current !== null) {
-                                documentStore.close(documentSnapshot.current);
-                            }
-                        },
-                    },
-                    { type: 'separator' },
-                    {
-                        type: 'item',
                         text: 'Previous tab',
                         icon: <IconChevronRight style={iconStyle} stroke={1.2} size={128} />,
                         shortcut: ['Ctrl', 'Shift', 'Tab'],
@@ -88,18 +75,27 @@ export const Header = () => {
                         disabled: documentSnapshot.order.length < 2,
                         onClick: () => documentStore.cycle(+1),
                     },
-                    // {
+                    { type: 'separator' },
+                    {
+                        type: 'item',
+                        text: 'Close file',
+                        icon: <IconFileOff style={iconStyle} stroke={1.2} size={128} />,
+                        shortcut: ['Ctrl', 'F4'],
+                        disabled: documentSnapshot.current === null,
+                        onClick: () => {
+                            if (documentSnapshot.current !== null) {
+                                documentStore.close(documentSnapshot.current);
+                            }
+                        },
+                    },
+                    // isElectron() && {
                     //     type: 'item',
-                    //     text: 'Message',
-                    //     icon: <IconMessageCircle style={iconStyle} stroke={1.2} size={128} />,   
-                    // },
-                    // { type: 'separator' },
-                    // { type: 'label', label: 'Danger zone' },
-                    // {
-                    //     type: 'item',
-                    //     color: 'red',
-                    //     text: 'Danger zone',
-                    //     icon: <IconMessageCircle style={iconStyle} stroke={1.2} size={128} />,
+                    //     text: 'Close Polyflora',
+                    //     icon: <IconBrowserX style={iconStyle} stroke={1.2} size={128} />,
+                    //     shortcut: ['Ctrl', 'Q'],
+                    //     onClick: () => {
+                            
+                    //     },
                     // },
                 ],
                 'Edit': [
