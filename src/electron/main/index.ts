@@ -9,6 +9,7 @@ function createWindow(): void {
         height: 920,
         show: false,
         autoHideMenuBar: true,
+        icon: 'fix/icon/icon.ico',
         ...(process.platform === 'linux' ? { /*icon*/ } : {}),
         webPreferences: {
             preload: join(__dirname, '../preload/index.mjs'),

@@ -7,6 +7,7 @@ import { DocumentStoreMolecule } from '@app/state/Documents';
 import { useMolecule } from 'bunshi/react';
 import { useSnapshot } from 'valtio';
 import { Logo } from '@app/Logo';
+import { isElectron } from '@utils/electron';
 
 export const Header = () => {
 
@@ -16,7 +17,11 @@ export const Header = () => {
 
     return (
         <header className={styles.header}>
-            <Logo className={styles.logo} />
+            {
+                !isElectron() && (
+                    <Logo className={styles.logo} />
+                )
+            }
             <MenuBar data={{
                 'File': [
                     {
