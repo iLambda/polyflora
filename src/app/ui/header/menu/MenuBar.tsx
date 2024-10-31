@@ -64,7 +64,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
     /* Return menu */
     return getKeys(props.data).map(key => (
-        <Menu key={key} offset={0} classNames={styles.menu}>
+        <Menu key={key} offset={0} position='top-start' classNames={styles.menu}>
             <Menu.Target>
                 <Button variant="default" size='xs' className={styles.headerMenu}>
                     {key}
