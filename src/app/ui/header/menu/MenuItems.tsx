@@ -27,6 +27,9 @@ export const MenuItems = (props: MenuBarProps) => {
 
     
     return props.data.map((item, idx) => {
+        /* Check if falsey ; if so, return nothing */
+        if (!item) { return null; }
+
         /* Case : separator */
         if (item.type === 'separator') {
             return (

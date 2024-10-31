@@ -24,7 +24,7 @@ export type MenuItemData = {
 export type MenuSeparatorData = {
     type: 'separator',
 };
-export type MenuData = (MenuSeparatorData | MenuLabelData | MenuItemData)[];
+export type MenuData = (MenuSeparatorData | MenuLabelData | MenuItemData | false | null | undefined)[];
 export type MenuBarData = Record<string, MenuData>;
 
 type MenuBarProps = {
@@ -44,6 +44,8 @@ export const MenuBar = (props: MenuBarProps) => {
             const data = stack.shift()!;
             // Go through all data
             data.forEach(datum => {
+                // Skip falsey
+                if (!datum) { return; }
                 // Skip if not item
                 if (datum.type !== 'item') { return; }
                 // If there is a shortcut, add it to hotkeys
