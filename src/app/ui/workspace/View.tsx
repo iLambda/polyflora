@@ -4,6 +4,7 @@ import { Tunnel3D, Tunnel3DOverlay } from '@app/ui/workspace/WorkspaceTunnel';
 import { Flex, Overlay, Text } from '@mantine/core';
 import { Context2D } from '@three/Context2D';
 import { ReactNode } from 'react';
+import { View as ContextView } from '@react-three/drei';
 
 type ViewProps = {
     enabled?: boolean;
@@ -18,11 +19,16 @@ export const View = (props: ViewProps) => {
     /* Otherwise, return the context */
     return !props.enabled ? <div className={styles.root} /> : (
         <>
-            {/* The 3D view */}
+            {/* The canvas */}
             <Context2D className={styles.root}>
+                <ContextView.Port />
+            </Context2D>
+
+            {/* The 3D view */}
+            <ContextView className={styles.root} frames={1}>
                 { props.children }
                 <Tunnel3D.Out />
-            </Context2D>
+            </ContextView>
 
             {/* The editor overlay */}
             <Overlay className={styles.overlay}>

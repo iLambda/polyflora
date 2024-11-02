@@ -6,12 +6,14 @@ export const styles = {
 
     /* The root panel */
     root: style({
-        height: '100%',
-        width: '100%',
+        position: 'absolute',
+        inset: '0',
     }),
 
     /* The main overlay */
     overlay: style({
+        position: 'absolute',
+        inset: '0',
         display: 'flex',
         pointerEvents: 'none',
         background: 'transparent',
