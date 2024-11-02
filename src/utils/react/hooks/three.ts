@@ -46,6 +46,12 @@ export function useBox3(sx: number, sy: number, sz: number, ex: number, ey: numb
     return box;
 }
 
+export function useBoundingBox(object: THREE.Object3D, precise: boolean = false) : THREE.Box3 {
+    const box = useInstance(THREE.Box3);
+    box.setFromObject(object, precise);
+    return box;
+}
+
 export function useColor(src: ColorSource, convert?: 'linear-to-srgb' | 'srgb-to-linear') : THREE.Color {
     const color = useInstance(THREE.Color, 0, 0, 0);
     setColor(color, src);
@@ -79,16 +85,33 @@ export type LayerID =
     | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29
     | 30 | 31; 
      
-export function useLayers(layers: Partial<Record<LayerID, boolean>>) : THREE.Layers {
+export function useLayers(layers: LayerID) : THREE.Layers;
+export function useLayers(layers: Array<LayerID | false | null | undefined>) : THREE.Layers;
+export function useLayers(layers: Partial<Record<LayerID, boolean>>) : THREE.Layers;
+export function useLayers(layers: Partial<Record<LayerID, boolean>> | Array<LayerID | false | null | undefined> | LayerID) : THREE.Layers {
     const layerMask = useInstance(THREE.Layers);
     // Reset
     layerMask.disableAll();
-    // Set all needed
-    getKeys(layers).forEach(layer => {
-        if (layers[layer] === true) {
-            layerMask.enable(layer);
-        }
-    });
+    // Is this an array or a record ?
+    if (Array.isArray(layers)) {
+        // Setup
+        layers.forEach(layer => {
+            if (typeof layer === 'number') {
+                layerMask.enable(layer);
+            }
+        });
+    }
+    else if (typeof layers === 'number') {
+        layerMask.enable(layers);
+    }
+    else {
+        // Set all needed
+        getKeys(layers).forEach(layer => {
+            if (layers[layer] === true) {
+                layerMask.enable(layer);
+            }
+        });
+    }
     // Return
     return layerMask;
 }
