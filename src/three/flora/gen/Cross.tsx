@@ -38,7 +38,10 @@ export const CrossParameters = Record({
 });
 /* The props */
 export type CrossProps = CrossParameters & {
+    /* How is this shaded ? */
     shading: 'shaded' | 'wireframe' | 'skeletal';
+    /* The layers */
+    layers?: THREE.Layers;
 };
 
 
@@ -248,11 +251,21 @@ export const Cross = memo((props: CrossProps) => {
     /* Return object */
     return (
         <>
-            <mesh geometry={geometry} visible={props.shading === 'shaded'} castShadow receiveShadow >
+            <mesh 
+                geometry={geometry} 
+                visible={props.shading === 'shaded'} 
+                castShadow 
+                receiveShadow 
+                layers={props.layers}
+            >
                 <meshLambertMaterial map={colorMap} alphaTest={0.5} side={THREE.DoubleSide}
                     onBeforeCompile={onBeforeCompile}/>
             </mesh>
-            <mesh geometry={geometry} visible={props.shading === 'wireframe'}>
+            <mesh 
+                geometry={geometry} 
+                visible={props.shading === 'wireframe'}
+                layers={props.layers}
+            >
                 <meshBasicMaterial color='white' wireframe />
             </mesh>
             <Line 
@@ -261,6 +274,7 @@ export const Cross = memo((props: CrossProps) => {
                 color='white'
                 lineWidth={2}
                 visible={props.shading === 'skeletal'}
+                layers={props.layers}
             />
         </>
     );

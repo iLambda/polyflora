@@ -2,6 +2,7 @@ import { Skeleton, SkeletonParameters } from '@three/flora/gen/Skeleton';
 import { Limb, LimbParameters } from '../gen/Limb';
 import { Static } from 'runtypes';
 import { ReactNode } from 'react';
+import { Layers } from 'three';
 
 export const TrunkParameters = SkeletonParameters.extend(LimbParameters.fields);
 export type TrunkParameters = Static<typeof TrunkParameters>;
@@ -15,6 +16,8 @@ type TrunkProps = TrunkParameters & {
     shading: 'shaded' | 'wireframe' | 'skeletal';
     /* The children */
     children?: ReactNode | ReactNode[];
+    /* The layers */
+    layers?: Layers;
 };
 
 export const Trunk = (props: TrunkProps) => (
@@ -36,6 +39,7 @@ export const Trunk = (props: TrunkProps) => (
             tilingU={props.tilingU}
             tilingV={props.tilingV}
             textureURL={props.textureURL}
+            layers={props.layers}
         />
         { props.children }
     </Skeleton>

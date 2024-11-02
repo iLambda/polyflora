@@ -10,7 +10,9 @@ export const GridSettings = Record({
 });
 
 /* The props */
-type GridProps = GridSettings & {};
+type GridProps = GridSettings & {
+    layers?: THREE.Layers
+};
 
 /* The node */
 export const Grid = memo((props: GridProps) => {
@@ -32,6 +34,7 @@ export const Grid = memo((props: GridProps) => {
             fadeFrom={0}
             followCamera={false}
             infiniteGrid={true}
+            layers={props.layers}
         />
     );
 });

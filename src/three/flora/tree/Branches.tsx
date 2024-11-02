@@ -5,6 +5,7 @@ import { Skeleton } from '../gen/Skeleton';
 import { Limb, LimbProps } from '../gen/Limb';
 import Rand from 'rand-seed';
 import { Cross, CrossDirection } from '../gen/Cross';
+import { Layers } from 'three';
 
 export type BranchesParameters = Static<typeof BranchesParameters>;
 export const BranchesParameters = ArticulationsParameters.extend({
@@ -70,6 +71,8 @@ export type BranchesProps = BranchesParameters & {
     /* The UV cross tiling */
     tilingCrossV: number,
 
+    /* The layers */
+    layers?: Layers;
 
     /* The shading used */
     shading: LimbProps['shading'];
@@ -119,6 +122,7 @@ export const Branches = (props: BranchesProps) => {
                                 props.geometryMode.includes('detailed') 
                                 && (<Limb 
                                         curvature={props.curvature}
+                                        layers={props.layers}
                                         shading={props.shading}
                                         segmentsRadius={props.segmentsRadius}
                                         sizeRadius={radius * rngFromTo(rng, props.minRadius, props.maxRadius)}
@@ -130,6 +134,7 @@ export const Branches = (props: BranchesProps) => {
                             {
                                 (props.geometryMode.includes('cross-x') || props.geometryMode.includes('cross-y'))
                                 && (<Cross 
+                                        layers={props.layers}
                                         shading={props.shading}
                                         textureURL={props.textureBranchURL}
                                         crossMode='quad'

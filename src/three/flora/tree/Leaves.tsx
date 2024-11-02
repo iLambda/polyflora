@@ -56,7 +56,10 @@ export type LeavesProps = Omit<LeavesParameters, 'palette'> & {
     /* The shading used */
     shading: LimbProps['shading'];
     /* The color palette */
-    palette: readonly string[]
+    palette: readonly string[];
+    
+    /* The layers */
+    layers?: THREE.Layers;
 };
 
 const ParentRotationMode = (props: { children?: ReactNode | ReactNode[], orientationSpace: LeavesParameters['orientationSpace'] }) => {
@@ -116,7 +119,7 @@ export const Leaves = (props: LeavesProps) => {
 
     // Return node
     return (
-        <LeafInstances ref={meshRef} castShadow receiveShadow>
+        <LeafInstances ref={meshRef} castShadow receiveShadow layers={props.layers}>
             <meshLambertMaterial 
                 map={texture} 
                 side={THREE.DoubleSide}

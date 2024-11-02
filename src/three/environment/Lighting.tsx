@@ -21,7 +21,9 @@ export const LightingSettings = Record({
 });
 
 /* The props */
-type LightingProps = LightingSettings & {};
+type LightingProps = LightingSettings & {
+    layers?: THREE.Layers
+};
 
 /* The node */
 export const Lighting = memo((props: LightingProps) => {
@@ -41,6 +43,7 @@ export const Lighting = memo((props: LightingProps) => {
             <ambientLight 
                 intensity={props.ambient.intensity}
                 color={useColor(props.ambient.color)}
+                layers={props.layers}
             />
             <directionalLight 
                 ref={directionalLightRef}
@@ -49,12 +52,8 @@ export const Lighting = memo((props: LightingProps) => {
                 position={[100, 40 , 0]}
                 rotation={[0, 0, -Math.PI/8]}
                 castShadow  
+                layers={props.layers}
             />
-            {/* {directionalLight && (
-                <>
-                    <directionalLightHelper args={[directionalLight, 2, 'yellow']} />
-                </>
-            )} */}
         </>
     );
 });

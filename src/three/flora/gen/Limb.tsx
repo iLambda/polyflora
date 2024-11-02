@@ -26,7 +26,10 @@ export const LimbParameters = Record({
 });
 /* The props */
 export type LimbProps = LimbParameters & {
+    /* How is this shaded ? */
     shading: 'shaded' | 'wireframe' | 'skeletal';
+    /* The layers */
+    layers?: THREE.Layers;
 };
 
 /* Buffer sizes and strides */
@@ -193,10 +196,20 @@ export const Limb = memo((props: LimbProps) => {
     /* Return object */
     return (
         <>
-            <mesh geometry={geometry} visible={props.shading === 'shaded'} castShadow receiveShadow>
+            <mesh 
+                castShadow 
+                receiveShadow 
+                geometry={geometry} 
+                visible={props.shading === 'shaded'} 
+                layers={props.layers}
+            >
                 <meshLambertMaterial map={colorMap} />
             </mesh>
-            <mesh geometry={geometry} visible={props.shading === 'wireframe'}>
+            <mesh 
+                geometry={geometry} 
+                visible={props.shading === 'wireframe'}
+                layers={props.layers}
+            >
                 <meshBasicMaterial color='white' wireframe />
             </mesh>
             <Line 
@@ -204,6 +217,7 @@ export const Limb = memo((props: LimbProps) => {
                 points={lineData}
                 color='white'
                 lineWidth={2}
+                layers={props.layers}
             />
         </>
     );
