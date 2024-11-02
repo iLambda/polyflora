@@ -121,11 +121,11 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                     <Trunk
                         bendAmount={floraSnapshot.trunk.bendAmount}
                         bendDirection={floraSnapshot.trunk.bendDirection}
-                        segmentsLength={floraSnapshot.trunk.segmentsLength}
-                        sizeLength={floraSnapshot.trunk.sizeLength}
                         crinklingMin={floraSnapshot.trunk.crinklingMin}
                         crinklingMax={floraSnapshot.trunk.crinklingMax}
                         curvature={floraSnapshot.trunk.curvature}
+                        segmentsLength={floraSnapshot.trunk.segmentsLength}
+                        sizeLength={floraSnapshot.trunk.sizeLength}
                         segmentsRadius={floraSnapshot.trunk.segmentsRadius}
                         sizeRadius={floraSnapshot.trunk.sizeRadius}
                         tilingU={floraSnapshot.trunk.tilingU}
@@ -139,14 +139,12 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             distribution='random'
                             bendAmount={floraSnapshot.branch.bendAmount}
                             bendDirection={floraSnapshot.branch.bendDirection}
-                            minCrossWidth={floraSnapshot.branch.minCrossWidth}
-                            maxCrossWidth={floraSnapshot.branch.maxCrossWidth}
                             crinklingMin={floraSnapshot.branch.crinklingMin}
                             crinklingMax={floraSnapshot.branch.crinklingMax}
                             curvature={floraSnapshot.branch.curvature}
-                            segmentsRadius={floraSnapshot.branch.segmentsRadius}
-                            segmentsLength={floraSnapshot.branch.segmentsLength}
                             geometryMode={useMemo(() => [...floraSnapshot.branch.geometryMode], [floraSnapshot.branch.geometryMode])}
+                            minCrossWidth={floraSnapshot.branch.minCrossWidth}
+                            maxCrossWidth={floraSnapshot.branch.maxCrossWidth}
                             minAngle={floraSnapshot.branch.minAngle}
                             minLength={floraSnapshot.branch.minLength}
                             minRadius={floraSnapshot.branch.minRadius}
@@ -159,6 +157,8 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             parentLimbCurvature={floraSnapshot.trunk.curvature}
                             parentLimbBaseRadius={floraSnapshot.trunk.sizeRadius}
                             referenceLength={floraSnapshot.trunk.sizeLength}
+                            segmentsRadius={floraSnapshot.branch.segmentsRadius}
+                            segmentsLength={floraSnapshot.branch.segmentsLength}
                             textureBarkURL={floraSnapshot.trunk.textureURL}
                             textureBranchURL={floraSnapshot.branch.textureURL}
                             tilingBarkU={floraSnapshot.trunk.tilingU}
@@ -172,13 +172,13 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             { floraSnapshot.leaves.enabled.includes('branches') &&
                                 <Leaves
                                     distribution={floraSnapshot.leaves.distribution}
-                                    nArticulations={floraSnapshot.leaves.nArticulations}
                                     minAngle={floraSnapshot.leaves.minAngle} 
                                     maxAngle={floraSnapshot.leaves.maxAngle}
                                     minPosition={floraSnapshot.leaves.minPosition} 
                                     maxPosition={floraSnapshot.leaves.maxPosition}
                                     minSize={floraSnapshot.leaves.minSize}
                                     maxSize={floraSnapshot.leaves.maxSize}
+                                    nArticulations={floraSnapshot.leaves.nArticulations}
                                     orientationSpace={floraSnapshot.leaves.orientationSpace}
                                     palette={floraSnapshot.leaves.palette}
                                     parentLimbBaseRadius={0}
@@ -194,7 +194,6 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                                 /> 
                             }
                         </Branches>
-
                     </Trunk>
                 </Suspense>
             </group>
