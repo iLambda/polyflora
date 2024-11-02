@@ -96,6 +96,9 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
     /* Return the control */
     return (
         <>
+            {/* The clear color */}
+            <color attach='background' args={['#2b2b2b']} />
+
             {/* The environment (grid, shadows, etc) */}
             <Grid {...props.environment.grid} layers={environmentLayers} />
             <Lighting {...props.environment.lighting} layers={environmentLayers} />
