@@ -1,4 +1,4 @@
-import { CameraControls } from '@react-three/drei';
+import { CameraControls, PerspectiveCamera } from '@react-three/drei';
 import { deg2rad } from '@utils/math';
 import { Grid, GridSettings } from '../../three/environment/Grid';
 import { Lighting, LightingSettings } from '../../three/environment/Lighting';
@@ -93,6 +93,14 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
             {/* The environment (grid, shadows, etc) */}
             <Grid {...props.environment.grid} />
             <Lighting {...props.environment.lighting} />
+
+            {/* The camera */}
+            <PerspectiveCamera makeDefault 
+                fov={60} 
+                near={0.1} 
+                far={1000} 
+                position={[25, 50, 25]} 
+            />
 
             {/* The orbit controls */}
             <CameraControls makeDefault

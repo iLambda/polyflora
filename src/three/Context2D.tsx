@@ -41,7 +41,6 @@ export const Context2D = (props: Context2DProps) => {
             dpr={window.devicePixelRatio}
             shadows
             gl={gl}
-            camera={{ fov: 60, near: 0.1, far: 1000, position: [25, 50, 25] }}
             style={props.style}
             className={props.className}
         >
