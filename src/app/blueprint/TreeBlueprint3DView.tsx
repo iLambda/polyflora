@@ -14,6 +14,8 @@ import { TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
 import { useSnapshot } from 'valtio';
 import { useBlueprintDocumentID } from '@app/state/Blueprint';
 import { Leaves } from '@three/flora/tree/Leaves';
+import { useLayers } from '@utils/react/hooks/three';
+import { Layers } from '@three/Layers';
 
 /* The environment settings. These are to be serialized */
 export type EnvironmentSettings = Static<typeof EnvironmentSettings>;
@@ -87,12 +89,16 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
         };
     }, [floraStore, controls]);
 
+    /* Layers */
+    const environmentLayers = useLayers(Layers.Environment);
+    const floraLayers = useLayers(Layers.Flora);
+
     /* Return the control */
     return (
         <>
             {/* The environment (grid, shadows, etc) */}
-            <Grid {...props.environment.grid} />
-            <Lighting {...props.environment.lighting} />
+            <Grid {...props.environment.grid} layers={environmentLayers} />
+            <Lighting {...props.environment.lighting} layers={environmentLayers} />
 
             {/* The camera */}
             <PerspectiveCamera makeDefault 
@@ -100,6 +106,7 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                 near={0.1} 
                 far={1000} 
                 position={[25, 50, 25]} 
+                layers={useLayers([ Layers.Flora, Layers.Environment ])}
             />
 
             {/* The orbit controls */}
@@ -124,6 +131,7 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                         crinklingMin={floraSnapshot.trunk.crinklingMin}
                         crinklingMax={floraSnapshot.trunk.crinklingMax}
                         curvature={floraSnapshot.trunk.curvature}
+                        layers={floraLayers}
                         segmentsLength={floraSnapshot.trunk.segmentsLength}
                         sizeLength={floraSnapshot.trunk.sizeLength}
                         segmentsRadius={floraSnapshot.trunk.segmentsRadius}
@@ -143,6 +151,7 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             crinklingMax={floraSnapshot.branch.crinklingMax}
                             curvature={floraSnapshot.branch.curvature}
                             geometryMode={useMemo(() => [...floraSnapshot.branch.geometryMode], [floraSnapshot.branch.geometryMode])}
+                            layers={floraLayers}
                             minCrossWidth={floraSnapshot.branch.minCrossWidth}
                             maxCrossWidth={floraSnapshot.branch.maxCrossWidth}
                             minAngle={floraSnapshot.branch.minAngle}
@@ -172,6 +181,7 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                             { floraSnapshot.leaves.enabled.includes('branches') &&
                                 <Leaves
                                     distribution={floraSnapshot.leaves.distribution}
+                                    layers={floraLayers}
                                     minAngle={floraSnapshot.leaves.minAngle} 
                                     maxAngle={floraSnapshot.leaves.maxAngle}
                                     minPosition={floraSnapshot.leaves.minPosition} 
