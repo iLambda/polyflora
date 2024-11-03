@@ -1,5 +1,5 @@
 import { CSSProperties, ReactNode, useCallback } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, CanvasProps } from '@react-three/fiber';
 import { useReactiveRef } from '@utils/react/hooks/state';
 
 import * as THREE from 'three';
@@ -9,6 +9,7 @@ type Context2DProps = {
     children?: ReactNode | ReactNode[];
     style?: CSSProperties;
     className?: string;
+    eventSource?: CanvasProps['eventSource'];
 };
 
 export const Context2D = (props: Context2DProps) => {
@@ -43,6 +44,7 @@ export const Context2D = (props: Context2DProps) => {
             gl={gl}
             style={props.style}
             className={props.className}
+            eventSource={props.eventSource}
         >
             { props.children }
         </Canvas>
