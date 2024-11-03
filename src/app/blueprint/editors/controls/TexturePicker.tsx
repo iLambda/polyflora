@@ -8,6 +8,8 @@ import { BlobLibraryMolecule } from '@app/state/BlobLibrary';
 import { blueprintScope } from '@app/state/Blueprint';
 import { proxy, ref, useSnapshot } from 'valtio';
 import { PivotPicker } from '@app/blueprint/editors/controls/PivotPicker';
+import { styles } from '@app/blueprint/editors/controls/TexturePicker.css';
+import clsx from 'clsx';
 
 export type TexturePickerProps = {
     blobLibraryID: string;
@@ -71,29 +73,21 @@ export const TexturePicker = (props: TexturePickerProps) => {
             </DataControl>
             {/* The texture display */}
             <Center style={{ width: '100%' }}>
-                <AspectRatio ratio={1} maw={'325px'} style={{ width: '100%' }} pos='relative'>
+                <AspectRatio ratio={1} maw={'325px'} pos='relative' className={clsx(styles.aspect, props.disabled && styles.aspectDisabled)}>
                     <Image
-                        /* style={{
-                            backgroundColor: '#444',
-                            backgroundImage: `linear-gradient(45deg, #777 27%, transparent 27%),
-                                              linear-gradient(135deg, #777 27%, transparent 27%),
-                                              linear-gradient(45deg, transparent 75%, #777 75%),
-                                              linear-gradient(135deg, transparent 75%, #777 75%)`,
-                            backgroundSize: '20px 20px',
-                            backgroundPosition: '0 0, 10px 0, 10px -10px, 0px 10px',
-                        }}      */ 
                         src={props.url}
                         onLoad={() => setLoading(false)}
                         style={{ filter: `grayscale(${props.disabled ? 1 : 0})` }}
                     />
                     {
-                        props.pivot && props.onPivotChanged && !props.disabled && (<Overlay backgroundOpacity={0}>
-                            <PivotPicker 
-                                style={{ width: '100%', height: '100%', overflow: 'hidden' }} 
-                                value={props.pivot}
-                                onChanged={props.onPivotChanged}
-                            />
-                        </Overlay>)  
+                        props.pivot && props.onPivotChanged && !props.disabled && 
+                            (<Overlay backgroundOpacity={0}> 
+                                <PivotPicker 
+                                    style={{ width: '100%', height: '100%', overflow: 'hidden' }} 
+                                    value={props.pivot}
+                                    onChanged={props.onPivotChanged}
+                                />
+                            </Overlay>)  
                     }
                     {
                         isLoading &&
@@ -103,7 +97,7 @@ export const TexturePicker = (props: TexturePickerProps) => {
                     }
                     {
                         props.disabled === true &&
-                            (<Overlay blur={10} backgroundOpacity={0} />)
+                            (<Overlay blur={10} backgroundOpacity={0}/>)
                     }
                 </AspectRatio>
             </Center>

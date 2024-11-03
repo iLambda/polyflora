@@ -19,7 +19,7 @@ type PalettePickerProps = {
 export const PalettePicker = (props: PalettePickerProps) => {
     return (
         <>
-            <Flex className={styles.colorWrapper}>
+            <Flex className={clsx(styles.colorWrapper, props.disabled && styles.colorWrapperDisabled)}>
                 <ScrollArea mah={rem(128)} scrollbars='x'>
                         <Flex className={styles.colorList}>
                             {/* The swatches */}
@@ -203,6 +203,7 @@ export const PalettePicker = (props: PalettePickerProps) => {
                 <SelectorPicker 
                     data={['spring', 'summer']}
                     leftSection={<IconPalette stroke={1} style={{ paddingLeft: rem(2) }} />}
+                    disabled={props.disabled}
                 />
                 <Flex align='center' gap={rem(4)}>
                     <ActionIcon 

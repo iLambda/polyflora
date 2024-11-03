@@ -18,6 +18,10 @@ export const styles = {
         width:'100%',
     }),
 
+    colorWrapperDisabled: style({
+        borderColor: '#363636',
+    }),
+
     colorList: style({
         gap: `${rem(4)} ${rem(4)}`,
         flexWrap: 'wrap',
@@ -34,11 +38,6 @@ export const styles = {
     
     colorEntrySelected: style({
         border: `2px solid var(--mantine-color-dark-1)`,
-        '::after': {
-            border: `4px solid red`,
-            borderRadius: vars.radius.md,
-        },
-        
     }),
 
     addButton: style({
