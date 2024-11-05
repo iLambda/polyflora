@@ -23,6 +23,7 @@ export const Context2D = (props: Context2DProps) => {
             alpha: false,
             depth: true,
             powerPreference: 'default',
+            antialias: true,
         });
         // Set some params
         renderer.setClearColor(0x2B2B2B);
@@ -37,7 +38,6 @@ export const Context2D = (props: Context2DProps) => {
     /* Return the body */
     return (
         <Canvas flat 
-            //onContextMenu={(e) => { e.preventDefault(); return false; }}
             ref={canvasRef}
             dpr={window.devicePixelRatio}
             shadows
