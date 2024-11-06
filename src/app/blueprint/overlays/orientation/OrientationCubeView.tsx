@@ -1,6 +1,9 @@
 import { AxisBall } from '@app/blueprint/overlays/orientation/AxisBall';
 import { CameraMolecule } from '@app/state/Camera';
-import { Instances, Line, MeshDiscardMaterial, OrthographicCamera } from '@react-three/drei';
+import { Instances } from '@react-three/drei/core/Instances';
+import { Line } from '@react-three/drei/core/Line';
+import { MeshDiscardMaterial } from '@react-three/drei/core/MeshDiscardMaterial';
+import { OrthographicCamera } from '@react-three/drei/core/OrthographicCamera';
 import { useFrame } from '@react-three/fiber';
 import { useInstance } from '@utils/react/hooks/refs';
 import { Triplet } from '@utils/types';

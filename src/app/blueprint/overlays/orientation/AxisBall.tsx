@@ -1,4 +1,6 @@
-import { Billboard, Instance, Text } from '@react-three/drei';
+import { Instance } from '@react-three/drei/core/Instances';
+import { Text } from '@react-three/drei/core/Text';
+import { Billboard } from '@react-three/drei/core/Billboard';
 import { GroupProps } from '@react-three/fiber';
 import { Suspense, useState } from 'react';
 import * as THREE from 'three';

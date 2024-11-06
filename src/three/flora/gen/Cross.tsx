@@ -6,7 +6,7 @@ import { Boolean, Literal, Number, Optional, Record, Static, String, Union } fro
 import * as THREE from 'three';
 import { useParentSkeleton } from './SkeletonContext';
 import { SkeletonData } from './SkeletonData';
-import { Line } from '@react-three/drei';
+import { Line } from '@react-three/drei/core/Line';
 import { assertExhaustive } from '@utils/types';
 import { useRegisterPolygonCount } from '@three/utils/PolygonCount';
 
