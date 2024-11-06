@@ -1,4 +1,4 @@
-import { Grid as GridPlane } from '@react-three/drei/core/Grid';
+import { Grid as GridPlane } from '@react-three/drei';
 import { memo } from 'react';
 import { Literal, Union, Record, Static } from 'runtypes';
 import * as THREE from 'three';

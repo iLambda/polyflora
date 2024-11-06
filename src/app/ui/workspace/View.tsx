@@ -3,7 +3,7 @@ import { Tunnel3D, Tunnel3DOverlay } from '@app/ui/workspace/WorkspaceTunnel';
 import { Flex, Overlay } from '@mantine/core';
 import { Context2D } from '@three/Context2D';
 import { ReactNode, useRef } from 'react';
-import { View as ContextView } from '@react-three/drei/web/View';
+import { View as ContextView } from '@react-three/drei';
 
 type ViewProps = {
     enabled?: boolean;

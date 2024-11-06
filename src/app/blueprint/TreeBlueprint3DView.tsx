@@ -1,10 +1,10 @@
-import { PerspectiveCamera } from '@react-three/drei/core/PerspectiveCamera';
-import { CameraControls } from '@react-three/drei/core/CameraControls';
+import { CameraControls, PerspectiveCamera } from '@react-three/drei';
 import { deg2rad } from '@utils/math';
 import { Grid, GridSettings } from '../../three/environment/Grid';
 import { Lighting, LightingSettings } from '../../three/environment/Lighting';
 import { Record, Static } from 'runtypes';
 import { MutableRefObject, Suspense, useEffect, useMemo } from 'react';
+
 import { useReactiveRef } from '@utils/react/hooks/state';
 import * as THREE from 'three';
 import { Trunk } from '../../three/flora/tree/Trunk';

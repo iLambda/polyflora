@@ -1,5 +1,4 @@
-import { useTexture } from '@react-three/drei/core/Texture';
-import { createInstances } from '@react-three/drei/core/Instances';
+import { createInstances, useTexture } from '@react-three/drei';
 import { Articulations, ArticulationsParameters } from '@three/flora/gen/Articulations';
 import { LimbProps } from '@three/flora/gen/Limb';
 import { useConstantWithInit } from '@utils/react/hooks/refs';

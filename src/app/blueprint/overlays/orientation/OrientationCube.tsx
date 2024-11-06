@@ -1,6 +1,6 @@
 import { OrientationCubeView } from '@app/blueprint/overlays/orientation/OrientationCubeView';
 import { rem } from '@mantine/core';
-import { View } from '@react-three/drei/web/View';
+import { View } from '@react-three/drei';
 import { CSSProperties } from 'react';
 import { Vector3Tuple } from 'three';
 

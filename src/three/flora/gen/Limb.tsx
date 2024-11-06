@@ -6,7 +6,7 @@ import { Number, Record, Static, String } from 'runtypes';
 import * as THREE from 'three';
 import { useParentSkeleton } from './SkeletonContext';
 import { SkeletonData } from './SkeletonData';
-import { Line } from '@react-three/drei/core/Line';
+import { Line } from '@react-three/drei';
 import { useRegisterPolygonCount } from '@three/utils/PolygonCount';
 
 /* The parameters for generating a specific limb */
