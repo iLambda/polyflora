@@ -17,8 +17,8 @@ export const TreeBlueprint = () => {
                     environment={{ 
                         grid: { visibility: 'shown' },
                         lighting: {
-                            ambient: { color: 0xffffff, intensity: 0.2 },
-                            sun: { color: 0xffffff, intensity: 1 },
+                            ambient: { color: 0xffffff, intensity: 0.35 },
+                            sun: { color: 0xffffff, intensity: 1.25 },
                         },
                     }} 
                 />
