@@ -1,4 +1,4 @@
-import { createTheme } from '@mantine/core';
+import { createTheme, Text } from '@mantine/core';
 
 // Do not forget to pass theme to MantineProvider
 export const theme = createTheme({
@@ -16,5 +16,14 @@ export const theme = createTheme({
             '#389E2F',
             '#318A2B',
         ],
+    },
+    components: {
+        Text: Text.extend({
+            styles: {
+                root: {
+                    userSelect: 'none',
+                },
+            },
+        }),
     },
 });
