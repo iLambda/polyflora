@@ -1,6 +1,6 @@
-import { Billboard, Text } from '@react-three/drei';
+import { Billboard, Instance, Text } from '@react-three/drei';
 import { GroupProps } from '@react-three/fiber';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import * as THREE from 'three';
 
 type AxisBallProps = {
@@ -33,30 +33,30 @@ export const AxisBall = (props: AxisBallProps) => {
             onPointerOut={(e) => { setHovered(false); onPointerOut?.(e); } }
             {...groupProps}
         >
-            <mesh>
-                <sphereGeometry args={[radius]} />
-                <meshBasicMaterial color={colorOutside} side={THREE.BackSide} />
-            </mesh>
+            <Instance 
+                scale={1}
+                color={colorOutside}
+            />
             {
                 hasRim && (
-                    <mesh>
-                        <sphereGeometry args={[Math.max(radius - thickness, 0)]} />
-                        <meshBasicMaterial color={colorInside} side={THREE.BackSide} />
-                    </mesh>
+                    <Instance
+                        scale={Math.max(radius - thickness, 0) / radius}
+                        color={colorInside}
+                    />
                 )
             }
             {
                 label && showLabel && (
                     <Billboard>
                         <Suspense>
-                        <Text 
-                            font='font/sans-serif.normal.600.woff'
-                            fontSize={radius*1.5} 
-                            color={hovered ? 'white' : 'black'}
+                            <Text 
+                                font='font/sans-serif.normal.600.woff'
+                                fontSize={radius*1.5} 
+                                color={hovered ? 'white' : 'black'}
                                 characters='XYZ+-'
-                        >
-                            {label}
-                        </Text>
+                            >
+                                {label}
+                            </Text>
                         </Suspense>
                     </Billboard>
                 )

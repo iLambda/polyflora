@@ -1,6 +1,6 @@
 import { AxisBall } from '@app/blueprint/overlays/orientation/AxisBall';
 import { CameraMolecule } from '@app/state/Camera';
-import { Line, MeshDiscardMaterial, OrthographicCamera } from '@react-three/drei';
+import { Instances, Line, MeshDiscardMaterial, OrthographicCamera } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useInstance } from '@utils/react/hooks/refs';
 import { Triplet } from '@utils/types';
@@ -69,32 +69,36 @@ export const OrientationCubeView = (props: OrientationCubeViewProps) => {
                 lineWidth={2}
                 segments
             />
-            {
-                axes.map((label, idx) => {
-                    const axis = idx as 0|1|2;
-                    return (
-                        <group key={label}>
-                            <AxisBall 
-                                position={makePos(axis, 1, len+radius)} 
-                                colorOutside={primaryAxisColors[axis]} 
-                                radius={radius} 
-                                label={label}
-                                onClick={() => props.onDirectionChanged?.(makePos(axis, 1, 1)) }
-                            />
-                            <AxisBall 
-                                position={makePos(axis, -1, len+radius)} 
-                                colorOutside={primaryAxisColors[axis]} 
-                                colorInside={secondaryAxisColors[axis]} 
-                                radius={radius} 
-                                thickness={thickness} 
-                                labelHoverOnly
-                                label={`-${label}`}
-                                onClick={() => props.onDirectionChanged?.(makePos(axis, -1, 1)) }
-                            />
-                        </group>
-                    );
-                })
-            }
+            <Instances limit={24}>
+                <sphereGeometry args={[radius]} />
+                <meshBasicMaterial side={THREE.BackSide} />
+                {
+                    axes.map((label, idx) => {
+                        const axis = idx as 0|1|2;
+                        return (
+                            <group key={label}>
+                                <AxisBall 
+                                    position={makePos(axis, 1, len+radius)} 
+                                    colorOutside={primaryAxisColors[axis]} 
+                                    radius={radius} 
+                                    label={label}
+                                    onClick={() => props.onDirectionChanged?.(makePos(axis, 1, 1)) }
+                                />
+                                <AxisBall 
+                                    position={makePos(axis, -1, len+radius)} 
+                                    colorOutside={primaryAxisColors[axis]} 
+                                    colorInside={secondaryAxisColors[axis]} 
+                                    radius={radius} 
+                                    thickness={thickness} 
+                                    labelHoverOnly
+                                    label={`-${label}`}
+                                    onClick={() => props.onDirectionChanged?.(makePos(axis, -1, 1)) }
+                                />
+                            </group>
+                        );
+                    })
+                }
+            </Instances>
             <mesh 
                 onPointerOver={() => setHovered(true)} 
                 onPointerOut={() => setHovered(false)}
