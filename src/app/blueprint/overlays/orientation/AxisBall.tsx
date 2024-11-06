@@ -49,8 +49,8 @@ export const AxisBall = (props: AxisBallProps) => {
                 label && showLabel && (
                     <Billboard>
                         <Text 
+                            font='font/sans-serif.normal.600.woff'
                             fontSize={radius*1.5} 
-                            fontWeight={600} 
                             color={hovered ? 'white' : 'black'}
                         >
                             {label}
