@@ -7,7 +7,7 @@ import { useMolecule } from 'bunshi/react';
 import { useSnapshot } from 'valtio';
 import { ShadingSelector } from '@app/blueprint/overlays/ShadingSelector';
 import { Toolbar } from '@app/blueprint/overlays/Toolbar';
-import { OrientationCube } from '@app/blueprint/overlays/OrientationCube';
+import { OrientationCube } from '@app/blueprint/overlays/orientation/OrientationCube';
 
 type TreeBlueprintOverlayProps = {
     viewController: TreeBlueprint3DViewController | null;
