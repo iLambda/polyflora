@@ -1,4 +1,4 @@
-import { Billboard, Instance, Text } from '@react-three/drei';
+import { Billboard, Instance, Text, useCursor } from '@react-three/drei';
 import { GroupProps } from '@react-three/fiber';
 import { Suspense, useState } from 'react';
 import * as THREE from 'three';
@@ -26,6 +26,8 @@ export const AxisBall = (props: AxisBallProps) => {
     /* Precompute conditions */
     const hasRim = thickness !== undefined;
     const showLabel = (labelHoverOnly && hovered) || !labelHoverOnly;
+    /* Set the pointer */
+    useCursor(hovered);
     /* Return elements */
     return (
         <group
