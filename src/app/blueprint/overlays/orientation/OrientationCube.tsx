@@ -2,11 +2,13 @@ import { OrientationCubeView } from '@app/blueprint/overlays/orientation/Orienta
 import { rem } from '@mantine/core';
 import { View } from '@react-three/drei';
 import { CSSProperties } from 'react';
+import { Vector3Tuple } from 'three';
 
 type OrientationCubeProps = {
     style?: CSSProperties;
     className?: string;
     size?: string;
+    onDirectionChanged?: (dir: Vector3Tuple) => void;
 };
 export const OrientationCube = (props: OrientationCubeProps) => {
     /* Get size */
@@ -16,11 +18,12 @@ export const OrientationCube = (props: OrientationCubeProps) => {
         <div
             className={props.className} 
             style={{
+                pointerEvents: 'auto',
                 ...props.style,
             }}
         >
             <View style={{ width: size, height: size }}>
-                <OrientationCubeView />
+                <OrientationCubeView onDirectionChanged={props.onDirectionChanged} />
             </View>
         </div>
     );

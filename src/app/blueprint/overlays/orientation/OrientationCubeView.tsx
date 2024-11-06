@@ -18,7 +18,10 @@ const makeAxis = (len: number, axis: 0|1|2) : [THREE.Vector3Tuple, THREE.Vector3
     [0, 0, 0],
 ];
 
-export const OrientationCubeView = () => {
+type OrientationCubeViewProps = {
+    onDirectionChanged?: (dir: THREE.Vector3Tuple) => void;
+};
+export const OrientationCubeView = (props: OrientationCubeViewProps) => {
     /* Get the camera store data */
     const cameraStore = useMolecule(CameraMolecule);
     /* Allocate a vector */
@@ -76,6 +79,7 @@ export const OrientationCubeView = () => {
                                 colorOutside={primaryAxisColors[axis]} 
                                 radius={radius} 
                                 label={label}
+                                onClick={() => props.onDirectionChanged?.(makePos(axis, 1, 1)) }
                             />
                             <AxisBall 
                                 position={makePos(axis, -1, len+radius)} 
@@ -83,12 +87,18 @@ export const OrientationCubeView = () => {
                                 colorInside={secondaryAxisColors[axis]} 
                                 radius={radius} 
                                 thickness={thickness} 
+                                labelHoverOnly
+                                label={`-${label}`}
+                                onClick={() => props.onDirectionChanged?.(makePos(axis, -1, 1)) }
                             />
                         </group>
                     );
                 })
             }
-            <mesh onPointerOver={() => {setHovered(true); console.log('enter !');}} onPointerOut={() => setHovered(false)}>
+            <mesh 
+                onPointerOver={() => setHovered(true)} 
+                onPointerOut={() => setHovered(false)}
+            >
                 <sphereGeometry args={[len + 2*radius + 0.05]} />
                 {
                     hovered 

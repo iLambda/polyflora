@@ -36,6 +36,7 @@ type TreeBlueprint3DViewProps = {
 
 export type TreeBlueprint3DViewController = {
     fitToView: () => void;
+    faceDirection: (dir: THREE.Vector3Tuple) => void;
 };
 
 export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
@@ -60,6 +61,25 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
             // Fit to view function
             fitToView: () => {
                 controls.fitToSphere(mainGroup, true);
+            },
+            // Face the direction
+            faceDirection: ([x, y, z]: THREE.Vector3Tuple) => {
+                // Get position and target
+                const position = new THREE.Vector3();
+                const target = new THREE.Vector3();
+                controls.getPosition(position);
+                controls.getTarget(target);
+                // Now, compute where we wanna look
+                const tmpVec = new THREE.Vector3();
+                tmpVec.subVectors(position, target);
+                const len = tmpVec.length();
+                // Set it
+                tmpVec.set(x, y, z);
+                tmpVec.normalize();
+                tmpVec.multiplyScalar(len);
+                tmpVec.add(target);
+                // Set position
+                controls.setPosition(tmpVec.x, tmpVec.y, tmpVec.z, true);
             },
         };
         

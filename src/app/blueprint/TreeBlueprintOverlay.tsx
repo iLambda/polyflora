@@ -46,11 +46,16 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
 
         <Toolbar key='toolbar' />,
 
-        <OrientationCube key='orientation-cube' style={{
-            position: 'absolute', 
-            top: rem(-8), 
-            right: rem(-8),
-        }} />,
+        <OrientationCube 
+            key='orientation-cube' 
+            onDirectionChanged={(dir) => props.viewController?.faceDirection?.(dir)} 
+            style={{
+                position: 'absolute', 
+                top: rem(-8), 
+                right: rem(-8),
+                pointerEvents: 'auto',
+            }} 
+        />,
         
     ];
 };

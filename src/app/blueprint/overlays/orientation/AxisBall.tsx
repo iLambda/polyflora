@@ -1,19 +1,38 @@
 import { Billboard, Text } from '@react-three/drei';
 import { GroupProps } from '@react-three/fiber';
+import { useState } from 'react';
 import * as THREE from 'three';
 
 type AxisBallProps = {
     radius: number;
     thickness?: number;
     label?: string;
+    labelHoverOnly?: boolean;
     colorOutside: THREE.ColorRepresentation;
     colorInside?: THREE.ColorRepresentation;
 } & GroupProps;
 
-export const AxisBall = ({ radius, thickness, colorOutside, colorInside, label, ...props }: AxisBallProps) => {
+export const AxisBall = (props: AxisBallProps) => {
+    /* Destruct props */
+    const { 
+        radius, thickness, 
+        colorOutside, colorInside, 
+        label, labelHoverOnly = false, 
+        onPointerOver, onPointerOut,
+        ...groupProps 
+    } = props;
+    /* Hovering state */
+    const [hovered, setHovered] = useState(false);
+    /* Precompute conditions */
     const hasRim = thickness !== undefined;
+    const showLabel = (labelHoverOnly && hovered) || !labelHoverOnly;
+    /* Return elements */
     return (
-        <group {...props}>
+        <group
+            onPointerOver={(e) => { setHovered(true); onPointerOver?.(e); }} 
+            onPointerOut={(e) => { setHovered(false); onPointerOut?.(e); } }
+            {...groupProps}
+        >
             <mesh>
                 <sphereGeometry args={[radius]} />
                 <meshBasicMaterial color={colorOutside} side={THREE.BackSide} />
@@ -27,9 +46,15 @@ export const AxisBall = ({ radius, thickness, colorOutside, colorInside, label, 
                 )
             }
             {
-                label && (
+                label && showLabel && (
                     <Billboard>
-                        <Text fontSize={radius*1.5} fontWeight={600} color='black'>{label}</Text>
+                        <Text 
+                            fontSize={radius*1.5} 
+                            fontWeight={600} 
+                            color={hovered ? 'white' : 'black'}
+                        >
+                            {label}
+                        </Text>
                     </Billboard>
                 )
             }
