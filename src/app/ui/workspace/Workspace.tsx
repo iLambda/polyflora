@@ -8,6 +8,7 @@ import { Editor } from '@app/ui/workspace/Editor';
 import { DocumentStoreMolecule } from '@app/state/Documents';
 import { useSnapshot } from 'valtio';
 import { useMolecule } from 'bunshi/react';
+import { CameraTracker } from '@app/state/Camera';
 
 export type WorkspaceProps = {};
 
@@ -26,7 +27,10 @@ export const Workspace = (props: WorkspaceProps) => {
                 <Allotment.Pane minSize={500}>
                     {/* The view content */}
                     <PolygonCounter>
-                        <View enabled={documentsSnapshot.current !== null} />
+                        <View enabled={documentsSnapshot.current !== null}>
+                            {/* Record camera state */}
+                            <CameraTracker />
+                        </View>
                     </PolygonCounter>
                 </Allotment.Pane>
                 <Allotment.Pane className={styles.editorPane} minSize={300} maxSize={900} preferredSize='300px'>
