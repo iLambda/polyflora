@@ -8,8 +8,8 @@ import { useMolecule } from 'bunshi/react';
 import { useMemo, useState } from 'react';
 import * as THREE from 'three';
 
-const primaryAxisColors = ['#98271D', '#25981D', '#1D3898'].map(v => new THREE.Color(v)) as Triplet<THREE.Color>;
-const secondaryAxisColors = ['#4E130F', '#144E0F', '#0F1E4E'].map(v => new THREE.Color(v)) as Triplet<THREE.Color>;
+const primaryAxisColors = ['#8A2E2B', '#318A2B', '#2B508A'].map(v => new THREE.Color(v)) as Triplet<THREE.Color>;
+const secondaryAxisColors = ['#5B1F1D', '#215B1D', '#1D355B'].map(v => new THREE.Color(v)) as Triplet<THREE.Color>;
 
 const makePos = (axis: 0|1|2, sign: -1|1, scale: number) : THREE.Vector3Tuple => [+(axis === 0) * sign * scale, +(axis === 1) * sign * scale, +(axis === 2) * sign * scale];
 const makeColors = (axis: 0|1|2) : [THREE.Color, THREE.Color] => [ primaryAxisColors[axis], primaryAxisColors[axis] ];
@@ -102,7 +102,7 @@ export const OrientationCubeView = (props: OrientationCubeViewProps) => {
                 <sphereGeometry args={[len + 2*radius + 0.05]} />
                 {
                     hovered 
-                        ? <meshBasicMaterial color='#505050' side={THREE.BackSide} />
+                        ? <meshBasicMaterial color='#404040' side={THREE.BackSide} />
                         : <MeshDiscardMaterial />
                 }
             </mesh>
