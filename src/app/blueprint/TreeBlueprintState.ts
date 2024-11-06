@@ -25,8 +25,8 @@ export const TreeBlueprintState = Record({
 export const initialState = () : TreeBlueprintState => ({
     env: {
         camera: ref({
-            position: [55, 45, 50],
-            target: [0, 35, 0],
+            position: [55, 50, 50],
+            target: [0, 38, 0],
         }),
     },
     seed: '3551376191',
