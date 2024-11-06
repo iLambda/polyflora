@@ -16,19 +16,19 @@ export const View = (props: ViewProps) => {
     /* Get the triangle count */
     const { verts, tris } = usePolygonCount();
     /* Store a reference to the event source */
-    const eventSourceRef = useRef<HTMLElement | null>(null);
+    const eventSourceRef = useRef<HTMLDivElement | null>(null);
 
     /* Otherwise, return the context */
     return !props.enabled ? <div className={styles.root} /> : (
-        <>
+        <div className={styles.root} ref={eventSourceRef}>
             {/* The 3D view */}
-            <ContextView className={styles.root} frames={1} ref={eventSourceRef}>
+            <ContextView className={styles.root} frames={1}>
                 { props.children }
                 <Tunnel3D.Out />
             </ContextView>
             
             {/* The canvas */}
-            <Context2D className={styles.root} eventSource={eventSourceRef.current ?? undefined}>
+            <Context2D className={styles.canvas} eventSource={eventSourceRef.current ?? undefined}>
                 <ContextView.Port />
             </Context2D>
 
@@ -44,6 +44,6 @@ export const View = (props: ViewProps) => {
                     <Tunnel3DOverlay.Out />
                 </Flex>
             </Overlay>
-        </>
+        </div>
     );
 };

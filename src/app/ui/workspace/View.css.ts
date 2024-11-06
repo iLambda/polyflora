@@ -10,6 +10,13 @@ export const styles = {
         inset: '0',
     }),
 
+    /* The canvas */
+    canvas: style({
+        position: 'absolute',
+        inset: '0',
+        pointerEvents: 'none',
+    }),
+
     /* The main overlay */
     overlay: style({
         position: 'absolute',
