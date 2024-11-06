@@ -1,4 +1,4 @@
-import { ActionIcon, Flex, rem } from '@mantine/core';
+import { ActionIcon, Flex, rem, Text } from '@mantine/core';
 import { IconFocusCentered } from '@tabler/icons-react';
 import { styles } from './TreeBlueprintOverlay.css';
 import { TreeBlueprint3DViewController } from '@app/blueprint/TreeBlueprint3DView';
@@ -8,6 +8,7 @@ import { useSnapshot } from 'valtio';
 import { ShadingSelector } from '@app/blueprint/overlays/ShadingSelector';
 import { Toolbar } from '@app/blueprint/overlays/Toolbar';
 import { OrientationCube } from '@app/blueprint/overlays/orientation/OrientationCube';
+import { usePolygonCount } from '@three/utils/PolygonCount';
 
 type TreeBlueprintOverlayProps = {
     viewController: TreeBlueprint3DViewController | null;
@@ -19,6 +20,9 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
     const flora = useMolecule(TreeBlueprintMolecule);
     const floraSnapshot = useSnapshot(flora);
 
+    /* Get the triangle count */
+    const { verts, tris } = usePolygonCount();
+    
     return [
         /* Shading selector */
         <ShadingSelector
@@ -26,6 +30,12 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
             value={floraSnapshot.shading}
             onChange={v => flora.shading = v}
         />,
+
+        /* The vertex counter */
+        <Flex key='polycount' direction='column'>
+            <Text size='xs'>{`Vertices: ${verts}`}</Text>
+            <Text size='xs'>{`Triangles: ${tris}`}</Text>
+        </Flex>,
 
         /* Buttons for modifying the view */
         <Flex 
