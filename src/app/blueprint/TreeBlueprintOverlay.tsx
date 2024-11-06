@@ -7,6 +7,7 @@ import { useMolecule } from 'bunshi/react';
 import { useSnapshot } from 'valtio';
 import { ShadingSelector } from '@app/blueprint/overlays/ShadingSelector';
 import { Toolbar } from '@app/blueprint/overlays/Toolbar';
+import { CaptureViewer } from '@app/blueprint/overlays/CaptureViewer';
 
 type TreeBlueprintOverlayProps = {
     viewController: TreeBlueprint3DViewController | null;
@@ -43,8 +44,10 @@ export const TreeBlueprintOverlay = (props: TreeBlueprintOverlayProps) => {
             />
         </Flex>,
 
-        <Toolbar key='toolbar' />,
+        /* The 2D render viewport */
+        <CaptureViewer key='2d-render-viewport' />,
 
-        
+        /* The toolbar to edit environment*/
+        <Toolbar key='toolbar' />,        
     ];
 };

@@ -14,6 +14,7 @@ import { TreeBlueprintMolecule } from '@app/blueprint/TreeBlueprintState';
 import { useSnapshot } from 'valtio';
 import { useBlueprintDocumentID } from '@app/state/Blueprint';
 import { Leaves } from '@three/flora/tree/Leaves';
+import { Capture } from '@three/flora/Capture';
 import { useLayers } from '@utils/react/hooks/three';
 import { Layers } from '@three/Layers';
 
@@ -120,6 +121,12 @@ export const TreeBlueprint3DView = (props: TreeBlueprint3DViewProps) => {
                 minDistance={5}
                 maxDistance={250}
             />
+
+            {/* The tool used to capture the scene */}
+            <Capture 
+                textureWidth={512} 
+                textureHeight={512} 
+            /> 
             
             {/* Generating the tree */ }
             <group ref={mainGroupRef} 
